@@ -1,0 +1,401 @@
+/*
+#app {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+} */
+
+#myCanvas {
+  top: 0;
+  height: 100%;
+}
+
+body {
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  overflow: hidden;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+li,
+ul {
+  list-style: none;
+}
+
+.pgn {
+  position: absolute;
+}
+
+.pgn {
+  left: 0;
+  width: 100%;
+  height: 100%;
+  margin-top: 1px;
+}
+.pgn div {
+  will-change: transform;
+}
+.pgn,
+.pgn > div {
+  overflow: hidden;
+}
+.pgn > div {
+  top: 0;
+}
+.pgn div div {
+  padding: 0 2px;
+  transform: translate3d(-100%, 0, 0);
+}
+
+pgn > div {
+  position: absolute;
+}
+
+@media (max-width: 700px) {
+  #c2d,
+  .pgn {
+    display: none;
+  }
+}
+
+.title {
+  pointer-events: none;
+}
+
+.title {
+  height: 28.125vh;
+  line-height: 28.125vh;
+  font-size: 37.5vh;
+}
+
+.title-top-row {
+  top: calc(50% - 33.125vh);
+}
+
+.title,
+.title > div {
+  position: absolute;
+}
+.title > div {
+  top: 0;
+  left: 0;
+  overflow: hidden;
+}
+.title div div {
+  transform: translate3d(-101%, 0, 0);
+}
+.title div {
+  will-change: transform;
+}
+.explore-word > div,
+.information-left div div,
+.information-right div div {
+  transform: translate3d(0, -101%, 0);
+  will-change: transform;
+}
+
+.explore {
+  position: absolute;
+}
+
+.explore {
+  bottom: 49px;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+#c2d,
+#myCanvas,
+.line-w {
+  pointer-events: none;
+}
+
+.line-w {
+  font-size: 12px;
+  line-height: 34px;
+  letter-spacing: -0.02em;
+}
+
+#c2d,
+#myCanvas,
+.line,
+.line div {
+  position: absolute;
+  left: 0;
+  width: 100%;
+}
+.line {
+  bottom: 8px;
+  height: 2px;
+  pointer-events: none;
+}
+.line div {
+  top: 0;
+  height: 100%;
+  will-change: transform, background;
+}
+.line div:last-child {
+  transition: background 500ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.line div:first-child {
+  transition: background 500ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.explore-line,
+.explore-word {
+  overflow: hidden;
+}
+
+.explore-line {
+  position: relative;
+  margin: 9px auto 0;
+  width: 3px;
+}
+.explore-line div {
+  position: absolute;
+  left: 0;
+  width: 1px;
+  height: 100%;
+  border-right-width: 1px;
+  border-right-style: solid;
+}
+.explore-line,
+.explore-sign,
+.information-left {
+  pointer-events: none;
+}
+.explore-sign {
+  margin: 13px auto 0;
+  width: 14px;
+  height: 14px;
+  overflow: hidden;
+}
+#p-s div,
+.explore-line div {
+  transform: translate3d(0, -110%, 0);
+  will-change: transform;
+}
+
+.explore-sign div {
+  transform: translate3d(0, 0%, 0);
+}
+.information-left {
+  position: absolute;
+  bottom: 47px;
+  left: 50%;
+  font-size: 10px;
+  line-height: 12px;
+  letter-spacing: 0.02em;
+  transform: translateX(-100%);
+}
+.information-left > div {
+  display: flex;
+  flex-wrap: wrap;
+  overflow: hidden;
+}
+.information-left div div:nth-child(1) {
+  width: 30px;
+  font-size: 6px;
+}
+.information-left div div:nth-child(2) {
+  width: 130px;
+}
+.information-left div div:nth-child(3) {
+  width: 250px;
+}
+.information-right,
+.pgn {
+  position: absolute;
+}
+.information-right {
+  bottom: 48px;
+  left: calc(50% + 140px);
+  font-size: 10px;
+  line-height: 10px;
+  letter-spacing: 0.02em;
+  pointer-events: none;
+}
+.information-right > div {
+  overflow: hidden;
+}
+
+.stuff {
+  z-index: 1;
+}
+
+/*Image track*/
+#slider-container {
+  width: 100vw;
+  height: 40vh;
+  top: 30vh;
+  position: relative;
+}
+
+#picture-group-slider {
+  display: flex;
+  gap: 4vmin;
+  position: absolute;
+  left: 50%;
+  transform: translate(0%, 0%);
+}
+
+#picture-group-slider > .image {
+  width: 15vmin;
+  height: 40vmin;
+  object-fit: cover;
+  object-position: 100% 50%;
+}
+
+#picture-group-slider > .image:hover {
+  filter: none;
+  /*transition: 0.1s;*/
+  transform: translateZ(0);
+}
+
+.image {
+  filter: grayscale(100%);
+}
+
+.chosen {
+  filter: none;
+}
+/*
+rules such as transform: translateZ(0); inform the browser to transfer work to the GPU if 
+possible, which takes a load off the CPU – Felipe
+https://stackoverflow.com/questions/31713468/css-blur-filter-performance
+*/
+
+@media (min-aspect-ratio: 1660/1200) {
+  .information-left span {
+    display: inline-block;
+  }
+  .title {
+    height: 28.125vh;
+    line-height: 28.125vh;
+    font-size: 37.5vh;
+  }
+  .title-top-row {
+    top: calc(50% - 33.125vh);
+  }
+  .title-bottom-row {
+    top: calc(50% - 5vh);
+  }
+  .title > div {
+    margin-left: -3.33333vh;
+  }
+  .title div div {
+    padding-left: 3.33333vh;
+    padding-right: 3.33333vh;
+  }
+  #w-l {
+    width: 96.2963vh;
+    height: 54.16667vh;
+  }
+}
+@media (max-aspect-ratio: 1660/1200) {
+  .a-li span {
+    display: inline-block;
+  }
+  .title {
+    height: 19.87952vw;
+    line-height: 19.87952vw;
+    font-size: 26.50602vw;
+  }
+  .title-top-row {
+    top: calc(50% - 23.49398vw);
+  }
+  .title-bottom-row {
+    top: calc(50% - 3.61446vw);
+  }
+  .title > div {
+    margin-left: -2.40964vw;
+  }
+  .title div div {
+    padding-left: 2.40964vw;
+    padding-right: 2.40964vw;
+  }
+  #w-l {
+    width: 69.61178vw;
+    height: 39.15663vw;
+  }
+}
+
+@media (min-height: 760px) {
+  .explore-line {
+    height: 34px;
+  }
+}
+
+@media (min-height: 700px) and (max-height: 760px) {
+  .explore-line {
+    height: 3.4vh;
+  }
+}
+@media (min-height: 660px) and (max-height: 700px) {
+  .explore-line {
+    height: 2.5vh;
+  }
+}
+@media (max-height: 660px) {
+  .explore-line {
+    height: 2vh;
+  }
+}
+
+/*
+@keyframes top-row-drop {
+  from {
+    transform: translate3d(0%, 0%, 0%);
+  }
+}
+*/
+
+.animate {
+  animation-duration: 0.75s;
+  animation-delay: 0.5s;
+  animation-name: animate-fade;
+  animation-timing-function: (cubic-bezier(0.53, 0.14, 0.63, 0.94));
+  animation-fill-mode: backwards;
+}
+
+.animate.glow {
+  animation-name: animate-glow;
+  animation-timing-function: ease;
+}
+
+@keyframes animate-glow {
+  0% {
+    opacity: 0;
+    transform: scale(0, 1);
+    filter: brightness(1) saturate(0);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1, 1);
+    filter: brightness(1) saturate(1);
+  }
+}
+
+/*
+@keyframes animate-fade {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+*/
