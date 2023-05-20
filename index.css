@@ -245,27 +245,82 @@ pgn > div {
 
 #picture-group-slider {
   display: flex;
-  gap: 4vmin;
+  gap: 4vh;
   position: absolute;
   left: 50%;
   transform: translate(0%, 0%);
 }
 
 #picture-group-slider > .image {
-  width: 15vmin;
-  height: 40vmin;
+  width: 15vh;
+  height: 40vh;
   object-fit: cover;
   object-position: 100% 50%;
 }
 
 #picture-group-slider > .image:hover {
   filter: none;
-  /*transition: 0.1s;*/
-  transform: translateZ(0);
 }
+
+/*
+#picture-group-slider > .image:nth-child(n) {
+  aspect-ratio: 5 / 7;
+  height: 350px;
+  width: auto;
+}
+*/
+/*
+.image .chosen .selected {
+  aspect-ratio: 5 / 7;
+  height: 350px;
+  width: auto;
+}*/
+
+#picture-group-slider > .chosen {
+  animation-duration: 1.5s;
+  animation-delay: 0s;
+  animation-name: selected-pic-an;
+  animation-timing-function: (cubic-bezier(0.53, 0.14, 0.63, 0.94));
+  animation-fill-mode: backwards;
+
+  height: 60vh;
+  width: calc(60vh * (5 / 7));
+  transform: translate(0%, -10vh);
+}
+
+/*MAYBE just zoom-in slider when an image is clicked?*/
+/*also center that image*/
 
 .image {
   filter: grayscale(100%);
+}
+
+/*
+.animate {
+  animation-duration: 1.75s;
+  animation-delay: 0.5s;
+  animation-name: selected-pic-an;
+  animation-timing-function: (cubic-bezier(0.53, 0.14, 0.63, 0.94));
+  animation-fill-mode: backwards;
+}
+
+.animate.glow {
+  animation-name: animate-glow;
+  animation-timing-function: ease;
+} */
+
+@keyframes selected-pic-an {
+  0% {
+    transform: translate(0%, 0%);
+    height: 40vh;
+    width: 15vh;
+  }
+
+  100% {
+    transform: translate(0%, -10vh);
+    height: 60vh;
+    width: calc(60vh * (5 / 7));
+  }
 }
 
 .chosen {
