@@ -8,6 +8,8 @@ const rightMax = slideWidth / 2;
 const homeX = window.innerWidth / 2;
 const windowHeight = window.innerHeight;
 
+let pictureSelected = false;
+
 //Percent per 1 pixel moves
 const percentPerPixel = ((homeX - 1) / homeX / slideWidth) * 100;
 
@@ -24,6 +26,14 @@ window.onmousedown = (e) => {
 
 sliderContainer.addEventListener("wheel", function (e) {
   slider.dataset.mouseScrollAt = e.clientX;
+
+  if (pictureSelected) {
+    Array.from(pictures).forEach(function (picture) {
+      picture.classList.remove("chosen");
+      picture.classList.add("scroll-on-chosen");
+    });
+    pictureSelected = false;
+  }
 
   let rangedScroll = scrolly;
 
@@ -109,8 +119,8 @@ sliderContainer.addEventListener(
 */
 window.onmousemove = (e) => {
   /*do nothing unless click down occurs*/
-  if (slider.dataset.mouseDownAt === "0") return;
 
+  if (slider.dataset.mouseDownAt === "0") return;
   const mouseDelta = parseFloat(slider.dataset.mouseDownAt) - e.clientX;
 
   const maxDelta = window.innerWidth / 2; // why? we start at 50%
@@ -185,16 +195,19 @@ function centerImage(clickEvent, currPicSent, picIndex) {
   let endX = parseFloat(position) + imageWidth;
   //let endX = parseFloat(position) + scaleWidth;
   console.log("startX", position, endX);
-  console.log("midpoint", (position + endX) / 2);
-  console.log("prev%", slider.dataset.prevPercentage);
+  console.log("midpoint", position + scaleWidth / 2);
+  console.log("prev%", parseFloat(slider.dataset.prevPercentage));
 
   let poseScale = position * scaleHeight;
   let posEndX = endX * scaleWidth;
 
   console.log("sh", scaleHeight, "sw", scaleWidth);
 
-  let deltaMiddle = (position + endX) / 2 - homeX;
+  //let deltaMiddle = (position + endX) / 2 - homeX; //ORIGINAL
+  let deltaMiddle = position + scaleWidth / 2 - homeX;
+
   console.log("deltaMiddle", deltaMiddle);
+  //const usingPercentage = deltaMiddle * percentPerPixel * -1; //ORIGINAL
   const usingPercentage = deltaMiddle * percentPerPixel * -1;
   console.log("using", usingPercentage);
   const nextPercentageRaw =
@@ -208,7 +221,7 @@ function centerImage(clickEvent, currPicSent, picIndex) {
       {
         transform: `translate(${nextPercentageRefined}%, 0%)`,
       },
-      { duration: 1200, fill: "forwards" }
+      { duration: 1000, fill: "forwards" }
     );
   //500 - (image.width /2)
 }
@@ -230,7 +243,6 @@ for (let i = 0; i < pictures.length; i++) {
 
     currPic = pictures[i];
 
-    currPic.classList.add("chosen");
     //pictures[i].classList.add("selected");
 
     const titleName = `title-${i}`;
@@ -239,6 +251,13 @@ for (let i = 0; i < pictures.length; i++) {
     //getText(titleName);
 
     centerImage(e, currPic, i);
+
+    //currPic.classList.add("chosen");
+    Array.from(pictures).forEach(function (picture) {
+      picture.classList.add("chosen");
+      picture.classList.remove("scroll-on-chosen");
+      pictureSelected = true;
+    });
   });
 }
 
@@ -277,3 +296,5 @@ function getText(titleID) {
     curr.classList.add("glow", "animate");
   }
 }
+
+//if image scrolls though middle x, it has css trnsition that goes and does not stay
