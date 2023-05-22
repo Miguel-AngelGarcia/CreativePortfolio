@@ -243,22 +243,57 @@ pgn > div {
   position: relative;
 }
 
-#picture-group-slider {
+.picture-group-slider {
   display: flex;
-  gap: 4vh;
+  gap: 2vh;
   position: absolute;
   left: 50%;
   transform: translate(0%, 0%);
 }
 
-#picture-group-slider > .image {
+.selected {
+  animation-duration: 1s;
+  animation-delay: 0s;
+  animation-name: slider-gap-expansion;
+  animation-timing-function: (cubic-bezier(0.94, 0.63, 0.14, 0.53));
+  animation-fill-mode: forwards;
+}
+
+.unselected {
+  animation-duration: 1s;
+  animation-delay: 0s;
+  animation-name: slider-gap-shrivel;
+  animation-timing-function: (cubic-bezier(0.94, 0.63, 0.14, 0.53));
+  animation-fill-mode: backwards;
+}
+
+@keyframes slider-gap-expansion {
+  0% {
+    gap: 2vh;
+  }
+
+  100% {
+    gap: 12vh;
+  }
+}
+@keyframes slider-gap-shrivel {
+  0% {
+    gap: 12vh;
+  }
+
+  100% {
+    gap: 2vh;
+  }
+}
+
+.picture-group-slider > .image {
   width: 15vh;
   height: 40vh;
   object-fit: cover;
   object-position: 100% 50%;
 }
 
-#picture-group-slider > .image:hover {
+.picture-group-slider > .image:hover {
   filter: none;
 }
 
@@ -276,19 +311,19 @@ pgn > div {
   width: auto;
 }*/
 
-#picture-group-slider > .chosen {
+.picture-group-slider > .chosen {
   animation-duration: 1s;
   animation-delay: 0s;
   animation-name: selected-pic-an;
   animation-timing-function: (cubic-bezier(0.53, 0.14, 0.63, 0.94));
   animation-fill-mode: forwards;
-
+  /*the animation makles it look like it moves in when loading*/
   height: 60vh;
   width: calc(60vh * (5 / 7));
   transform: translate(0%, -10vh);
 }
 
-#picture-group-slider > .scroll-on-chosen {
+.picture-group-slider > .scroll-on-chosen {
   animation-duration: 1s;
   animation-delay: 0s;
   animation-name: scroll-selected-pic-an;
@@ -326,14 +361,12 @@ pgn > div {
     transform: translate(0%, 0%);
     height: 40vh;
     width: 15vh;
-    margin-left: 0vh;
   }
 
   100% {
     transform: translate(0%, -10vh);
     height: 60vh;
     width: calc(60vh * (5 / 7));
-    margin-left: 10vh;
   }
 }
 
@@ -342,14 +375,12 @@ pgn > div {
     transform: translate(0%, -10vh);
     height: 60vh;
     width: calc(60vh * (5 / 7));
-    margin-left: 10vh;
   }
 
   100% {
     transform: translate(0%, 0%);
     margin-left: 0vh;
     height: 40vh;
-    width: 15vh;
   }
 }
 
