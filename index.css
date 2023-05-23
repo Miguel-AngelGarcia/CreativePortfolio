@@ -297,6 +297,10 @@ pgn > div {
   filter: none;
 }
 
+.image {
+  filter: grayscale(100%);
+}
+
 /*
 #picture-group-slider > .image:nth-child(n) {
   aspect-ratio: 5 / 7;
@@ -337,10 +341,6 @@ pgn > div {
 
 /*MAYBE just zoom-in slider when an image is clicked?*/
 /*also center that image*/
-
-.image {
-  filter: grayscale(100%);
-}
 
 /*
 .animate {
@@ -384,7 +384,7 @@ pgn > div {
   }
 }
 
-.chosen {
+.selected-pic {
   filter: none;
 }
 /*
@@ -400,7 +400,7 @@ https://stackoverflow.com/questions/31713468/css-blur-filter-performance
   .title {
     height: 28.125vh;
     line-height: 28.125vh;
-    font-size: 37.5vh;
+    font-size: 20.5vh;
   }
   .title-top-row {
     top: calc(50% - 33.125vh);
@@ -479,8 +479,8 @@ https://stackoverflow.com/questions/31713468/css-blur-filter-performance
 */
 
 .animate {
-  animation-duration: 0.75s;
-  animation-delay: 0.5s;
+  animation-duration: 0.45s;
+  animation-delay: 0.2s;
   animation-name: animate-fade;
   animation-timing-function: (cubic-bezier(0.53, 0.14, 0.63, 0.94));
   animation-fill-mode: backwards;
@@ -488,6 +488,11 @@ https://stackoverflow.com/questions/31713468/css-blur-filter-performance
 
 .animate.glow {
   animation-name: animate-glow;
+  animation-timing-function: ease;
+}
+
+.animate .fade {
+  animation-name: animate-fade;
   animation-timing-function: ease;
 }
 
@@ -505,13 +510,75 @@ https://stackoverflow.com/questions/31713468/css-blur-filter-performance
   }
 }
 
-/*
 @keyframes animate-fade {
   0% {
-    opacity: 0;
+    opacity: 1;
+    transform: scale(1, 1);
+    filter: brightness(1) saturate(1);
   }
   100% {
     opacity: 1;
+    transform: scale(0, 1);
+    filter: brightness(1) saturate(0);
   }
 }
-*/
+
+.letter {
+  animation-duration: 0.45s;
+  animation-delay: 0.5s;
+  animation-name: letter-fade;
+  animation-timing-function: (cubic-bezier(0.53, 0.14, 0.63, 0.94));
+  animation-fill-mode: forwards;
+}
+
+.letter .glow {
+  animation-name: letter-glow;
+  animation-timing-function: ease;
+}
+
+.letter .fade {
+  animation-name: letter-fade;
+  animation-timing-function: ease;
+}
+
+.info-right-letter .glow {
+  transform: translate3d(0%, -101%, 0px);
+}
+
+.info-right-letter .glow {
+  animation-duration: 0.45s;
+  animation-delay: 0.5s;
+  animation-timing-function: (cubic-bezier(0.53, 0.14, 0.63, 0.94));
+  animation-fill-mode: forwards;
+  animation-name: letter-glow;
+  animation-timing-function: ease;
+  transform: translate3d(0%, 0%, 0px);
+}
+
+@keyframes letter-glow {
+  0% {
+    opacity: 0;
+    filter: brightness(1) saturate(0);
+    transform: translate3d(0%, -101%, 0px);
+  }
+
+  100% {
+    opacity: 1;
+
+    filter: brightness(1) saturate(1);
+    transform: translate3d(0%, 0%, 0px);
+  }
+}
+
+@keyframes letter-fade {
+  0% {
+    opacity: 1;
+    transform: scale(1, 1) (0%, 0%, 0px);
+    filter: brightness(1) saturate(1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(0, 1) translate3d(0%, -101%, 0px);
+    filter: brightness(1) saturate(0);
+  }
+}

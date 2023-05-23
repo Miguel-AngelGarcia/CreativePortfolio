@@ -3,6 +3,8 @@
 const slider = document.querySelector(".picture-group-slider");
 const sliderContainer = document.getElementById("slider-container");
 
+let currTitle = "title-x";
+
 slider.dataset.percentage = "0";
 
 const pictures = document.getElementsByClassName("image");
@@ -29,6 +31,7 @@ const leftMax = -(slideWidth / 2);
 const rightMax = slideWidth / 2;
 
 let pictureSelected = false;
+let pictureSelectedImage = null;
 
 //Percent per 1 pixel moves
 const percentPerPixel = (1 / parseFloat(slideWidth)) * 100;
@@ -59,9 +62,12 @@ sliderContainer.addEventListener("wheel", function (e) {
       picture.classList.remove("chosen");
       picture.classList.add("scroll-on-chosen");
     });
+    pictureSelectedImage.classList.remove("selected-pic");
     slider.classList.remove("selected");
     slider.classList.add("unselected");
     pictureSelected = false;
+
+    putTextAway(currTitle);
   }
 
   let rangedScroll = scrolly;
@@ -188,6 +194,14 @@ window.onmousemove = (e) => {
 window.onmouseup = () => {
   slider.dataset.mouseDownAt = 0;
   slider.dataset.prevPercentage = slider.dataset.percentage;
+
+  //when pic is selected AFTER one pic is in forus
+  //we want to center second image, and grey out first + rest
+  //keep 12vh gap
+  if (pictureSelected) {
+    //pictureSelected = false;
+    putTextAway(currTitle);
+  }
 };
 
 const hiddenElements = document.querySelectorAll(".hidden");
@@ -291,10 +305,21 @@ for (let i = 0; i < pictures.length; i++) {
 
     currPic = pictures[i];
 
+    if (pictureSelected) {
+      pictureSelectedImage.classList.remove("selected-pic");
+    }
+
+    pictureSelectedImage = currPic;
+
     //pictures[i].classList.add("selected");
 
     const titleName = `title-${i}`;
-    //getText(titleName);
+    console.log(titleName);
+
+    currPic.classList.add("selected-pic");
+
+    currTitle = titleName;
+    getText(titleName);
 
     const scaleHeight = windowHeight * 0.6;
     const scaleWidth = scaleHeight * (5 / 7);
@@ -303,9 +328,8 @@ for (let i = 0; i < pictures.length; i++) {
     Array.from(pictures).forEach(function (picture) {
       picture.classList.add("chosen");
       picture.classList.remove("scroll-on-chosen");
-      pictureSelected = true;
     });
-
+    pictureSelected = true;
     slider.classList.add("selected");
     slider.classList.remove("unselected");
 
@@ -317,6 +341,8 @@ for (let i = 0; i < pictures.length; i++) {
 }
 
 function getText(titleID) {
+  currTitle = titleID;
+
   //const pictures = document.getElementsByClassName("image");
   const sTopRow = document
     .getElementById(`${titleID}`)
@@ -325,6 +351,13 @@ function getText(titleID) {
   const sBottomRow = document
     .getElementById(`${titleID}`)
     .getElementsByClassName("bottom-letter");
+
+  const leftInfo = document
+    .getElementById(`${titleID}`)
+    .getElementsByClassName("info-left-leter");
+  const rightInfo = document
+    .getElementById(`${titleID}`)
+    .getElementsByClassName("info-right-letter");
 
   for (let x = 0; x < sTopRow.length; x++) {
     //console.log(topRow[x]);
@@ -348,23 +381,112 @@ function getText(titleID) {
     curr.style.animationDelay = `${delay}s`;
     curr.classList.add("glow", "animate");
   }
+
+  const lEndIndex = leftInfo.length - 1;
+  const lMaxTime = lEndIndex * 200;
+  Array.from(leftInfo).forEach(function (leftLetter, lIndex) {
+    let delay = lIndex * -200 + lMaxTime;
+    delay = delay * 0.001;
+    //leftLetter.style.transform = "translate3d(0%, 0%, 0px)";
+    leftLetter.animate(
+      {
+        transform: `translate3d(0%, 0%, 0px`, //OLD<- `translate(${nextPercenRefined}%, -50%)`
+      },
+      { duration: 1200, fill: "forwards" }
+    );
+    leftLetter.animationDelay = `${delay}s`;
+    leftLetter.classList.add("glow");
+  });
+
+  const rEndIndex = rightInfo.length;
+  const rMaxTime = rEndIndex * 200;
+  Array.from(rightInfo).forEach(function (rightLetter, rIndex) {
+    let delay = rIndex * -200 + rMaxTime;
+
+    delay = delay * 0.001;
+    rightLetter.animate(
+      {
+        transform: `translate3d(0%, 0%, 0px`, //OLD<- `translate(${nextPercenRefined}%, -50%)`
+      },
+      { duration: 1200, fill: "forwards" }
+    );
+    rightLetter.animationDelay = `${delay}s`;
+    rightLetter.classList.add("glow");
+  });
+}
+
+function putTextAway(currTitle) {
+  const sTopRow = document
+    .getElementById(`${currTitle}`)
+    .getElementsByClassName("top-letter");
+
+  const sBottomRow = document
+    .getElementById(`${currTitle}`)
+    .getElementsByClassName("bottom-letter");
+
+  const leftInfo = document.getElementsByClassName("info-left-leter");
+  const rightInfo = document.getElementsByClassName("info-right-letter");
+
+  for (let x = 0; x < sTopRow.length; x++) {
+    //console.log(topRow[x]);
+    let curr = sTopRow[x];
+    let delay = x * 200;
+    delay = delay * 0.001;
+    curr.style.transform = "translate3d(101%, 0%, 0px)";
+    curr.style.animationDelay = `${delay}s`;
+    curr.classList.remove("glow");
+    curr.classList.add("fade");
+  }
+
+  const bEndIndex = sBottomRow.length - 1;
+  const maxTime = bEndIndex * 200;
+  for (let y = bEndIndex; y >= 0; y--) {
+    console.log(sBottomRow[y], y);
+    let curr = sBottomRow[y];
+    // 4 * 200
+    let delay = y * -200 + maxTime;
+    delay = delay * 0.001;
+    curr.style.transform = "translate3d(101%, 0%, 0px)";
+    curr.style.animationDelay = `${delay}s`;
+    curr.classList.remove("glow");
+    curr.classList.add("fade");
+  }
+
+  const lEndIndex = leftInfo.length - 1;
+  const lMaxTime = lEndIndex * 200;
+  Array.from(leftInfo).forEach(function (leftLetter, lIndex) {
+    let delay = lIndex * -200 + lMaxTime;
+    delay = delay * 0.001;
+    //leftLetter.style.transform = "translate3d(0%, 0%, 0px)";
+    leftLetter.animate(
+      {
+        transform: `translate3d(0%, -101%, 0px`, //OLD<- `translate(${nextPercenRefined}%, -50%)`
+      },
+      { duration: 1200, fill: "forwards" }
+    );
+    leftLetter.animationDelay = `${delay}s`;
+    leftLetter.classList.remove("glow");
+    leftLetter.classList.add("fade");
+  });
+
+  const rEndIndex = rightInfo.length;
+  console.log(rEndIndex);
+  const rMaxTime = rEndIndex * 200;
+  Array.from(rightInfo).forEach(function (rightLetter, rIndex) {
+    let delay = rIndex * -200 + rMaxTime;
+
+    delay = delay * 0.001;
+    rightLetter.animate(
+      {
+        transform: `translate3d(0%, -101%, 0px`, //OLD<- `translate(${nextPercenRefined}%, -50%)`
+      },
+      { duration: 1200, fill: "forwards" }
+    );
+    rightLetter.animationDelay = `${delay}s`;
+    rightLetter.classList.remove("glow");
+    rightLetter.classList.add("fade");
+    //rightLetter.classList.add("glow");
+  });
 }
 
 //if image scrolls though middle x, it has css trnsition that goes and does not stay
-/*
-imageGap = windowHeight * 0.02;
-  imageWidth = image.clientWidth;
-
-  const posValueX = homeX + testI * (imageWidth + imageGap);
-  image.dataset.posXStart = posValueX;
-  image.dataset.posX = posValueX;*/
-/*
-const topRow = document
-  .getElementById("title-0")
-  .getElementsByClassName("top-letter");
-
-const bottomRow = document
-  .getElementById("title-0")
-  .getElementsByClassName("bottom-letter");
-const letter = document.getElementById("ttestLetter");
-*/
