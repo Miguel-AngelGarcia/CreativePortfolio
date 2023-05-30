@@ -390,7 +390,7 @@ function getText(titleID) {
     //leftLetter.style.transform = "translate3d(0%, 0%, 0px)";
     leftLetter.animate(
       {
-        transform: `translate3d(0%, 0%, 0px`, //OLD<- `translate(${nextPercenRefined}%, -50%)`
+        transform: `translate3d(0%, 0%, 0px)`, //OLD<- `translate(${nextPercenRefined}%, -50%)`
       },
       { duration: 1200, fill: "forwards" }
     );
@@ -406,12 +406,39 @@ function getText(titleID) {
     delay = delay * 0.001;
     rightLetter.animate(
       {
-        transform: `translate3d(0%, 0%, 0px`, //OLD<- `translate(${nextPercenRefined}%, -50%)`
+        transform: `translate3d(0%, 0%, 0px)`, //OLD<- `translate(${nextPercenRefined}%, -50%)`
       },
       { duration: 1200, fill: "forwards" }
     );
     rightLetter.animationDelay = `${delay}s`;
     rightLetter.classList.add("glow");
+  });
+
+  //adds 'Explore thing' to page
+  const eTop = document
+    .getElementById(`${titleID}`)
+    .getElementsByClassName("explore-top")[0];
+  const eMiddle = document
+    .getElementById(`${titleID}`)
+    .getElementsByClassName("explore-middle")[0];
+  const eBottom = document
+    .getElementById(`${titleID}`)
+    .getElementsByClassName("explore-bottom")[0];
+  const exploreArray = [eTop, eMiddle, eBottom];
+
+  console.log(exploreArray);
+  Array.from(exploreArray).forEach(function (exploreItem, eIndex) {
+    console.log(exploreItem);
+    let delay = eIndex * 200 + 200;
+    delay = delay * 0.001;
+
+    exploreItem.animate(
+      {
+        transform: `translate3d(0%, 0%, 0px)`, //OLD<- `translate(${nextPercenRefined}%, -50%)`
+      },
+      { duration: 1200, fill: "forwards" }
+    );
+    exploreItem.animationDelay = `${delay}s`;
   });
 }
 
@@ -460,9 +487,9 @@ function putTextAway(currTitle) {
     //leftLetter.style.transform = "translate3d(0%, 0%, 0px)";
     leftLetter.animate(
       {
-        transform: `translate3d(0%, -101%, 0px`, //OLD<- `translate(${nextPercenRefined}%, -50%)`
+        transform: `translate3d(0%, -101%, 0px)`, //OLD<- `translate(${nextPercenRefined}%, -50%)`
       },
-      { duration: 1200, fill: "forwards" }
+      { duration: 200, fill: "forwards" }
     );
     leftLetter.animationDelay = `${delay}s`;
     leftLetter.classList.remove("glow");
@@ -478,15 +505,81 @@ function putTextAway(currTitle) {
     delay = delay * 0.001;
     rightLetter.animate(
       {
-        transform: `translate3d(0%, -101%, 0px`, //OLD<- `translate(${nextPercenRefined}%, -50%)`
-      },
-      { duration: 1200, fill: "forwards" }
+        transform: `translate3d(0%, -101%, 0px)`, //OLD<- `translate(${nextPercenRefined}%, -50%)`
+      }, //1200?
+      { duration: 200, fill: "forwards" }
     );
     rightLetter.animationDelay = `${delay}s`;
     rightLetter.classList.remove("glow");
     rightLetter.classList.add("fade");
     //rightLetter.classList.add("glow");
   });
+
+  //removes 'Explore thing' to page
+  const eTop = document
+    .getElementById(`${currTitle}`)
+    .getElementsByClassName("explore-top")[0];
+  const eMiddle = document
+    .getElementById(`${currTitle}`)
+    .getElementsByClassName("explore-middle")[0];
+  const eBottom = document
+    .getElementById(`${currTitle}`)
+    .getElementsByClassName("explore-bottom")[0];
+  const exploreArray = [eTop, eMiddle, eBottom];
+  /*
+  Array.from(exploreArray).forEach(function (exploreItem, eIndex) {
+    console.log(exploreItem);
+    let delay = eIndex * 200 + 200;
+    delay = delay * 0.001;
+
+    exploreItem.animate(
+      {
+        transform: `translate3d(0%, 0%, 0px)`, //OLD<- `translate(${nextPercenRefined}%, -50%)`
+      },
+      { duration: 200, fill: "forwards" }
+    );
+    exploreItem.animationDelay = `${delay}s`;
+  }); */
+
+  eTop.animate(
+    {
+      transform: `translate3d(0%, -101%, 0px)`, //OLD<- `translate(${nextPercenRefined}%, -50%)`
+    },
+    { duration: 200, fill: "forwards" }
+  );
+
+  eMiddle.animate(
+    {
+      transform: `translate3d(0%, 110%, 0px)`, //OLD<- `translate(${nextPercenRefined}%, -50%)`
+    },
+    { duration: 200, fill: "forwards" }
+  );
+
+  eBottom.animate(
+    {
+      transform: `translate3d(0%, -110%, 0px)`, //OLD<- `translate(${nextPercenRefined}%, -50%)`
+    },
+    { duration: 200, fill: "forwards" }
+  );
 }
 
 //if image scrolls though middle x, it has css trnsition that goes and does not stay
+
+//Add event listener for left and right arrow keys
+//if pic selected, move one over with arrow key direction
+
+positionInfo = document.getElementsByClassName("position");
+window.onload = (event) => {
+  console.log(positionInfo);
+
+  Array.from(positionInfo).forEach(function (posInfoPiece) {
+    console.log(posInfoPiece);
+    posInfoPiece.animate(
+      {
+        transform: `translate3d(0%, 0%, 0px)`,
+      },
+      { duration: 1200, fill: "forwards" }
+    );
+    posInfoPiece.style.animationDelay = "1500";
+  });
+};

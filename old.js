@@ -73,3 +73,29 @@ function animate() {
 }
 
 animate();
+
+
+function(t) {
+  const i = _A;
+  R.Is.def(t) && "n0" === t.target.id && "out" === i.mode && (location.href = "/"), i.mode = "out", this.gMax();
+  const s = i.data.modeOut();
+  this.pSet(this.pTarg, s), this.color.targ = this.colorBase, i.nav.color({
+    default: !0
+  }), i.pgn.up(), i.fx.title({
+    a: "hide",
+    d: 500,
+    delay: 0,
+    r: !1
+  }), i.fx.info({
+    a: "hide",
+    d: 500,
+    delay: 0
+  }), i.fx.explore({
+    a: "hide",
+    d: 500,
+    delay: 0
+  }), i.pgnX.hideCurr({
+    r: !1,
+    out: !0
+  })
+}
