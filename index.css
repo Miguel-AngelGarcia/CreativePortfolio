@@ -13,12 +13,35 @@
 
 html {
   overscroll-behavior-x: none;
+  font-family: "Staatliches", cursive;
 }
 
 #myCanvas {
   top: 0;
   height: 100%;
 }
+
+/*
+#background-color-div {
+  will-change: background;
+  animation-duration: 0.45s;
+  animation-delay: 0.2s;
+  animation-name: color-in;
+  animation-timing-function: (cubic-bezier(0.53, 0.14, 0.63, 0.94));
+}
+
+@keyframes color-in {
+  0% {
+    opacity: 0;
+    filter: brightness(10) saturate(0);
+  }
+
+  100% {
+    opacity: 1;
+
+    filter: brightness(1) saturate(1);
+  }
+} */
 
 body {
   top: 0;
@@ -46,16 +69,21 @@ ul {
   width: 100%;
   overflow: hidden;
   user-select: none;
+  /*transition: color 500ms cubic-bezier(0.25, 0.46, 0.45, 0.94);*/
 }
 
 #personNameButton {
   position: absolute;
   top: 40px;
   left: 40px;
+  font-size: 50px;
+  line-height: 50px;
+  letter-spacing: -0.1em;
 }
 
 #personNameButton > span,
-.about {
+.about,
+.close {
   overflow: hidden;
 }
 
@@ -64,39 +92,70 @@ ul {
   will-change: color, transform;
   transform: translate3d(-110%, 0, 0);
 }
+/*ORIGINAL
+#personNameButton span span {
+  display: block;
+  will-change: color, transform;
+  transform: translate3d(-110%, 0, 0);
+}*/
 
-.about {
+#personNameButton span {
+  will-change: color, transform;
+}
+
+.about,
+.close {
   position: absolute;
   top: 40px;
   right: 40px;
 }
 
 #personNameButton > span,
-.about a {
+.about a,
+.close a {
   pointer-events: none;
 }
 
 #personNameButton span span,
 #about-0,
 .position {
-  transition: color 500ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: color 800ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+#personNameButton span {
+  transition: color 800ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 #about-0,
 .position {
   will-change: transform, color;
+  font-size: 20px;
+  line-height: 20px;
 }
 
 #about-1 {
   will-change: transform;
+  font-size: 20px;
+  line-height: 20px;
+}
+
+#close-1 {
+  will-change: transform;
+  font-size: 20px;
+  line-height: 20px;
+}
+
+a {
+  display: block;
+  text-decoration: none;
 }
 
 #position {
   position: absolute;
   bottom: 40px;
   left: 40px;
-  font-size: 10px;
-  line-height: 10px;
+  font-size: 20px;
+  line-height: 20px;
 }
 
 #position,
@@ -105,6 +164,7 @@ ul {
 }
 
 .about a,
+.close a,
 .position {
   transform: translate3d(0, 101%, 0);
 }
@@ -212,7 +272,8 @@ pgn > div {
   left: 0;
   width: 100%;
 }
-.line {
+.line,
+.line-about {
   bottom: 8px;
   height: 2px;
   pointer-events: none;
@@ -227,6 +288,19 @@ pgn > div {
 }
 .line div:first-child {
   transition: background 500ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.line-about div:last-child {
+  transition: background 800ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.line-about div:first-child {
+  transition: background 800ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.line-about div {
+  top: 0;
+  height: 100%;
+  will-change: transform, background;
 }
 
 .explore-line,
@@ -377,20 +451,6 @@ pgn > div {
   filter: grayscale(100%);
 }
 
-/*
-#picture-group-slider > .image:nth-child(n) {
-  aspect-ratio: 5 / 7;
-  height: 350px;
-  width: auto;
-}
-*/
-/*
-.image .chosen .selected {
-  aspect-ratio: 5 / 7;
-  height: 350px;
-  width: auto;
-}*/
-
 .picture-group-slider > .chosen {
   animation-duration: 1s;
   animation-delay: 0s;
@@ -400,7 +460,7 @@ pgn > div {
   /*the animation makles it look like it moves in when loading*/
   height: 60vh;
   width: calc(60vh * (5 / 7));
-  transform: translate(0%, -10vh);
+  /*transform: translate(0%, -10vh);*/
 }
 
 .picture-group-slider > .scroll-on-chosen {
@@ -569,7 +629,7 @@ https://stackoverflow.com/questions/31713468/css-blur-filter-performance
 
 .animate .fade {
   animation-name: animate-fade;
-  animation-timing-function: ease;
+  /*animation-timing-function: ease;*/
 }
 
 @keyframes animate-glow {
@@ -657,4 +717,8 @@ https://stackoverflow.com/questions/31713468/css-blur-filter-performance
     transform: scale(0, 1) translate3d(0%, -101%, 0px);
     filter: brightness(1) saturate(0);
   }
+}
+
+.hidden {
+  display: none;
 }

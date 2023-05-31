@@ -99,3 +99,15 @@ function(t) {
     out: !0
   })
 }
+
+
+
+
+function(t) {
+  const i = "mouseenter" === t.type ? "arrow" : "cross";
+  this.morph({
+    d: 700,
+    e: "o5",
+    shape: i
+  })
+}
