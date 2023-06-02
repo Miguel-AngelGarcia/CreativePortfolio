@@ -70,6 +70,8 @@ ul {
   overflow: hidden;
   user-select: none;
   /*transition: color 500ms cubic-bezier(0.25, 0.46, 0.45, 0.94);*/
+  will-change: transform, background;
+  transition: background 1000ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 #personNameButton {
@@ -129,8 +131,8 @@ ul {
 #about-0,
 .position {
   will-change: transform, color;
-  font-size: 20px;
-  line-height: 20px;
+  font-size: 12px;
+  line-height: 12px;
 }
 
 #about-1 {
@@ -141,8 +143,8 @@ ul {
 
 #close-1 {
   will-change: transform;
-  font-size: 20px;
-  line-height: 20px;
+  font-size: 12px;
+  line-height: 12px;
 }
 
 a {
@@ -331,6 +333,7 @@ pgn > div {
   width: 14px;
   height: 14px;
   overflow: hidden;
+  line-height: 0px;
 }
 #p-s div,
 .explore-line div {
@@ -541,6 +544,11 @@ https://stackoverflow.com/questions/31713468/css-blur-filter-performance
   .title-top-row {
     top: calc(50% - 33.125vh);
   }
+
+  .title-top-row {
+    top: calc(50% - 33.125vh);
+  }
+
   .title-bottom-row {
     top: calc(50% - 5vh);
   }
@@ -721,4 +729,33 @@ https://stackoverflow.com/questions/31713468/css-blur-filter-performance
 
 .hidden {
   display: none;
+}
+
+@media screen and (max-width: 1250px) {
+  .information-left {
+    display: none;
+  }
+  .information-right {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 450px) {
+  #slider-container {
+    display: none;
+  }
+
+  .stuff {
+    display: none;
+  }
+
+  #app {
+    min-width: 185px;
+  }
+}
+
+@media screen and (max-width: 250px) {
+  .about {
+    display: none;
+  }
 }

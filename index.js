@@ -12,13 +12,13 @@ const posBottomLeft = document.getElementsByClassName("position");
 const slider = document.querySelector(".picture-group-slider");
 const sliderContainer = document.getElementById("slider-container");
 
-let currTitle = "title-x";
-let currIndex = null;
-let currFirstColor = "rgb(186, 196, 184)";
-let currSecColor = "#161515";
-
 const defaultFirstColor = "rgb(186, 196, 184)";
 const defaultSecColor = "#161515";
+
+let currTitle = "title-x";
+let currIndex = null;
+let currFirstColor = defaultFirstColor;
+let currSecColor = defaultSecColor;
 
 slider.dataset.percentage = "0";
 
@@ -37,16 +37,16 @@ const newImageGap = windowHeight * 0.12;
 const picNum = pictures.length;
 //when small
 const slideWidth = imageWidthStart * picNum + imageGapStart * (picNum - 1);
-console.log(imageWidthLarge);
 
 //whole thing - 1 image margin to matche n-1 gaps between n images
 const slideWidthLarge = imageWidthLarge * picNum + newImageGap * (picNum - 1);
-console.log("large", slideWidthLarge);
+
 const leftMax = -(slideWidth / 2);
 const rightMax = slideWidth / 2;
 
 let pictureSelected = false;
 let pictureSelectedImage = null;
+let selectedPicLineItem = null;
 
 //Percent per 1 pixel moves
 const percentPerPixel = (1 / parseFloat(slideWidth)) * 100;
@@ -68,16 +68,29 @@ function changeColor(changeToFirstColor, changeToSecColor) {
 
   //changes about & close color
   aboutBtn.style.color = changeToFirstColor;
-  console.log("abt", abtCloseLines);
 
   Array.from(abtCloseLines).forEach(function (abtCloseLine) {
-    console.log("inner", abtCloseLine.children);
     Array.from(abtCloseLine.children).forEach(function (line) {
-      console.log("line", line);
       line.style.backgroundColor = changeToFirstColor;
     });
   });
   closeBtn.style.color = changeToFirstColor;
+}
+
+function emergencyRowLayout(currentRow) {
+  let widthToUse = window.innerWidth;
+  let count = currentRow.length + 1;
+  Array.from(currentRow).forEach(function (currLetter, clIndex) {
+    let funcThang = widthToUse / (count + 1);
+    // 500 - 100 * abs(0 - 5) - letterWidth/2
+
+    const funcLocation =
+      widthToUse -
+      funcThang * Math.abs(clIndex - count) -
+      parseFloat(currLetter.clientWidth) / 2;
+
+    currLetter.style.transform = `translate3d(${funcLocation}px, 0%, 0px)`;
+  });
 }
 /*
 console.log(homeX);
@@ -267,8 +280,6 @@ for (const image of slider.getElementsByClassName("image")) {
   imageGap = windowHeight * 0.02;
   imageWidth = windowHeight * 0.15;
 
-  console.log(imageWidth);
-
   const posValueX = homeX + testI * (imageWidth + imageGap);
   image.dataset.posXStart = posValueX;
   image.dataset.posX = posValueX;
@@ -291,28 +302,30 @@ function centerImage(clickEvent, currPicSent) {
   let position = parseFloat(currPicSent.dataset.posX);
   //let endX = parseFloat(position) + imageWidth;
   let endX = parseFloat(position) + scaleWidth;
-  console.log("startX", position, endX);
-  console.log("midpoint", (position + endX) / 2);
-  console.log("prev%", parseFloat(slider.dataset.prevPercentage));
 
   let poseScale = position * scaleHeight;
   let posEndX = endX * scaleWidth;
 
-  console.log("sh", scaleHeight, "sw", scaleWidth);
-
   //let deltaMiddle = (position + endX) / 2 - homeX; //ORIGINAL
   let deltaMiddle = position + scaleWidth / 2 - homeX;
-
+  /*
+  console.log("startX", position, endX);
+  console.log("midpoint", (position + endX) / 2);
+  console.log("prev%", parseFloat(slider.dataset.prevPercentage));
   console.log("deltaMiddle", deltaMiddle);
+  */
   //const usingPercentage = deltaMiddle * percentPerPixel * -1; //ORIGINAL
   const usingPercentage = deltaMiddle * percentPerPixelLarge * -1;
-  console.log("using", usingPercentage);
+
   const nextPercentageRaw =
     parseFloat(slider.dataset.prevPercentage) + usingPercentage;
-  console.log(nextPercentageRaw);
-  const nextPercentageRefined = Math.max(Math.min(nextPercentageRaw, 0), -100);
 
+  const nextPercentageRefined = Math.max(Math.min(nextPercentageRaw, 0), -100);
+  /*
+  console.log("using", usingPercentage);
   console.log("middle%", nextPercentageRefined);
+  console.log(nextPercentageRaw);
+  */
 
   slider.dataset.percentage = nextPercentageRefined;
   //currPercentage +
@@ -353,6 +366,9 @@ for (let i = 0; i < pictures.length; i++) {
     if (pictureSelected) {
       pictureSelectedImage.classList.remove("selected-pic");
 
+      //MOVE THIS IN GOOD SPOT
+      //selectedPicLineItem.style.display = "none";
+
       /*
       let leftPicIndex = currIndex - 1;
       let rightPicIndex = currIndex + 1;
@@ -388,6 +404,7 @@ for (let i = 0; i < pictures.length; i++) {
     const newPic = document.getElementById(`title-${i}`);
     newPic.style.display = "block";
 
+    /*
     if (isNaN(newLeftPicIndex) === false && newLeftPicIndex >= 0) {
       const newLeftPic = document.getElementById(`title-${newLeftPicIndex}`);
       if (newLeftPic) {
@@ -404,6 +421,7 @@ for (let i = 0; i < pictures.length; i++) {
         newRightPic.style.display = "block";
       }
     }
+    */
 
     //pictures[i].classList.add("selected");
 
@@ -478,6 +496,71 @@ function getText(titleID) {
     //curr.style.animationDelay = `${delay}s`;
     curr.style.animationDelay = `${0.3}s`;
     curr.classList.add("glow", "animate");
+  }
+
+  //Moving text to be responsive, like the row. not the letters
+  const rowRow = document
+    .getElementById(`${titleID}`)
+    .getElementsByClassName("title");
+  const topRow = rowRow[0].children;
+  const bottomRow = rowRow[1].children;
+  console.log("actual row of top", bottomRow);
+
+  const pageWidth = window.innerWidth;
+
+  for (let tX = 0; tX < topRow.length; tX++) {
+    let currTItem = topRow[tX];
+    let thang = homeX / (topRow.length + 1);
+
+    if (parseFloat(thang) < parseFloat(currTItem.clientWidth / 2)) {
+      emergencyRowLayout(topRow);
+      break;
+    }
+
+    const locationTop =
+      homeX -
+      thang * Math.abs(tX - topRow.length) -
+      parseFloat(currTItem.clientWidth) / 2;
+    currTItem.style.transform = `translate3d(${locationTop}px, 0%, 0px)`;
+  }
+
+  //using a for loop so we can use the break keyword in case our letter is too large for screen
+  //using the code below in emergencyRowLayout()
+  /*
+  Array.from(bottomRow).forEach(function (letterXBot, lxbIndex) {
+    // absolute of 0 - 3 = 3. perfect bc last is 0
+    //width - (letter size * (absValue(index - letter.length))
+
+    let thang = homeX / (bottomRow.length + 1);
+
+    if (parseFloat(thang) < parseFloat(letterXBot.clientWidth / 2)) {
+      emergencyRowLayout(bottomRow);
+      break;
+    }
+
+    const locationBot =
+      homeX + thang * (lxbIndex + 1) - parseFloat(letterXBot.clientWidth) / 2;
+
+
+    letterXBot.style.transform = `translate3d(${locationBot}px, 0%, 0px)`;
+  }); */
+
+  for (let bX = 0; bX < bottomRow.length; bX++) {
+    let currBItem = bottomRow[bX];
+    // absolute of 0 - 3 = 3. perfect bc last is 0
+    //width - (letter size * (absValue(index - letter.length))
+
+    let thang = homeX / (bottomRow.length + 1);
+
+    if (parseFloat(thang) < parseFloat(currBItem.clientWidth / 2)) {
+      emergencyRowLayout(bottomRow);
+      break;
+    }
+
+    const locationBot =
+      homeX + thang * (bX + 1) - parseFloat(currBItem.clientWidth) / 2;
+
+    currBItem.style.transform = `translate3d(${locationBot}px, 0%, 0px)`;
   }
 
   /*Lowering delay on entering title text to match 
@@ -701,29 +784,47 @@ window.onload = (event) => {
   aboutBtn.style.pointerEvents = "all";
 };
 
+//NEED TO FIX THIS CLOSE THANG
+
 aboutBtn.addEventListener("click", function (e) {
   console.log(e.target);
   aboutBtn.animate(
     {
       transform: `translate3d(0%, -110%, 0px)`,
+      color: currSecColor,
     },
-    { duration: 1200, fill: "forwards" }
+    { duration: 600, fill: "forwards" }
   );
+
+  aboutBtn.style.pointerEvents = "none";
 
   closeBtn.animate(
     {
       transform: `translate3d(0%, 0%, 0px)`,
+      color: currFirstColor,
     },
     { duration: 1200, fill: "forwards" }
   );
+
+  closeBtn.style.pointerEvents = "all";
 });
 
 closeBtn.addEventListener("click", function (e) {
+  /*
   aboutBtn.animate(
     {
-      transform: `translate3d(0%, -110%, 0px)`,
+      transform: `translate3d(0%, 0%, 0px)`,
+      color: currFirstColor,
     },
     { duration: 1200, fill: "forwards" }
+  ); */
+
+  closeBtn.animate(
+    {
+      transform: `translate3d(0%, -110%, 0px)`,
+      color: currSecColor,
+    },
+    { duration: 600, fill: "forwards" }
   );
 });
 
