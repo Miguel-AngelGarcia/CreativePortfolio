@@ -526,6 +526,30 @@ pgn > div {
 .selected-pic {
   filter: none;
 }
+
+.picture-group-slider > .explore-action {
+  animation-duration: 1s;
+  animation-delay: 0s;
+  animation-name: explore-action;
+  animation-timing-function: (cubic-bezier(0.94, 0.63, 0.14, 0.53));
+  animation-fill-mode: forwards;
+
+  /*
+  height: 40vh;
+  width: 15vh;
+  transform: translate(0%, 0vh);
+  */
+}
+
+@keyframes explore-action {
+  0% {
+    transform: translate(0%, -10vh);
+  }
+
+  100% {
+    transform: translate(0%, -91vh);
+  }
+}
 /*
 rules such as transform: translateZ(0); inform the browser to transfer work to the GPU if 
 possible, which takes a load off the CPU – Felipe

@@ -123,6 +123,7 @@ sliderContainer.addEventListener("wheel", function (e) {
     slider.classList.remove("selected");
     slider.classList.add("unselected");
     pictureSelected = false;
+    pictureSelectedImage = null;
 
     putTextAway(currTitle, currIndex);
   }
@@ -248,17 +249,50 @@ window.onmousemove = (e) => {
   }
 };
 
-window.onmouseup = () => {
+window.onmouseup = (e) => {
   slider.dataset.mouseDownAt = 0;
   slider.dataset.prevPercentage = slider.dataset.percentage;
+
+  console.log(e.toElement.nodeName);
 
   //when pic is selected AFTER one pic is in forus
   //we want to center second image, and grey out first + rest
   //keep 12vh gap
-  if (pictureSelected) {
-    //pictureSelected = false;
+
+  if (pictureSelected && e.target === pictureSelectedImage) {
+    return;
+  }
+
+  //if image is selected (large image in focus) and another image is clicked, put title text away
+  if (pictureSelected && e.toElement.nodeName === "IMG") {
     putTextAway(currTitle, currIndex);
   }
+
+  //if click target NOT already selected image, put text away
+  //also move slider back to original position
+  if (pictureSelected && e.toElement.nodeName !== "IMG") {
+    changeColor(defaultFirstColor, defaultSecColor);
+    putTextAway(currTitle, currIndex);
+
+    Array.from(pictures).forEach(function (picture, picIndex) {
+      picture.classList.remove("chosen");
+      picture.classList.add("scroll-on-chosen");
+    });
+    pictureSelectedImage.classList.remove("selected-pic");
+    slider.classList.remove("selected");
+    slider.classList.add("unselected");
+    pictureSelected = false;
+    pictureSelectedImage = null;
+    //pictureSelectedImage.classList.remove("selected-pic");
+  }
+
+  /*
+  if (pictureSelected) {
+    //pictureSelected = false;
+    console.log("mouseup");
+    putTextAway(currTitle, currIndex);
+  }
+  */
 };
 
 const hiddenElements = document.querySelectorAll(".hidden");
@@ -363,6 +397,9 @@ for (let i = 0; i < pictures.length; i++) {
 
     currPic = pictures[i];
 
+    //do nothing if same pic is selected
+    if (currPic === pictureSelectedImage) return;
+
     if (pictureSelected) {
       pictureSelectedImage.classList.remove("selected-pic");
 
@@ -389,6 +426,7 @@ for (let i = 0; i < pictures.length; i++) {
       */
     }
 
+    //sets selected picture to the pic in question
     pictureSelectedImage = currPic;
 
     currFirstColor = currPic.dataset.firstColor;
@@ -401,8 +439,8 @@ for (let i = 0; i < pictures.length; i++) {
 
     console.log("left", newLeftPicIndex, "right", newRightPicIndex);
 
-    const newPic = document.getElementById(`title-${i}`);
-    newPic.style.display = "block";
+    const newPicText = document.getElementById(`title-${i}`);
+    newPicText.style.display = "block";
 
     /*
     if (isNaN(newLeftPicIndex) === false && newLeftPicIndex >= 0) {
@@ -445,6 +483,14 @@ for (let i = 0; i < pictures.length; i++) {
     pictureSelected = true;
     slider.classList.add("selected");
     slider.classList.remove("unselected");
+
+    const exploreWord = document.getElementsByClassName("line-w")[i];
+    console.log("eword", exploreWord);
+    exploreWord.style.pointerEvents = "auto";
+    exploreWord.style.cursor = "pointer";
+    exploreWord.addEventListener("click", function () {
+      exploreClick(e, currIndex);
+    });
 
     //set new X positions
     newPosX(scaleWidth, newImageGap);
@@ -622,6 +668,8 @@ function getText(titleID) {
     );
     exploreItem.animationDelay = `${delay}s`;
   });
+
+  //eTop.addEventListener("click", exploreClick(e));
 }
 
 function putTextAway(currTitle) {
@@ -835,3 +883,17 @@ function end(t) {
   const i = "mouseEnter" === t.type ? console.log("in") : console.log("out");
 }
 */
+
+//will move all other photos (not selected) up and off screen
+function exploreClick(e, index) {
+  console.log("e", e);
+  console.log(index);
+
+  Array.from(pictures).forEach(function (picture, pIndex) {
+    if (pIndex !== index) {
+      console.log("pic", picture, "index", pIndex);
+      //picture.style.translate = "translate3d(0%, -100%, 0px)";
+      picture.classList.add("explore-action");
+    }
+  });
+}
