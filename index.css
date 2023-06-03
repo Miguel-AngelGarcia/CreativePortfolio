@@ -217,6 +217,11 @@ pgn > div {
   font-size: 37.5vh;
 }
 
+.title {
+  width: calc(100vw - 80px);
+  left: 40px;
+}
+
 .title-top-row {
   top: calc(50% - 33.125vh);
 }
@@ -547,7 +552,7 @@ pgn > div {
   }
 
   100% {
-    transform: translate(0%, -91vh);
+    transform: translate(0%, -100vh);
   }
 }
 /*

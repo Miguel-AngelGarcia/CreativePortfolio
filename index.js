@@ -48,6 +48,8 @@ let pictureSelected = false;
 let pictureSelectedImage = null;
 let selectedPicLineItem = null;
 
+let exploreLock = false;
+
 //Percent per 1 pixel moves
 const percentPerPixel = (1 / parseFloat(slideWidth)) * 100;
 
@@ -111,6 +113,9 @@ window.onmousedown = (e) => {
 
 sliderContainer.addEventListener("wheel", function (e) {
   slider.dataset.mouseScrollAt = e.clientX;
+
+  //if user click on "explore," can only click exit to go back
+  if (exploreLock) return;
 
   if (pictureSelected) {
     changeColor(defaultFirstColor, defaultSecColor);
@@ -219,8 +224,29 @@ sliderContainer.addEventListener(
 */
 window.onmousemove = (e) => {
   /*do nothing unless click down occurs*/
-
   if (slider.dataset.mouseDownAt === "0") return;
+  /*do nothing if explore is clicked. dont want pic to move*/
+  if (exploreLock) return;
+
+  /* NOTICED pictures pop on and aut for some reason
+  if (pictureSelected) {
+    changeColor(defaultFirstColor, defaultSecColor);
+
+    Array.from(pictures).forEach(function (picture, picIndex) {
+      picture.classList.remove("chosen");
+      picture.classList.add("scroll-on-chosen");
+    });
+    pictureSelectedImage.classList.remove("selected-pic");
+    slider.classList.remove("selected");
+    slider.classList.add("unselected");
+    pictureSelected = false;
+    pictureSelectedImage = null;
+
+    putTextAway(currTitle, currIndex);
+    return;
+  }
+  */
+
   const mouseDelta = parseFloat(slider.dataset.mouseDownAt) - e.clientX;
 
   const maxDelta = window.innerWidth / 2; // why? we start at 50%
@@ -249,6 +275,9 @@ window.onmousemove = (e) => {
   }
 };
 
+// Do we need to fix track logic again?
+//MAybe add a last xPos?
+
 window.onmouseup = (e) => {
   slider.dataset.mouseDownAt = 0;
   slider.dataset.prevPercentage = slider.dataset.percentage;
@@ -270,6 +299,9 @@ window.onmouseup = (e) => {
 
   //if click target NOT already selected image, put text away
   //also move slider back to original position
+  // MAKE A RESET TRACK FUNCTION?
+
+  /* ITS OK TO CLICK. ONLY a wheel scroll will reset page
   if (pictureSelected && e.toElement.nodeName !== "IMG") {
     changeColor(defaultFirstColor, defaultSecColor);
     putTextAway(currTitle, currIndex);
@@ -285,6 +317,7 @@ window.onmouseup = (e) => {
     pictureSelectedImage = null;
     //pictureSelectedImage.classList.remove("selected-pic");
   }
+  */
 
   /*
   if (pictureSelected) {
@@ -490,6 +523,15 @@ for (let i = 0; i < pictures.length; i++) {
     exploreWord.style.cursor = "pointer";
     exploreWord.addEventListener("click", function () {
       exploreClick(e, currIndex);
+
+      const rowRow = document
+        .getElementById(`${titleName}`)
+        .getElementsByClassName("title");
+      const topRow = rowRow[0].children;
+      const bottomRow = rowRow[1].children;
+
+      exploreTextLeft(topRow, 0);
+      exploreTextLeft(bottomRow, 200);
     });
 
     //set new X positions
@@ -556,8 +598,12 @@ function getText(titleID) {
 
   for (let tX = 0; tX < topRow.length; tX++) {
     let currTItem = topRow[tX];
+
+    // # if slots each row has per half
     let thang = homeX / (topRow.length + 1);
 
+    //if letter size exceeds slot size, Letts will go across entire width, not half
+    //-> |[T][O][P]|       |
     if (parseFloat(thang) < parseFloat(currTItem.clientWidth / 2)) {
       emergencyRowLayout(topRow);
       break;
@@ -886,14 +932,47 @@ function end(t) {
 
 //will move all other photos (not selected) up and off screen
 function exploreClick(e, index) {
-  console.log("e", e);
-  console.log(index);
+  exploreLock = true;
 
   Array.from(pictures).forEach(function (picture, pIndex) {
     if (pIndex !== index) {
-      console.log("pic", picture, "index", pIndex);
       //picture.style.translate = "translate3d(0%, -100%, 0px)";
       picture.classList.add("explore-action");
     }
   });
+}
+
+function exploreTextLeft(rowOfLetters, constant) {
+  for (let rX = 0; rX < rowOfLetters.length; rX++) {
+    let rItem = rowOfLetters[rX];
+
+    // # if slots each row has per half
+    let thang = homeX / (rowOfLetters.length + 1);
+
+    //if letter size exceeds slot size, Letts will go across entire width, not half
+    //-> |[T][O][P]|       |
+
+    /*
+    if (parseFloat(thang) < parseFloat(rItem.clientWidth / 2)) {
+      emergencyRowLayout(topRow);
+      break;
+    }
+    */
+    //40 is the start
+    const locationTop = 0 + (rItem.clientHeight / 2) * rX;
+    console.log(rItem.children);
+    console.log(locationTop, rItem.clientHeight, rX);
+
+    let potentialTime = rowOfLetters.length * 100 + constant;
+
+    const duration = 500 < potentialTime ? 500 : potentialTime;
+
+    rItem.animate(
+      {
+        transform: `translate3d(${locationTop}px, 0%, 0px)`,
+      },
+      { duration: duration, fill: "forwards" }
+    );
+    //rItem.style.transform = `translate3d(${locationTop}px, 0%, 0px)`;
+  }
 }
