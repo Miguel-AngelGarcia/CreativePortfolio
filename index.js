@@ -94,12 +94,7 @@ function emergencyRowLayout(currentRow) {
     currLetter.style.transform = `translate3d(${funcLocation}px, 0%, 0px)`;
   });
 }
-/*
-console.log(homeX);
-console.log(slideWidth);
-console.log(percentPerPixel);
-console.log(percentPerPixelLarge);
-*/
+
 let scroll = 0;
 let scrolly = Math.max(Math.min(rightMax, scroll), leftMax);
 let timer = null;
@@ -131,6 +126,8 @@ sliderContainer.addEventListener("wheel", function (e) {
     pictureSelectedImage = null;
 
     putTextAway(currTitle, currIndex);
+    console.log("slideEventListener");
+    removeExploreClick();
   }
 
   let rangedScroll = scrolly;
@@ -224,12 +221,28 @@ sliderContainer.addEventListener(
 */
 window.onmousemove = (e) => {
   /*do nothing unless click down occurs*/
+
   if (slider.dataset.mouseDownAt === "0") return;
   /*do nothing if explore is clicked. dont want pic to move*/
   if (exploreLock) return;
 
-  /* NOTICED pictures pop on and aut for some reason
-  if (pictureSelected) {
+  // if (pictureSelec ted) return;
+
+  /*
+  bug workaround
+  after clicking on image, if you click on "explore" text will not be put away
+  instead, "exploreClick" will run
+  added this because if user clicked 'explore' while image was centering, 
+  images would leave screen but would return clicked image to non-centered size
+  */
+  if (pictureSelected && e.toElement.nodeName == "DIV") {
+    return;
+  }
+
+  // NOTICED pictures pop on and aut for some reason
+  //move this to mouseup? if delta x > 1?
+  // IF NOT EXPLORE
+  if (pictureSelected && e.toElement.nodeName !== "IMG") {
     changeColor(defaultFirstColor, defaultSecColor);
 
     Array.from(pictures).forEach(function (picture, picIndex) {
@@ -243,9 +256,9 @@ window.onmousemove = (e) => {
     pictureSelectedImage = null;
 
     putTextAway(currTitle, currIndex);
+    removeExploreClick();
     return;
   }
-  */
 
   const mouseDelta = parseFloat(slider.dataset.mouseDownAt) - e.clientX;
 
@@ -295,6 +308,7 @@ window.onmouseup = (e) => {
   //if image is selected (large image in focus) and another image is clicked, put title text away
   if (pictureSelected && e.toElement.nodeName === "IMG") {
     putTextAway(currTitle, currIndex);
+    console.log("onmouseup");
   }
 
   //if click target NOT already selected image, put text away
@@ -388,11 +402,6 @@ function centerImage(clickEvent, currPicSent) {
     parseFloat(slider.dataset.prevPercentage) + usingPercentage;
 
   const nextPercentageRefined = Math.max(Math.min(nextPercentageRaw, 0), -100);
-  /*
-  console.log("using", usingPercentage);
-  console.log("middle%", nextPercentageRefined);
-  console.log(nextPercentageRaw);
-  */
 
   slider.dataset.percentage = nextPercentageRefined;
   //currPercentage +
@@ -426,9 +435,9 @@ function newPosX(newWidth, newGap) {
 //PICTURE CLICK EVENT LISTENER
 for (let i = 0; i < pictures.length; i++) {
   pictures[i].addEventListener("click", function (e) {
-    console.log("click", i);
-
     currPic = pictures[i];
+
+    console.log("click", i, currPic);
 
     //do nothing if same pic is selected
     if (currPic === pictureSelectedImage) return;
@@ -458,9 +467,11 @@ for (let i = 0; i < pictures.length; i++) {
       }
       */
     }
+    pictureSelected = true;
 
     //sets selected picture to the pic in question
     pictureSelectedImage = currPic;
+    console.log("lastPic", pictureSelectedImage);
 
     currFirstColor = currPic.dataset.firstColor;
     currSecColor = currPic.dataset.secColor;
@@ -503,19 +514,30 @@ for (let i = 0; i < pictures.length; i++) {
     currTitle = titleName;
     currIndex = i;
 
-    getText(titleName, i);
+    //getText(titleName, i);
 
     const scaleHeight = windowHeight * 0.6;
     const scaleWidth = scaleHeight * (5 / 7);
 
+    newPosX(scaleWidth, newImageGap);
+
+    centerImage(e, currPic, i);
+    getText(titleName, i);
     //currPic.classList.add("chosen");
     Array.from(pictures).forEach(function (picture) {
       picture.classList.add("chosen");
       picture.classList.remove("scroll-on-chosen");
     });
-    pictureSelected = true;
+
     slider.classList.add("selected");
     slider.classList.remove("unselected");
+
+    //set new X positions
+    /*
+    newPosX(scaleWidth, newImageGap);
+
+    centerImage(e, currPic, i);
+    */
 
     const exploreWord = document.getElementsByClassName("line-w")[i];
     //console.log("eword", exploreWord);
@@ -533,11 +555,6 @@ for (let i = 0; i < pictures.length; i++) {
       exploreTextLeft(topRow, 0);
       exploreTextLeft(bottomRow, 200);
     });
-
-    //set new X positions
-    newPosX(scaleWidth, newImageGap);
-
-    centerImage(e, currPic, i);
   });
 }
 
@@ -703,14 +720,13 @@ function getText(titleID) {
   const exploreArray = [eTop, eMiddle, eBottom];
 
   Array.from(exploreArray).forEach(function (exploreItem, eIndex) {
-    let delay = eIndex * 200 + 200;
+    let delay = eIndex * 200 + 800;
     delay = delay * 0.001;
-
     exploreItem.animate(
       {
         transform: `translate3d(0%, 0%, 0px)`, //OLD<- `translate(${nextPercenRefined}%, -50%)`
       },
-      { duration: 1200, fill: "forwards" }
+      { duration: 800, fill: "forwards" }
     );
     exploreItem.animationDelay = `${delay}s`;
   });
@@ -940,6 +956,16 @@ function exploreClick(e, index) {
       //picture.style.translate = "translate3d(0%, -100%, 0px)";
       picture.classList.add("explore-action");
     }
+  });
+}
+
+function removeExploreClick() {
+  exploreLock = false;
+
+  Array.from(pictures).forEach(function (picture, pIndex) {
+    console.log("moving index pic", pIndex);
+    //picture.style.translate = "translate3d(0%, -100%, 0px)";
+    picture.classList.remove("explore-action");
   });
 }
 
