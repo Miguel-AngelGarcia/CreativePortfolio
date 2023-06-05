@@ -282,7 +282,7 @@ window.onmouseup = (e) => {
   slider.dataset.mouseDownAt = 0;
   slider.dataset.prevPercentage = slider.dataset.percentage;
 
-  console.log(e.toElement.nodeName);
+  //console.log(e.toElement.nodeName);
 
   //when pic is selected AFTER one pic is in forus
   //we want to center second image, and grey out first + rest
@@ -470,7 +470,7 @@ for (let i = 0; i < pictures.length; i++) {
     let newLeftPicIndex = i - 1;
     let newRightPicIndex = i + 1;
 
-    console.log("left", newLeftPicIndex, "right", newRightPicIndex);
+    //console.log("left", newLeftPicIndex, "right", newRightPicIndex);
 
     const newPicText = document.getElementById(`title-${i}`);
     newPicText.style.display = "block";
@@ -518,7 +518,7 @@ for (let i = 0; i < pictures.length; i++) {
     slider.classList.remove("unselected");
 
     const exploreWord = document.getElementsByClassName("line-w")[i];
-    console.log("eword", exploreWord);
+    //console.log("eword", exploreWord);
     exploreWord.style.pointerEvents = "auto";
     exploreWord.style.cursor = "pointer";
     exploreWord.addEventListener("click", function () {
@@ -592,7 +592,7 @@ function getText(titleID) {
     .getElementsByClassName("title");
   const topRow = rowRow[0].children;
   const bottomRow = rowRow[1].children;
-  console.log("actual row of top", bottomRow);
+  //.log("actual row of top", bottomRow);
 
   const pageWidth = window.innerWidth;
 
@@ -855,7 +855,7 @@ function putTextAway(currTitle) {
 
 const positionInfo = document.getElementsByClassName("position");
 window.onload = (event) => {
-  console.log(positionInfo);
+  console.log("posInfo", positionInfo);
 
   Array.from(positionInfo).forEach(function (posInfoPiece) {
     posInfoPiece.style.color = "rgb(186, 196, 184)";
@@ -881,7 +881,7 @@ window.onload = (event) => {
 //NEED TO FIX THIS CLOSE THANG
 
 aboutBtn.addEventListener("click", function (e) {
-  console.log(e.target);
+  //console.log(e.target);
   aboutBtn.animate(
     {
       transform: `translate3d(0%, -110%, 0px)`,
@@ -936,6 +936,7 @@ function exploreClick(e, index) {
 
   Array.from(pictures).forEach(function (picture, pIndex) {
     if (pIndex !== index) {
+      console.log("moving index pic", pIndex);
       //picture.style.translate = "translate3d(0%, -100%, 0px)";
       picture.classList.add("explore-action");
     }
@@ -943,36 +944,31 @@ function exploreClick(e, index) {
 }
 
 function exploreTextLeft(rowOfLetters, constant) {
+  let startPosX = 0;
+  let lastLetter = 0;
   for (let rX = 0; rX < rowOfLetters.length; rX++) {
     let rItem = rowOfLetters[rX];
 
-    // # if slots each row has per half
-    let thang = homeX / (rowOfLetters.length + 1);
+    let currLetterWidth = rItem.clientWidth - 0.0333 * 2 * windowHeight;
 
-    //if letter size exceeds slot size, Letts will go across entire width, not half
-    //-> |[T][O][P]|       |
+    const locationTopExplore = startPosX;
 
-    /*
-    if (parseFloat(thang) < parseFloat(rItem.clientWidth / 2)) {
-      emergencyRowLayout(topRow);
-      break;
-    }
-    */
-    //40 is the start
-    const locationTop = 0 + (rItem.clientHeight / 2) * rX;
-    console.log(rItem.children);
-    console.log(locationTop, rItem.clientHeight, rX);
+    //make a variable that goes into aspect ratios?
 
     let potentialTime = rowOfLetters.length * 100 + constant;
 
     const duration = 500 < potentialTime ? 500 : potentialTime;
 
+    transformString = `translate3d(${locationTopExplore}px, 0%, 0px)`;
+
     rItem.animate(
       {
-        transform: `translate3d(${locationTop}px, 0%, 0px)`,
+        transform: transformString,
       },
       { duration: duration, fill: "forwards" }
     );
-    //rItem.style.transform = `translate3d(${locationTop}px, 0%, 0px)`;
+
+    lastLetter = currLetterWidth;
+    startPosX += lastLetter;
   }
 }
