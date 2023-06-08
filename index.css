@@ -196,9 +196,25 @@ a {
   transform: translate3d(-100%, 0, 0);
 }
 
-pgn > div {
+#photos,
+#photos-line div,
+.pgn > div {
   position: absolute;
 }
+/*
+#photos-line div {
+  will-change: transform, border-color-right;
+  transition: border-color-right 1800ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+*/
+/*
+animation-duration: 1s;
+  animation-delay: 0s;
+  animation-name: slider-gap-expansion;
+  animation-timing-function: (cubic-bezier(0.94, 0.63, 0.14, 0.53));
+  animation-fill-mode: forwards;
+  transition: color 800ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+*/
 
 @media (max-width: 700px) {
   #c2d,
@@ -207,8 +223,66 @@ pgn > div {
   }
 }
 
+#photos {
+  top: 49px;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+#photos-line,
+#photos-sign {
+  overflow: hidden;
+}
+
+#photos-sign {
+  margin: 13px auto;
+  width: 14px;
+  height: 14px;
+  line-height: 0px;
+  text-align: center;
+  pointer-events: none;
+}
+
+#photos-sign div {
+  margin: 0;
+}
+
+#photos-line {
+  position: relative;
+  width: 3px;
+}
+#photos-line div {
+  left: 0;
+  width: 1px;
+  height: 100%;
+  border-right-width: 1px;
+  border-right-style: solid;
+  transform: translate3d(0, -110%, 0);
+  will-change: transform;
+}
+
+#photos-line,
+#photos-target,
 .title {
   pointer-events: none;
+}
+
+#photos-sign > div,
+#photos-target > div,
+#photos-line > div {
+  transition: color 0ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: transform 800ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+#photos-target {
+  margin-top: 4px;
+  overflow: hidden;
+}
+
+#photos-target > div {
+  transform: translate3d(0, 101%, 0);
+  will-change: transform color;
 }
 
 .title {
@@ -340,14 +414,32 @@ pgn > div {
   overflow: hidden;
   line-height: 0px;
 }
-#p-s div,
+
+.information-right div,
+.explore-word div,
+.explore-line div,
+.explore-sign div {
+  transition: transform 1200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition-delay: 0.6s;
+  will-change: transform;
+}
+
+#photos-sign div,
 .explore-line div {
   transform: translate3d(0, -110%, 0);
   will-change: transform;
 }
 
+/*
+#photos-sign div {
+  transform: translate3d(0, 110%, 0);
+  will-change: transform;
+}
+*/
+
 .explore-sign div {
   transform: translate3d(0, 0%, 0);
+  /*will-change: transform;*/
 }
 .information-left {
   position: absolute;
@@ -555,6 +647,24 @@ pgn > div {
     transform: translate(0%, -100vh);
   }
 }
+
+.picture-group-slider > .un-explore-action {
+  animation-duration: 1s;
+  animation-delay: 0s;
+  animation-name: no-explore-action;
+  animation-timing-function: (cubic-bezier(0.94, 0.63, 0.14, 0.53));
+  animation-fill-mode: forwards;
+}
+
+@keyframes no-explore-action {
+  0% {
+    transform: translate(0%, -100vh);
+  }
+
+  100% {
+    transform: translate(0%, -10vh);
+  }
+}
 /*
 rules such as transform: translateZ(0); inform the browser to transfer work to the GPU if 
 possible, which takes a load off the CPU – Felipe
@@ -659,7 +769,7 @@ https://stackoverflow.com/questions/31713468/css-blur-filter-performance
   animation-fill-mode: backwards;
 }
 
-.animate.glow {
+.glow {
   animation-name: animate-glow;
   animation-timing-function: ease;
 }
@@ -766,6 +876,24 @@ https://stackoverflow.com/questions/31713468/css-blur-filter-performance
   }
   .information-right {
     display: none;
+  }
+}
+
+@media (min-height: 870px) {
+  #photos-line {
+    margin: 11px auto 0;
+    height: 16px;
+  }
+}
+@media (min-height: 810px) and (max-height: 870px) {
+  #photos-line {
+    margin: 11px auto 0;
+    height: 1.2vh;
+  }
+}
+@media (max-height: 810px) {
+  #photos-line {
+    height: 0;
   }
 }
 

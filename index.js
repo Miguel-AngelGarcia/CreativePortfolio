@@ -19,6 +19,7 @@ let currTitle = "title-x";
 let currIndex = null;
 let currFirstColor = defaultFirstColor;
 let currSecColor = defaultSecColor;
+let oldTitle = null;
 
 slider.dataset.percentage = "0";
 
@@ -47,6 +48,8 @@ const rightMax = slideWidth / 2;
 let pictureSelected = false;
 let pictureSelectedImage = null;
 let selectedPicLineItem = null;
+
+let selectedPicRowLetters = null;
 
 let exploreLock = false;
 
@@ -127,7 +130,7 @@ sliderContainer.addEventListener("wheel", function (e) {
 
     putTextAway(currTitle, currIndex);
     console.log("slideEventListener");
-    removeExploreClick();
+    //removeExploreClick();
   }
 
   let rangedScroll = scrolly;
@@ -226,8 +229,6 @@ window.onmousemove = (e) => {
   /*do nothing if explore is clicked. dont want pic to move*/
   if (exploreLock) return;
 
-  // if (pictureSelec ted) return;
-
   /*
   bug workaround
   after clicking on image, if you click on "explore" text will not be put away
@@ -256,7 +257,7 @@ window.onmousemove = (e) => {
     pictureSelectedImage = null;
 
     putTextAway(currTitle, currIndex);
-    removeExploreClick();
+    //removeExploreClick();
     return;
   }
 
@@ -301,14 +302,16 @@ window.onmouseup = (e) => {
   //we want to center second image, and grey out first + rest
   //keep 12vh gap
 
+  console.log("is pic selected?", pictureSelected);
+
   if (pictureSelected && e.target === pictureSelectedImage) {
     return;
   }
 
   //if image is selected (large image in focus) and another image is clicked, put title text away
   if (pictureSelected && e.toElement.nodeName === "IMG") {
+    console.log("onmouseup going to putTextAway");
     putTextAway(currTitle, currIndex);
-    console.log("onmouseup");
   }
 
   //if click target NOT already selected image, put text away
@@ -366,6 +369,10 @@ for (const image of slider.getElementsByClassName("image")) {
   image.dataset.posX = posValueX;
   testI++;
 }
+
+/*
+MAKE images next to centered image zoomed in a little?
+*/
 
 function centerImage(clickEvent, currPicSent) {
   const clickX = clickEvent.clientX;
@@ -437,41 +444,30 @@ for (let i = 0; i < pictures.length; i++) {
   pictures[i].addEventListener("click", function (e) {
     currPic = pictures[i];
 
-    console.log("click", i, currPic);
+    console.log("click", i /*currPic*/);
 
     //do nothing if same pic is selected
     if (currPic === pictureSelectedImage) return;
 
     if (pictureSelected) {
+      //add grey filter back to old image
       pictureSelectedImage.classList.remove("selected-pic");
-
       //MOVE THIS IN GOOD SPOT
+      //THIS CAUSED PROBLEM
+      //NEED TO CHANGE/
+      //IFFFFF image is outisde viewport, make hidden?
       //selectedPicLineItem.style.display = "none";
 
-      /*
-      let leftPicIndex = currIndex - 1;
-      let rightPicIndex = currIndex + 1;
-
-      if (isNaN(leftPicIndex) === false && leftPicIndex >= 0) {
-        const leftPic = document.getElementById(`title-${leftPicIndex}`);
-        if (leftPic) {
-          leftPic.style.display = "none";
-        }
-      }
-
-      if (isNaN(rightPicIndex) === false && rightPicIndex <= pictures.length) {
-        const rightPic = document.getElementById(`title-${rightPicIndex}`);
-        if (rightPic) {
-          rightPic.style.display = "none";
-        }
-      }
-      */
+      oldTitle = currTitle;
+      console.log(oldTitle, currTitle);
+      //(oldTitle);
+      //console.log("puttextawat", oldTitle);
     }
     pictureSelected = true;
-
+    //console.log("lastPic", pictureSelectedImage);
     //sets selected picture to the pic in question
     pictureSelectedImage = currPic;
-    console.log("lastPic", pictureSelectedImage);
+    //console.log("currPic", pictureSelectedImage);
 
     currFirstColor = currPic.dataset.firstColor;
     currSecColor = currPic.dataset.secColor;
@@ -486,24 +482,7 @@ for (let i = 0; i < pictures.length; i++) {
     const newPicText = document.getElementById(`title-${i}`);
     newPicText.style.display = "block";
 
-    /*
-    if (isNaN(newLeftPicIndex) === false && newLeftPicIndex >= 0) {
-      const newLeftPic = document.getElementById(`title-${newLeftPicIndex}`);
-      if (newLeftPic) {
-        newLeftPic.style.display = "block";
-      }
-    }
-
-    if (
-      isNaN(newRightPicIndex) === false &&
-      newRightPicIndex <= pictures.length
-    ) {
-      const newRightPic = document.getElementById(`title-${newRightPicIndex}`);
-      if (newRightPic) {
-        newRightPic.style.display = "block";
-      }
-    }
-    */
+    selectedPicLineItem = newPicText;
 
     //pictures[i].classList.add("selected");
 
@@ -539,6 +518,16 @@ for (let i = 0; i < pictures.length; i++) {
     centerImage(e, currPic, i);
     */
 
+    /*
+    PROBLEM: sometimes clicking on explore does not move active text.
+    Instead, a previously selected image's text is moved.
+    Why is the old text called instead of current?
+
+    */
+    const rowRow = document
+      .getElementById(`${titleName}`)
+      .getElementsByClassName("title");
+
     const exploreWord = document.getElementsByClassName("line-w")[i];
     //console.log("eword", exploreWord);
     exploreWord.style.pointerEvents = "auto";
@@ -546,11 +535,10 @@ for (let i = 0; i < pictures.length; i++) {
     exploreWord.addEventListener("click", function () {
       exploreClick(e, currIndex);
 
-      const rowRow = document
-        .getElementById(`${titleName}`)
-        .getElementsByClassName("title");
-      const topRow = rowRow[0].children;
-      const bottomRow = rowRow[1].children;
+      const testRow = rowRow;
+      console.log(testRow);
+      const topRow = testRow[0].children;
+      const bottomRow = testRow[1].children;
 
       exploreTextLeft(topRow, 0);
       exploreTextLeft(bottomRow, 200);
@@ -611,6 +599,8 @@ function getText(titleID) {
   const bottomRow = rowRow[1].children;
   //.log("actual row of top", bottomRow);
 
+  selectedPicRowLetters = rowRow;
+
   const pageWidth = window.innerWidth;
 
   for (let tX = 0; tX < topRow.length; tX++) {
@@ -670,6 +660,9 @@ function getText(titleID) {
       homeX + thang * (bX + 1) - parseFloat(currBItem.clientWidth) / 2;
 
     currBItem.style.transform = `translate3d(${locationBot}px, 0%, 0px)`;
+
+    //console.log(currBItem);
+    //currBItem.dataset.origPos = `translate3d(${locationBot}px, 0%, 0px)`;
   }
 
   /*Lowering delay on entering title text to match 
@@ -707,6 +700,8 @@ function getText(titleID) {
     rightLetter.classList.add("glow");
   });
 
+  addExplore();
+  /*
   //adds 'Explore thing' to page
   const eTop = document
     .getElementById(`${titleID}`)
@@ -730,6 +725,7 @@ function getText(titleID) {
     );
     exploreItem.animationDelay = `${delay}s`;
   });
+  */
 
   //eTop.addEventListener("click", exploreClick(e));
 }
@@ -741,6 +737,8 @@ function putTextAway(currTitle) {
     .getElementById(`${currTitle}`)
     .getElementsByClassName("top-letter");
 
+  //console.log("sTopRow", sTopRow);
+
   const sBottomRow = document
     .getElementById(`${currTitle}`)
     .getElementsByClassName("bottom-letter");
@@ -748,9 +746,11 @@ function putTextAway(currTitle) {
   const leftInfo = document.getElementsByClassName("info-left-leter");
   const rightInfo = document.getElementsByClassName("info-right-letter");
 
+  /*
   for (let x = 0; x < sTopRow.length; x++) {
     //console.log(topRow[x]);
     let curr = sTopRow[x];
+    console.log(curr, "curr");
     let delay = x * 200;
     delay = delay * 0.001;
     curr.style.transform = "translate3d(101%, 0%, 0px)";
@@ -758,7 +758,8 @@ function putTextAway(currTitle) {
     curr.style.animationDelay = `${0.0}s`;
     curr.classList.remove("glow");
     curr.classList.add("fade");
-  }
+  }*/
+  removeRow(sTopRow);
 
   const bEndIndex = sBottomRow.length - 1;
   const maxTime = bEndIndex * 200;
@@ -821,13 +822,15 @@ function putTextAway(currTitle) {
     .getElementsByClassName("explore-bottom")[0];
   const exploreArray = [eTop, eMiddle, eBottom];
 
+  //removeExplore(currTitle);
+
   /* NBEED A DELAY HERE. maybe make pic to left & right both block?
   const putLi = document.getElementById(`${currTitle}`);
   putLi.style.display = "none";
 
   */
 
-  /*
+  /* REMOVED A LONG TIME AHO
   Array.from(exploreArray).forEach(function (exploreItem, eIndex) {
     console.log(exploreItem);
     let delay = eIndex * 200 + 200;
@@ -840,7 +843,7 @@ function putTextAway(currTitle) {
       { duration: 200, fill: "forwards" }
     );
     exploreItem.animationDelay = `${delay}s`;
-  }); */
+  });*/
 
   eTop.animate(
     {
@@ -908,6 +911,8 @@ aboutBtn.addEventListener("click", function (e) {
 
   aboutBtn.style.pointerEvents = "none";
 
+  removeExploreClick();
+
   closeBtn.animate(
     {
       transform: `translate3d(0%, 0%, 0px)`,
@@ -949,7 +954,7 @@ function end(t) {
 //will move all other photos (not selected) up and off screen
 function exploreClick(e, index) {
   exploreLock = true;
-
+  fillPhotosSign();
   Array.from(pictures).forEach(function (picture, pIndex) {
     if (pIndex !== index) {
       console.log("moving index pic", pIndex);
@@ -957,6 +962,8 @@ function exploreClick(e, index) {
       picture.classList.add("explore-action");
     }
   });
+
+  removeExplore(currTitle);
 }
 
 function removeExploreClick() {
@@ -965,17 +972,37 @@ function removeExploreClick() {
   Array.from(pictures).forEach(function (picture, pIndex) {
     console.log("moving index pic", pIndex);
     //picture.style.translate = "translate3d(0%, -100%, 0px)";
+
+    //picture.classList.add("un-explore-action");
     picture.classList.remove("explore-action");
+    //picture.classList.remove("un-explore-action");
+
+    /*
+    picture.animate(
+      {
+        //transform: "translate(0%, -10vh)",
+        transform: "translate(0%, -10vh)",
+      },
+      { duration: 1000, fill: "forwards" }
+    );
+    */
   });
+
+  resetText();
 }
 
 function exploreTextLeft(rowOfLetters, constant) {
   let startPosX = 0;
   let lastLetter = 0;
+
+  console.log("exploreleft", rowOfLetters);
+
   for (let rX = 0; rX < rowOfLetters.length; rX++) {
     let rItem = rowOfLetters[rX];
 
     let currLetterWidth = rItem.clientWidth - 0.0333 * 2 * windowHeight;
+
+    //console.log("item", rItem);
 
     const locationTopExplore = startPosX;
 
@@ -987,6 +1014,9 @@ function exploreTextLeft(rowOfLetters, constant) {
 
     transformString = `translate3d(${locationTopExplore}px, 0%, 0px)`;
 
+    //WHY ANIMATE?
+    //IF WE ANIMATE, HTML property does not get changed.
+    //=>we can easily grab old value to reset text back to original position
     rItem.animate(
       {
         transform: transformString,
@@ -996,5 +1026,169 @@ function exploreTextLeft(rowOfLetters, constant) {
 
     lastLetter = currLetterWidth;
     startPosX += lastLetter;
+  }
+}
+
+function resetText() {
+  const firstRow = selectedPicRowLetters[0].children;
+  const secRow = selectedPicRowLetters[1].children;
+  getOldPos(firstRow);
+  getOldPos(secRow);
+  removePhotosSign();
+}
+
+function getOldPos(givenRow) {
+  for (let bX = 0; bX < givenRow.length; bX++) {
+    let cuuItem = givenRow[bX];
+
+    let ogPos = cuuItem.style.transform;
+    transformString = ogPos;
+    console.log("cuuItem", cuuItem.style.transform);
+
+    let constant = 200;
+    let potentialTime = givenRow.length * 100 + constant;
+
+    const duration = potentialTime > 600 ? potentialTime : 600;
+
+    cuuItem.animate(
+      {
+        transform: transformString,
+      },
+      { duration: duration, fill: "forwards" }
+    );
+  }
+}
+
+const photosReturn = document.getElementById("photos");
+const photosSign = document.getElementById("photos-sign");
+const photosLine = document.getElementById("photos-line");
+const photosTarget = document.getElementById("photos-target");
+const photosX = document.getElementById("p-s-p");
+
+function fillPhotosSign() {
+  //div right under '#photos-sign' -> tranform: translate3d(0%, 0%, 0px)
+  const sign = photosSign.children[0];
+  sign.style.transform = "translate3d(0%, 0%, 0px)";
+
+  /*
+  div under '#photos-line' ->
+  style="border-right-color: rbg(PicPrimaryColor); tranform: translate3d(0 %, 0 %, 0px)"
+  */
+  const line = photosLine.children[0];
+
+  line.style.borderRightColor = currFirstColor;
+  line.style.transform = "translate3d(0%, 0%, 0px)";
+
+  /*
+  div under '#picture-target" -> "color: rbg(PicPrimaryColor); tranform: translate3d(0 %, 0 %, 0px)"
+  divs under ".line" (x2) style="background: rbg(PicPrimaryColor)"
+  */
+
+  const target = photosTarget.children[0];
+  photosTarget.getElementsByClassName("line")[0];
+  const targetDiv = target.getElementsByClassName("line")[0].children;
+
+  const photosArray = [targetDiv[1], targetDiv[0], target, line, sign];
+
+  Array.from(targetDiv).forEach(function (tDivLine) {
+    tDivLine.style.background = currFirstColor;
+  });
+
+  target.style.transform = "translate3d(0%, 0%, 0px)";
+  target.style.color = currFirstColor;
+
+  photosX.style.fill = currFirstColor;
+
+  photosReturn.style.pointerEvents = "all";
+  photosReturn.style.cursor = "pointer";
+
+  photosReturn.addEventListener("click", () => {
+    removeExploreClick();
+  });
+}
+
+function removePhotosSign() {
+  const sign = photosSign.children[0];
+  sign.style.transform = "translate3d(0%, -101%, 0px)";
+
+  const line = photosLine.children[0];
+
+  line.style.borderRightColor = currFirstColor;
+  line.style.transform = "translate3d(0%, -110%, 0px)";
+
+  const target = photosTarget.children[0];
+
+  photosTarget.getElementsByClassName("line")[0];
+  const targetDiv = target.getElementsByClassName("line")[0].children;
+
+  const photosArray = [targetDiv[1], targetDiv[0], target, line, sign];
+
+  Array.from(targetDiv).forEach(function (tDivLine) {
+    tDivLine.style.background = defaultSecColor;
+  });
+
+  target.style.transform = "translate3d(0%, 101%, 0px)";
+  target.style.color = defaultSecColor;
+
+  photosReturn.style.pointerEvents = "none";
+  photosReturn.style.cursor = "auto";
+
+  photosReturn.removeEventListener("click", () => {
+    removeExploreClick();
+  });
+}
+
+//reading material
+//https://udn.realityripple.com/docs/Web/API/Element/animate
+
+function removeExplore(givenCurrTitle) {
+  console.log("removeexplore", givenCurrTitle);
+  const eTop = document
+    .getElementById(`${givenCurrTitle}`)
+    .getElementsByClassName("explore-top")[0];
+  const eMiddle = document
+    .getElementById(`${givenCurrTitle}`)
+    .getElementsByClassName("explore-middle")[0];
+  const eBottom = document
+    .getElementById(`${givenCurrTitle}`)
+    .getElementsByClassName("explore-bottom")[0];
+
+  eTop.style.transform = "translate3d(0%, -101%, 0px)";
+  eTop.style.transitionDelay = "0s";
+  eMiddle.style.transform = "translate3d(0%, 110%, 0px)";
+  eMiddle.style.transitionDelay = "0s";
+  eBottom.style.transform = "translate3d(0%, -110%, 0px)";
+  eBottom.style.transitionDelay = "0s";
+}
+
+function addExplore() {
+  console.log("init, addExploore");
+  const eTop = document
+    .getElementById(`${currTitle}`)
+    .getElementsByClassName("explore-top")[0];
+  const eMiddle = document
+    .getElementById(`${currTitle}`)
+    .getElementsByClassName("explore-middle")[0];
+  const eBottom = document
+    .getElementById(`${currTitle}`)
+    .getElementsByClassName("explore-bottom")[0];
+
+  eTop.style.transform = "translate3d(0%, 0%, 0px)";
+  eMiddle.style.transform = "translate3d(0%, 0%, 0px)";
+  eBottom.style.transform = "translate3d(0%, 0%, 0px)";
+}
+
+function removeRow(sTopRow) {
+  for (let x = 0; x < sTopRow.length; x++) {
+    //console.log(topRow[x]);
+    let curr = sTopRow[x];
+    console.log(curr, "curr");
+    let delay = x * 200;
+    delay = delay * 0.001;
+    curr.style.transform = "translate3d(101%, 0%, 0px)";
+    //curr.style.animationDelay = `${delay}s`;
+    curr.style.animationDelay = `${0.0}s`;
+    curr.classList.remove("glow");
+    curr.classList.add("fade");
   }
 }
