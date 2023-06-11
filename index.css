@@ -419,8 +419,8 @@ animation-duration: 1s;
 .explore-word div,
 .explore-line div,
 .explore-sign div {
-  transition: transform 1200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  transition-delay: 0.6s;
+  transition: transform 600ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  /*transition-delay: 0.6s;*/
   will-change: transform;
 }
 
@@ -445,7 +445,7 @@ animation-duration: 1s;
   position: absolute;
   bottom: 47px;
   left: 50%;
-  font-size: 10px;
+  font-size: 12px;
   line-height: 12px;
   letter-spacing: 0.02em;
   transform: translateX(-100%);
@@ -472,8 +472,8 @@ animation-duration: 1s;
 .information-right {
   bottom: 48px;
   left: calc(50% + 140px);
-  font-size: 10px;
-  line-height: 10px;
+  font-size: 12px;
+  line-height: 12px;
   letter-spacing: 0.02em;
   pointer-events: none;
 }
@@ -653,7 +653,7 @@ animation-duration: 1s;
   animation-delay: 0s;
   animation-name: no-explore-action;
   animation-timing-function: (cubic-bezier(0.94, 0.63, 0.14, 0.53));
-  animation-fill-mode: forwards;
+  animation-fill-mode: forward;
 }
 
 @keyframes no-explore-action {
@@ -784,12 +784,14 @@ https://stackoverflow.com/questions/31713468/css-blur-filter-performance
     opacity: 0;
     transform: scale(0, 1);
     filter: brightness(1) saturate(0);
+    /*transform: translate3d(101%, 0%, 0px);*/
   }
 
   100% {
     opacity: 1;
     transform: scale(1, 1);
     filter: brightness(1) saturate(1);
+    /*transform: translate3d(0%, 0%, 0px);*/
   }
 }
 
@@ -798,11 +800,13 @@ https://stackoverflow.com/questions/31713468/css-blur-filter-performance
     opacity: 1;
     transform: scale(1, 1);
     filter: brightness(1) saturate(1);
+    /*transform: translate3d(0%, 0%, 0px);*/
   }
   100% {
     opacity: 1;
     transform: scale(0, 1);
     filter: brightness(1) saturate(0);
+    /*transform: translate3d(101%, 0%, 0px);*/
   }
 }
 
@@ -860,7 +864,7 @@ https://stackoverflow.com/questions/31713468/css-blur-filter-performance
     filter: brightness(1) saturate(1);
   }
   100% {
-    opacity: 1;
+    opacity: 0;
     transform: scale(0, 1) translate3d(0%, -101%, 0px);
     filter: brightness(1) saturate(0);
   }

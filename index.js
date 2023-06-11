@@ -98,6 +98,36 @@ function emergencyRowLayout(currentRow) {
   });
 }
 
+const positionInfo = document.getElementsByClassName("position");
+window.onload = (event) => {
+  console.log("posInfo", positionInfo);
+
+  Array.from(positionInfo).forEach(function (posInfoPiece) {
+    posInfoPiece.style.color = "rgb(186, 196, 184)";
+    posInfoPiece.animate(
+      {
+        transform: `translate3d(0%, 0%, 0px)`,
+      },
+      { duration: 1200, fill: "forwards" }
+    );
+    //posInfoPiece.style.animationDelay = "5500"; NOT WORKING
+  });
+
+  aboutBtn.animate(
+    {
+      transform: `translate3d(0%, 0%, 0px)`,
+    },
+    { duration: 1200, fill: "forwards" }
+  );
+
+  Array.from(pictures).forEach(function (picture) {
+    //remove the "unexplore class thing"
+    picture.classList.remove("un-explore-action");
+  });
+
+  aboutBtn.style.pointerEvents = "all";
+};
+
 let scroll = 0;
 let scrolly = Math.max(Math.min(rightMax, scroll), leftMax);
 let timer = null;
@@ -111,6 +141,8 @@ window.onmousedown = (e) => {
 
 sliderContainer.addEventListener("wheel", function (e) {
   slider.dataset.mouseScrollAt = e.clientX;
+
+  console.log(e.deltaX);
 
   //if user click on "explore," can only click exit to go back
   if (exploreLock) return;
@@ -295,6 +327,7 @@ window.onmousemove = (e) => {
 window.onmouseup = (e) => {
   slider.dataset.mouseDownAt = 0;
   slider.dataset.prevPercentage = slider.dataset.percentage;
+  console.log("target", e.target.localName);
 
   //console.log(e.toElement.nodeName);
 
@@ -309,7 +342,8 @@ window.onmouseup = (e) => {
   }
 
   //if image is selected (large image in focus) and another image is clicked, put title text away
-  if (pictureSelected && e.toElement.nodeName === "IMG") {
+  //(pictureSelected && e.toElement.nodeName === "IMG") didnt work on firefox
+  if (pictureSelected && e.target.localName === "img") {
     console.log("onmouseup going to putTextAway");
     putTextAway(currTitle, currIndex);
   }
@@ -416,7 +450,7 @@ function centerImage(clickEvent, currPicSent) {
     {
       transform: `translate(${nextPercentageRefined}%, 0%)`,
     },
-    { duration: 1000, fill: "forwards" }
+    { duration: 800, fill: "forwards" } //500 instead of 1000
   );
 
   //500 - (image.width /2)
@@ -822,7 +856,7 @@ function putTextAway(currTitle) {
     .getElementsByClassName("explore-bottom")[0];
   const exploreArray = [eTop, eMiddle, eBottom];
 
-  //removeExplore(currTitle);
+  removeExplore(currTitle);
 
   /* NBEED A DELAY HERE. maybe make pic to left & right both block?
   const putLi = document.getElementById(`${currTitle}`);
@@ -845,6 +879,7 @@ function putTextAway(currTitle) {
     exploreItem.animationDelay = `${delay}s`;
   });*/
 
+  /*
   eTop.animate(
     {
       transform: `translate3d(0%, -101%, 0px)`, //OLD<- `translate(${nextPercenRefined}%, -50%)`
@@ -865,37 +900,13 @@ function putTextAway(currTitle) {
     },
     { duration: 200, fill: "forwards" }
   );
+  */
 }
 
 //if image scrolls though middle x, it has css trnsition that goes and does not stay
 
 //Add event listener for left and right arrow keys
 //if pic selected, move one over with arrow key direction
-
-const positionInfo = document.getElementsByClassName("position");
-window.onload = (event) => {
-  console.log("posInfo", positionInfo);
-
-  Array.from(positionInfo).forEach(function (posInfoPiece) {
-    posInfoPiece.style.color = "rgb(186, 196, 184)";
-    posInfoPiece.animate(
-      {
-        transform: `translate3d(0%, 0%, 0px)`,
-      },
-      { duration: 1200, fill: "forwards" }
-    );
-    //posInfoPiece.style.animationDelay = "5500"; NOT WORKING
-  });
-
-  aboutBtn.animate(
-    {
-      transform: `translate3d(0%, 0%, 0px)`,
-    },
-    { duration: 1200, fill: "forwards" }
-  );
-
-  aboutBtn.style.pointerEvents = "all";
-};
 
 //NEED TO FIX THIS CLOSE THANG
 
@@ -959,6 +970,7 @@ function exploreClick(e, index) {
     if (pIndex !== index) {
       console.log("moving index pic", pIndex);
       //picture.style.translate = "translate3d(0%, -100%, 0px)";
+      picture.classList.remove("un-explore-action");
       picture.classList.add("explore-action");
     }
   });
@@ -970,22 +982,25 @@ function removeExploreClick() {
   exploreLock = false;
 
   Array.from(pictures).forEach(function (picture, pIndex) {
-    console.log("moving index pic", pIndex);
-    //picture.style.translate = "translate3d(0%, -100%, 0px)";
+    if (picture !== pictureSelectedImage) {
+      console.log("moving index pic", pIndex);
+      //picture.style.translate = "translate3d(0%, -100%, 0px)";
 
-    //picture.classList.add("un-explore-action");
-    picture.classList.remove("explore-action");
-    //picture.classList.remove("un-explore-action");
+      //picture.classList.add("un-explore-action");
+      picture.classList.remove("explore-action");
+      picture.classList.add("un-explore-action");
+      //picture.classList.remove("un-explore-action");
 
-    /*
-    picture.animate(
-      {
-        //transform: "translate(0%, -10vh)",
-        transform: "translate(0%, -10vh)",
-      },
-      { duration: 1000, fill: "forwards" }
-    );
-    */
+      /*
+      picture.animate(
+        {
+          //transform: "translate(0%, -10vh)",
+          transform: "translate(0%, -10vh)",
+        },
+        { duration: 1000, fill: "forwards" }
+      );
+      */
+    }
   });
 
   resetText();
@@ -1107,6 +1122,7 @@ function fillPhotosSign() {
   });
 }
 
+//after a user clicks to go back to photos, the "photographs" label will disapear
 function removePhotosSign() {
   const sign = photosSign.children[0];
   sign.style.transform = "translate3d(0%, -101%, 0px)";
@@ -1136,6 +1152,8 @@ function removePhotosSign() {
   photosReturn.removeEventListener("click", () => {
     removeExploreClick();
   });
+
+  addExplore();
 }
 
 //reading material
@@ -1172,10 +1190,16 @@ function addExplore() {
   const eBottom = document
     .getElementById(`${currTitle}`)
     .getElementsByClassName("explore-bottom")[0];
+  const exploreArrayItems = [eTop, eMiddle, eBottom];
 
   eTop.style.transform = "translate3d(0%, 0%, 0px)";
   eMiddle.style.transform = "translate3d(0%, 0%, 0px)";
   eBottom.style.transform = "translate3d(0%, 0%, 0px)";
+
+  exploreArrayItems.forEach(function (eArrayItem) {
+    eArrayItem.style.transform = "translate3d(0%, 0%, 0px)";
+    eArrayItem.style.transitionDelay = "1s";
+  });
 }
 
 function removeRow(sTopRow) {
@@ -1192,3 +1216,6 @@ function removeRow(sTopRow) {
     curr.classList.add("fade");
   }
 }
+
+//REALIZING after first click, "exlpore' tages clash with each other"
+//Maybe trisiton delay needs to be added back?
