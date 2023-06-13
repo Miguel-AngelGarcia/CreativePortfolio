@@ -139,10 +139,11 @@ window.onmousedown = (e) => {
   slider.dataset.mouseDownAt = e.clientX;
 };
 
+//while moving slide container
 sliderContainer.addEventListener("wheel", function (e) {
   slider.dataset.mouseScrollAt = e.clientX;
 
-  console.log(e.deltaX);
+  //console.log(e.deltaX);
 
   //if user click on "explore," can only click exit to go back
   if (exploreLock) return;
@@ -183,7 +184,7 @@ sliderContainer.addEventListener("wheel", function (e) {
 
   rangedScroll = Math.max(scroll, leftMax);
 
-  const percen = (rangedScroll / maxDe) * 10;
+  const percen = (rangedScroll / maxDe) * -10;
   //ORIGINAL;
   //const percen = (rangedScroll / maxDe) * 100; //v2
 
@@ -327,10 +328,6 @@ window.onmousemove = (e) => {
 window.onmouseup = (e) => {
   slider.dataset.mouseDownAt = 0;
   slider.dataset.prevPercentage = slider.dataset.percentage;
-  console.log("target", e.target.localName);
-
-  //console.log(e.toElement.nodeName);
-
   //when pic is selected AFTER one pic is in forus
   //we want to center second image, and grey out first + rest
   //keep 12vh gap
@@ -493,7 +490,7 @@ for (let i = 0; i < pictures.length; i++) {
       //selectedPicLineItem.style.display = "none";
 
       oldTitle = currTitle;
-      console.log(oldTitle, currTitle);
+      //console.log(oldTitle, currTitle);
       //(oldTitle);
       //console.log("puttextawat", oldTitle);
     }
@@ -538,6 +535,8 @@ for (let i = 0; i < pictures.length; i++) {
     getText(titleName, i);
     //currPic.classList.add("chosen");
     Array.from(pictures).forEach(function (picture) {
+      //added below to remove effects after 1st image explored
+      picture.classList.remove("un-explore-action");
       picture.classList.add("chosen");
       picture.classList.remove("scroll-on-chosen");
     });
@@ -570,7 +569,6 @@ for (let i = 0; i < pictures.length; i++) {
       exploreClick(e, currIndex);
 
       const testRow = rowRow;
-      console.log(testRow);
       const topRow = testRow[0].children;
       const bottomRow = testRow[1].children;
 
@@ -735,37 +733,10 @@ function getText(titleID) {
   });
 
   addExplore();
-  /*
-  //adds 'Explore thing' to page
-  const eTop = document
-    .getElementById(`${titleID}`)
-    .getElementsByClassName("explore-top")[0];
-  const eMiddle = document
-    .getElementById(`${titleID}`)
-    .getElementsByClassName("explore-middle")[0];
-  const eBottom = document
-    .getElementById(`${titleID}`)
-    .getElementsByClassName("explore-bottom")[0];
-  const exploreArray = [eTop, eMiddle, eBottom];
-
-  Array.from(exploreArray).forEach(function (exploreItem, eIndex) {
-    let delay = eIndex * 200 + 800;
-    delay = delay * 0.001;
-    exploreItem.animate(
-      {
-        transform: `translate3d(0%, 0%, 0px)`, //OLD<- `translate(${nextPercenRefined}%, -50%)`
-      },
-      { duration: 800, fill: "forwards" }
-    );
-    exploreItem.animationDelay = `${delay}s`;
-  });
-  */
-
-  //eTop.addEventListener("click", exploreClick(e));
 }
 
 function putTextAway(currTitle) {
-  console.log(currIndex, "putting away");
+  console.log(currIndex, "putting away", currTitle);
 
   const sTopRow = document
     .getElementById(`${currTitle}`)
@@ -863,44 +834,6 @@ function putTextAway(currTitle) {
   putLi.style.display = "none";
 
   */
-
-  /* REMOVED A LONG TIME AHO
-  Array.from(exploreArray).forEach(function (exploreItem, eIndex) {
-    console.log(exploreItem);
-    let delay = eIndex * 200 + 200;
-    delay = delay * 0.001;
-
-    exploreItem.animate(
-      {
-        transform: `translate3d(0%, 0%, 0px)`, //OLD<- `translate(${nextPercenRefined}%, -50%)`
-      },
-      { duration: 200, fill: "forwards" }
-    );
-    exploreItem.animationDelay = `${delay}s`;
-  });*/
-
-  /*
-  eTop.animate(
-    {
-      transform: `translate3d(0%, -101%, 0px)`, //OLD<- `translate(${nextPercenRefined}%, -50%)`
-    },
-    { duration: 200, fill: "forwards" }
-  );
-
-  eMiddle.animate(
-    {
-      transform: `translate3d(0%, 110%, 0px)`, //OLD<- `translate(${nextPercenRefined}%, -50%)`
-    },
-    { duration: 200, fill: "forwards" }
-  );
-
-  eBottom.animate(
-    {
-      transform: `translate3d(0%, -110%, 0px)`, //OLD<- `translate(${nextPercenRefined}%, -50%)`
-    },
-    { duration: 200, fill: "forwards" }
-  );
-  */
 }
 
 //if image scrolls though middle x, it has css trnsition that goes and does not stay
@@ -978,6 +911,28 @@ function exploreClick(e, index) {
   removeExplore(currTitle);
 }
 
+//will move all other photos (not selected) up and off screen
+function exploreClickV2(e, index) {
+  exploreLock = true;
+  fillPhotosSign();
+  Array.from(pictures).forEach(function (picture, pIndex) {
+    if (pIndex !== index) {
+      picture.animate(
+        {
+          transform: "translate(0%, -100vh)",
+        },
+        {
+          duration: 1000,
+          fill: "both",
+          easing: "cubic-bezier(0.17, 0.74, 0.27, 0.94)",
+        }
+      );
+    }
+  });
+
+  removeExplore(currTitle);
+}
+
 function removeExploreClick() {
   exploreLock = false;
 
@@ -1006,11 +961,33 @@ function removeExploreClick() {
   resetText();
 }
 
+function removeExploreClickV2() {
+  Array.from(pictures).forEach(function (picture, pIndex) {
+    if (picture !== pictureSelectedImage) {
+      console.log("moving index pic", pIndex);
+
+      picture.animate(
+        {
+          //transform: "translate(0%, -10vh)",
+          transform: "translate(0%, -10vh)",
+        },
+        {
+          duration: 1000,
+          fill: "both",
+          easing: "cubic-bezier(0.17, 0.74, 0.27, 0.94)",
+          //easing: "ease-in",
+        }
+      );
+    }
+  });
+
+  resetText();
+  exploreLock = false;
+}
+
 function exploreTextLeft(rowOfLetters, constant) {
   let startPosX = 0;
   let lastLetter = 0;
-
-  console.log("exploreleft", rowOfLetters);
 
   for (let rX = 0; rX < rowOfLetters.length; rX++) {
     let rItem = rowOfLetters[rX];
@@ -1058,7 +1035,6 @@ function getOldPos(givenRow) {
 
     let ogPos = cuuItem.style.transform;
     transformString = ogPos;
-    console.log("cuuItem", cuuItem.style.transform);
 
     let constant = 200;
     let potentialTime = givenRow.length * 100 + constant;
@@ -1160,7 +1136,6 @@ function removePhotosSign() {
 //https://udn.realityripple.com/docs/Web/API/Element/animate
 
 function removeExplore(givenCurrTitle) {
-  console.log("removeexplore", givenCurrTitle);
   const eTop = document
     .getElementById(`${givenCurrTitle}`)
     .getElementsByClassName("explore-top")[0];
@@ -1180,7 +1155,6 @@ function removeExplore(givenCurrTitle) {
 }
 
 function addExplore() {
-  console.log("init, addExploore");
   const eTop = document
     .getElementById(`${currTitle}`)
     .getElementsByClassName("explore-top")[0];
@@ -1206,7 +1180,7 @@ function removeRow(sTopRow) {
   for (let x = 0; x < sTopRow.length; x++) {
     //console.log(topRow[x]);
     let curr = sTopRow[x];
-    console.log(curr, "curr");
+
     let delay = x * 200;
     delay = delay * 0.001;
     curr.style.transform = "translate3d(101%, 0%, 0px)";

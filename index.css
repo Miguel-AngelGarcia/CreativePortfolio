@@ -165,6 +165,25 @@ a {
   overflow: hidden;
 }
 
+.position {
+  display: table;
+}
+#position > div:last-child .position::after {
+  content: "↗"; /*↩*/
+  position: absolute;
+  top: 0;
+  right: 0; /*10???*/
+  padding-left: 5px;
+  transition: opacity 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform: translateX(100%);
+  opacity: 0;
+  /*transform: rotate(180deg);*/
+}
+#position:hover > div:last-child .position::after {
+  transition: opacity 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  opacity: 1;
+}
+
 .about a,
 .close a,
 .position {
@@ -501,6 +520,15 @@ animation-duration: 1s;
   transform: translate(0%, 0%);
 }
 
+/*
+Having a problem. after clicking explore, and return back to original layout, 
+Explored image is in correct spot. all other images are 10vh above? why?
+reread animation fill mode
+
+Hypothesis: animating the -10vhof removeExploreClick sticks. how do we remove?
+
+*/
+
 .selected {
   animation-duration: 1s;
   animation-delay: 0s;
@@ -628,7 +656,7 @@ animation-duration: 1s;
   animation-duration: 1s;
   animation-delay: 0s;
   animation-name: explore-action;
-  animation-timing-function: (cubic-bezier(0.94, 0.63, 0.14, 0.53));
+  animation-timing-function: cubic-bezier(0.17, 0.74, 0.27, 0.94);
   animation-fill-mode: forwards;
 
   /*
@@ -652,8 +680,8 @@ animation-duration: 1s;
   animation-duration: 1s;
   animation-delay: 0s;
   animation-name: no-explore-action;
-  animation-timing-function: (cubic-bezier(0.94, 0.63, 0.14, 0.53));
-  animation-fill-mode: forward;
+  animation-timing-function: cubic-bezier(0.17, 0.74, 0.27, 0.94);
+  animation-fill-mode: forward; /*none?*/
 }
 
 @keyframes no-explore-action {
