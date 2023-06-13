@@ -154,6 +154,8 @@ sliderContainer.addEventListener("wheel", function (e) {
     Array.from(pictures).forEach(function (picture, picIndex) {
       picture.classList.remove("chosen");
       picture.classList.add("scroll-on-chosen");
+      //added below to remove effects after 1st image explored
+      picture.classList.remove("un-explore-action");
     });
     pictureSelectedImage.classList.remove("selected-pic");
     slider.classList.remove("selected");
@@ -535,8 +537,6 @@ for (let i = 0; i < pictures.length; i++) {
     getText(titleName, i);
     //currPic.classList.add("chosen");
     Array.from(pictures).forEach(function (picture) {
-      //added below to remove effects after 1st image explored
-      picture.classList.remove("un-explore-action");
       picture.classList.add("chosen");
       picture.classList.remove("scroll-on-chosen");
     });
