@@ -20,6 +20,7 @@ let currIndex = null;
 let currFirstColor = defaultFirstColor;
 let currSecColor = defaultSecColor;
 let oldTitle = null;
+let viewMode = false;
 
 slider.dataset.percentage = "0";
 
@@ -98,6 +99,8 @@ function emergencyRowLayout(currentRow) {
   });
 }
 
+function roundNumber() {}
+
 const positionInfo = document.getElementsByClassName("position");
 window.onload = (event) => {
   console.log("posInfo", positionInfo);
@@ -160,12 +163,14 @@ sliderContainer.addEventListener("wheel", function (e) {
     pictureSelectedImage.classList.remove("selected-pic");
     slider.classList.remove("selected");
     slider.classList.add("unselected");
-    pictureSelected = false;
-    pictureSelectedImage = null;
 
     putTextAway(currTitle, currIndex);
     console.log("slideEventListener");
+    putBackSmallImage(pictureSelectedImage, currIndex);
     //removeExploreClick();
+
+    pictureSelected = false;
+    pictureSelectedImage = null;
   }
 
   let rangedScroll = scrolly;
@@ -398,8 +403,10 @@ for (const image of slider.getElementsByClassName("image")) {
   imageWidth = windowHeight * 0.15;
 
   const posValueX = homeX + testI * (imageWidth + imageGap);
+  const posValueLargeX = homeX + testI * (imageWidthLarge + newImageGap);
   image.dataset.posXStart = posValueX;
   image.dataset.posX = posValueX;
+  image.dataset.posXStartLarge = posValueLargeX;
   testI++;
 }
 
@@ -407,28 +414,25 @@ for (const image of slider.getElementsByClassName("image")) {
 MAKE images next to centered image zoomed in a little?
 */
 
-function centerImage(clickEvent, currPicSent) {
-  const clickX = clickEvent.clientX;
-
-  const imageMargin = windowHeight * 0.1;
-
-  const newImageGap = imageGapStart + imageMargin;
-
-  const imageWidth = currPicSent.clientWidth;
-
+function centerImage(clickEvent, currPicSent, currPicIndex) {
+  //new height of image
   const scaleHeight = windowHeight * 0.6;
+
+  //new width of image
   const scaleWidth = scaleHeight * (5 / 7);
 
-  //const clickedImage = document.getElementById(imageID);
+  //get start of image and end of image
   let position = parseFloat(currPicSent.dataset.posX);
-  //let endX = parseFloat(position) + imageWidth;
+  //new version
+  let positionV2 = parseFloat(currPicSent.dataset.posX) + scaleWidth / 2;
+  console.log(position);
+
   let endX = parseFloat(position) + scaleWidth;
 
-  let poseScale = position * scaleHeight;
-  let posEndX = endX * scaleWidth;
-
   //let deltaMiddle = (position + endX) / 2 - homeX; //ORIGINAL
+  //distance from middle of image to center of page
   let deltaMiddle = position + scaleWidth / 2 - homeX;
+  let deltaMiddleV2 = position - scaleWidth / 2 - homeX;
   /*
   console.log("startX", position, endX);
   console.log("midpoint", (position + endX) / 2);
@@ -436,8 +440,10 @@ function centerImage(clickEvent, currPicSent) {
   console.log("deltaMiddle", deltaMiddle);
   */
   //const usingPercentage = deltaMiddle * percentPerPixel * -1; //ORIGINAL
+
   const usingPercentage = deltaMiddle * percentPerPixelLarge * -1;
 
+  //how far image is pixel wise from middle
   const nextPercentageRaw =
     parseFloat(slider.dataset.prevPercentage) + usingPercentage;
 
@@ -454,7 +460,12 @@ function centerImage(clickEvent, currPicSent) {
 
   //500 - (image.width /2)
 
-  slider.dataset.prevPercentage = slider.dataset.prevPercentage;
+  const currPicPosX = position - scaleWidth / 2;
+  currPicSent.dataset.posX = currPicPosX;
+  slider.dataset.prevPercentage = nextPercentageRefined;
+
+  setNewPosXFromLarge();
+  viewMode = true;
 }
 
 function newPosX(newWidth, newGap) {
@@ -465,10 +476,37 @@ function newPosX(newWidth, newGap) {
 
     let wouldStart = homeX + pIndex * (newWidth + newGap);
 
+    let wouldStartV2 = homeX + pIndex * (newWidth + newGap) - newWidth / 2;
+
     picture.dataset.posX = wouldStart + percentageMoved / percentPerPixelLarge;
 
     //542.5 + 1 + (373.28 + 104.52)
     //542 + + 104.52 + (1 * 373.28)
+  });
+}
+
+function setNewPosX() {
+  const sliderPercentage = parseFloat(slider.dataset.percentage);
+
+  const pixelsMoved = slideWidth * (sliderPercentage / 100);
+
+  Array.from(pictures).forEach(function (picture, pIndex) {
+    const newPosX = parseFloat(picture.dataset.posXStart) + pixelsMoved;
+    console.log(sliderPercentage, pixelsMoved, newPosX);
+    picture.posX = newPosX;
+  });
+}
+
+function setNewPosXFromLarge() {
+  const sliderPercentage = parseFloat(slider.dataset.percentage);
+
+  const pixelsMoved = slideWidthLarge * (sliderPercentage / 100);
+
+  Array.from(pictures).forEach(function (picture, pIndex) {
+    const imageLargePosX = parseFloat(picture.dataset.posXStartLarge);
+    const newPosX = imageLargePosX + pixelsMoved;
+    console.log(sliderPercentage, pixelsMoved, imageLargePosX, newPosX);
+    picture.dataset.posX = newPosX;
   });
 }
 
@@ -507,11 +545,6 @@ for (let i = 0; i < pictures.length; i++) {
 
     changeColor(currFirstColor, currSecColor);
 
-    let newLeftPicIndex = i - 1;
-    let newRightPicIndex = i + 1;
-
-    //console.log("left", newLeftPicIndex, "right", newRightPicIndex);
-
     const newPicText = document.getElementById(`title-${i}`);
     newPicText.style.display = "block";
 
@@ -528,11 +561,16 @@ for (let i = 0; i < pictures.length; i++) {
 
     //getText(titleName, i);
 
+    //OLD newPosX position
     const scaleHeight = windowHeight * 0.6;
     const scaleWidth = scaleHeight * (5 / 7);
 
+    /*
+    if (!viewMode) {
+      newPosX(scaleWidth, newImageGap);
+    }
+    */
     newPosX(scaleWidth, newImageGap);
-
     centerImage(e, currPic, i);
     getText(titleName, i);
     //currPic.classList.add("chosen");
@@ -1193,3 +1231,65 @@ function removeRow(sTopRow) {
 
 //REALIZING after first click, "exlpore' tages clash with each other"
 //Maybe trisiton delay needs to be added back?
+
+/*take centered image and make it center in small slider
+1.) take x-position, add 1/2 of large image width 
+---> ex: start x of large is 747 (small statr is 864)
+---> large image middle is at 1/2 of page. when it becomes small left side starts at middle?
+2.) calc % slider moves for this image to be at mid point of page
+3.) turn large pics into small
+4.) mode previous centered image (selected image) to middle of screen
+*/
+function putBackSmallImage(centeredPic, currPicIndex) {
+  //new height of image
+  const scaleHeight = windowHeight * 0.6;
+
+  //new width of image
+  const scaleWidth = scaleHeight * (5 / 7);
+
+  console.log(centeredPic);
+
+  //get start of image and add 1/2 of large0image width
+  let position = parseFloat(centeredPic.dataset.posX) + scaleWidth / 2;
+  console.log("px", position);
+
+  //let deltaMiddle = (position + endX) / 2 - homeX; //ORIGINAL
+  //distance from middle of image to center of page
+  let deltaMiddleV1 = position + scaleWidth / 2 - homeX;
+  let deltaMiddleV2 = position - homeX;
+  let deltaMiddle = parseFloat(centeredPic.dataset.posXStart) - homeX;
+
+  //does this have to be calc from start x of small image?????
+
+  const usingPercentage = deltaMiddle * percentPerPixel * -1;
+
+  console.log("using%", usingPercentage);
+
+  //how far image is pixel wise from middle
+  const nextPercentageRaw =
+    parseFloat(slider.dataset.prevPercentage) + usingPercentage;
+
+  const nextPercentageRefined = Math.max(Math.min(nextPercentageRaw, 0), -100);
+  console.log("next%", nextPercentageRefined);
+
+  slider.dataset.percentage = nextPercentageRefined;
+  //currPercentage +
+  slider.animate(
+    {
+      transform: `translate(${nextPercentageRefined}%, 0%)`,
+    },
+    { duration: 800, fill: "forwards" } //500 instead of 1000
+  );
+
+  //500 - (image.width /2)
+
+  const currPicPosX = homeX;
+  centeredPic.dataset.posX = currPicPosX;
+  slider.dataset.prevPercentage = nextPercentageRefined;
+
+  //NEED THIS
+  //need to give proper X
+  setNewPosX();
+
+  viewMode = false;
+}
