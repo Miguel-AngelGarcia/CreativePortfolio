@@ -425,7 +425,6 @@ function centerImage(clickEvent, currPicSent, currPicIndex) {
   let position = parseFloat(currPicSent.dataset.posX);
   //new version
   let positionV2 = parseFloat(currPicSent.dataset.posX) + scaleWidth / 2;
-  console.log(position);
 
   let endX = parseFloat(position) + scaleWidth;
 
@@ -1292,4 +1291,90 @@ function putBackSmallImage(centeredPic, currPicIndex) {
   setNewPosX();
 
   viewMode = false;
+}
+
+addEventListener("keyup", ({ key }) => {
+  if (!viewMode) return;
+
+  console.log("curr", currIndex);
+
+  switch (key) {
+    case "ArrowRight":
+      console.log(currIndex + 1);
+      const rightIndex = currIndex + 1;
+      const rightPicture = pictures[rightIndex];
+
+      putTextAway(currTitle, currIndex);
+      arrowSelect(rightPicture, rightIndex, "ArrowRight");
+
+      break;
+    case "ArrowLeft":
+      console.log(currIndex - 1);
+      const leftIndex = currIndex - 1;
+      const leftPicture = pictures[rightIndex];
+
+      putTextAway(currTitle, currIndex);
+      arrowSelect(leftPicture, leftIndex, "ArrowRight");
+
+      break;
+  }
+});
+
+function arrowSelect(sentPicture, sentIndex, key) {
+  const titleName = `title-${sentIndex}`;
+
+  //dont need this bc only works when in viewMode anyway???
+  pictureSelected = true;
+  pictureSelectedImage = sentPicture;
+
+  currFirstColor = sentPicture.dataset.firstColor;
+  currSecColor = sentPicture.dataset.secColor;
+
+  changeColor(currFirstColor, currSecColor);
+
+  const nextPicText = document.getElementById(`title-${sentIndex}`);
+  nextPicText.style.display = "block";
+
+  sentPicture.classList.add("selected-pic");
+
+  //sets outer variables
+  currTitle = titleName;
+  currIndex = sentIndex;
+  selectedPicLineItem = nextPicText;
+
+  const scaleHeight = windowHeight * 0.6;
+  const scaleWidth = scaleHeight * (5 / 7);
+
+  newPosX(scaleWidth, newImageGap);
+  centerImage(key, sentPicture, sentIndex);
+  getText(titleName, sentIndex);
+
+  //DONT NEED THIS IN ARROW FUNCTIONS???
+  //Array.from(pictures).forEach(function (picture) {
+  //  picture.classList.add("chosen");
+  //  picture.classList.remove("scroll-on-chosen");
+  //});
+
+  //DONT NEED THIS IN ARROW FUNCTIONS???
+  //slider.classList.add("selected");
+  //slider.classList.remove("unselected");
+
+  const rowRow = document
+    .getElementById(`${titleName}`)
+    .getElementsByClassName("title");
+
+  const exploreWord = document.getElementsByClassName("line-w")[sentIndex];
+  //console.log("eword", exploreWord);
+  exploreWord.style.pointerEvents = "auto";
+  exploreWord.style.cursor = "pointer";
+  exploreWord.addEventListener("click", function () {
+    exploreClick(e, currIndex);
+
+    const testRow = rowRow;
+    const topRow = testRow[0].children;
+    const bottomRow = testRow[1].children;
+
+    exploreTextLeft(topRow, 0);
+    exploreTextLeft(bottomRow, 200);
+  });
 }
