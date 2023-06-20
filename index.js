@@ -142,6 +142,28 @@ window.onmousedown = (e) => {
   slider.dataset.mouseDownAt = e.clientX;
 };
 
+function resetImagesToStart() {
+  Array.from(pictures).forEach(function (picture, picIndex) {
+    picture.classList.remove("chosen");
+    picture.classList.add("scroll-on-chosen");
+    //added below to remove effects after 1st image explored
+    picture.classList.remove("un-explore-action");
+  });
+}
+
+/*
+This will make slider go from Large images to Small
+Will also return last selected image to grey/no color
+*/
+function resetSliderToStart() {
+  slider.classList.remove("selected");
+  slider.classList.add("unselected");
+}
+
+function resetSelectedImageColor() {
+  pictureSelectedImage.classList.remove("selected-pic");
+}
+
 //while moving slide container
 sliderContainer.addEventListener("wheel", function (e) {
   slider.dataset.mouseScrollAt = e.clientX;
@@ -151,9 +173,9 @@ sliderContainer.addEventListener("wheel", function (e) {
   //if user click on "explore," can only click exit to go back
   if (exploreLock) return;
 
-  if (pictureSelected) {
+  if (pictureSelected /*|| viewMode*/) {
     changeColor(defaultFirstColor, defaultSecColor);
-
+    /*
     Array.from(pictures).forEach(function (picture, picIndex) {
       picture.classList.remove("chosen");
       picture.classList.add("scroll-on-chosen");
@@ -163,6 +185,10 @@ sliderContainer.addEventListener("wheel", function (e) {
     pictureSelectedImage.classList.remove("selected-pic");
     slider.classList.remove("selected");
     slider.classList.add("unselected");
+    */
+    resetImagesToStart();
+    resetSliderToStart();
+    resetSelectedImageColor();
 
     putTextAway(currTitle, currIndex);
     console.log("slideEventListener");
@@ -491,7 +517,7 @@ function setNewPosX() {
 
   Array.from(pictures).forEach(function (picture, pIndex) {
     const newPosX = parseFloat(picture.dataset.posXStart) + pixelsMoved;
-    console.log(sliderPercentage, pixelsMoved, newPosX);
+    //console.log(sliderPercentage, pixelsMoved, newPosX);
     picture.posX = newPosX;
   });
 }
@@ -504,7 +530,7 @@ function setNewPosXFromLarge() {
   Array.from(pictures).forEach(function (picture, pIndex) {
     const imageLargePosX = parseFloat(picture.dataset.posXStartLarge);
     const newPosX = imageLargePosX + pixelsMoved;
-    console.log(sliderPercentage, pixelsMoved, imageLargePosX, newPosX);
+    //console.log(sliderPercentage, pixelsMoved, imageLargePosX, newPosX);
     picture.dataset.posX = newPosX;
   });
 }
@@ -603,7 +629,7 @@ for (let i = 0; i < pictures.length; i++) {
     exploreWord.style.pointerEvents = "auto";
     exploreWord.style.cursor = "pointer";
     exploreWord.addEventListener("click", function () {
-      exploreClick(e, currIndex);
+      exploreClick(currIndex);
 
       const testRow = rowRow;
       const topRow = testRow[0].children;
@@ -933,7 +959,7 @@ function end(t) {
 */
 
 //will move all other photos (not selected) up and off screen
-function exploreClick(e, index) {
+function exploreClick(index) {
   exploreLock = true;
   fillPhotosSign();
   Array.from(pictures).forEach(function (picture, pIndex) {
@@ -1246,11 +1272,11 @@ function putBackSmallImage(centeredPic, currPicIndex) {
   //new width of image
   const scaleWidth = scaleHeight * (5 / 7);
 
-  console.log(centeredPic);
+  //console.log(centeredPic);
 
   //get start of image and add 1/2 of large0image width
   let position = parseFloat(centeredPic.dataset.posX) + scaleWidth / 2;
-  console.log("px", position);
+  //console.log("px", position);
 
   //let deltaMiddle = (position + endX) / 2 - homeX; //ORIGINAL
   //distance from middle of image to center of page
@@ -1269,7 +1295,6 @@ function putBackSmallImage(centeredPic, currPicIndex) {
     parseFloat(slider.dataset.prevPercentage) + usingPercentage;
 
   const nextPercentageRefined = Math.max(Math.min(nextPercentageRaw, 0), -100);
-  console.log("next%", nextPercentageRefined);
 
   slider.dataset.percentage = nextPercentageRefined;
   //currPercentage +
@@ -1296,26 +1321,27 @@ function putBackSmallImage(centeredPic, currPicIndex) {
 addEventListener("keyup", ({ key }) => {
   if (!viewMode) return;
 
-  console.log("curr", currIndex);
-
   switch (key) {
     case "ArrowRight":
-      console.log(currIndex + 1);
-      const rightIndex = currIndex + 1;
-      const rightPicture = pictures[rightIndex];
+      if (currIndex < pictures.length - 1) {
+        const rightIndex = currIndex + 1;
+        const rightPicture = pictures[rightIndex];
 
-      putTextAway(currTitle, currIndex);
-      arrowSelect(rightPicture, rightIndex, "ArrowRight");
-
+        putTextAway(currTitle, currIndex);
+        resetSelectedImageColor();
+        arrowSelect(rightPicture, rightIndex, "ArrowRight");
+      }
       break;
+
     case "ArrowLeft":
-      console.log(currIndex - 1);
-      const leftIndex = currIndex - 1;
-      const leftPicture = pictures[rightIndex];
+      if (currIndex > 0) {
+        const leftIndex = currIndex - 1;
+        const leftPicture = pictures[leftIndex];
 
-      putTextAway(currTitle, currIndex);
-      arrowSelect(leftPicture, leftIndex, "ArrowRight");
-
+        putTextAway(currTitle, currIndex);
+        resetSelectedImageColor();
+        arrowSelect(leftPicture, leftIndex, "ArrowRight");
+      }
       break;
   }
 });
@@ -1368,7 +1394,7 @@ function arrowSelect(sentPicture, sentIndex, key) {
   exploreWord.style.pointerEvents = "auto";
   exploreWord.style.cursor = "pointer";
   exploreWord.addEventListener("click", function () {
-    exploreClick(e, currIndex);
+    exploreClick(currIndex);
 
     const testRow = rowRow;
     const topRow = testRow[0].children;
