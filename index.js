@@ -9,6 +9,8 @@ const closeBtn = document.getElementById("close-1");
 const abtCloseLines = document.getElementsByClassName("line-about");
 const posBottomLeft = document.getElementsByClassName("position");
 
+const testExploreWord = document.getElementsByClassName("explore");
+
 const slider = document.querySelector(".picture-group-slider");
 const sliderContainer = document.getElementById("slider-container");
 
@@ -17,6 +19,7 @@ const defaultSecColor = "#161515";
 
 let currTitle = "title-x";
 let currIndex = null;
+let currExploreWord = null;
 let currFirstColor = defaultFirstColor;
 let currSecColor = defaultSecColor;
 let oldTitle = null;
@@ -99,8 +102,6 @@ function emergencyRowLayout(currentRow) {
   });
 }
 
-function roundNumber() {}
-
 const positionInfo = document.getElementsByClassName("position");
 window.onload = (event) => {
   console.log("posInfo", positionInfo);
@@ -158,6 +159,7 @@ Will also return last selected image to grey/no color
 function resetSliderToStart() {
   slider.classList.remove("selected");
   slider.classList.add("unselected");
+  slider.classList.remove("slider-in-focus");
 }
 
 function resetSelectedImageColor() {
@@ -175,17 +177,7 @@ sliderContainer.addEventListener("wheel", function (e) {
 
   if (pictureSelected /*|| viewMode*/) {
     changeColor(defaultFirstColor, defaultSecColor);
-    /*
-    Array.from(pictures).forEach(function (picture, picIndex) {
-      picture.classList.remove("chosen");
-      picture.classList.add("scroll-on-chosen");
-      //added below to remove effects after 1st image explored
-      picture.classList.remove("un-explore-action");
-    });
-    pictureSelectedImage.classList.remove("selected-pic");
-    slider.classList.remove("selected");
-    slider.classList.add("unselected");
-    */
+    //line 176 of old files will show original code
     resetImagesToStart();
     resetSliderToStart();
     resetSelectedImageColor();
@@ -247,6 +239,8 @@ sliderContainer.addEventListener("wheel", function (e) {
     },
     { duration: 1200, fill: "forwards" }
   );
+
+  //slider.style.transform = `translate(${nextPercenRefined}%, 0%)`;
 
   let testI = 0;
   for (const image of slider.getElementsByClassName("image")) {
@@ -312,13 +306,10 @@ window.onmousemove = (e) => {
   if (pictureSelected && e.toElement.nodeName !== "IMG") {
     changeColor(defaultFirstColor, defaultSecColor);
 
-    Array.from(pictures).forEach(function (picture, picIndex) {
-      picture.classList.remove("chosen");
-      picture.classList.add("scroll-on-chosen");
-    });
-    pictureSelectedImage.classList.remove("selected-pic");
-    slider.classList.remove("selected");
-    slider.classList.add("unselected");
+    resetImagesToStart();
+    resetSliderToStart();
+    resetSelectedImageColor();
+
     pictureSelected = false;
     pictureSelectedImage = null;
 
@@ -338,12 +329,15 @@ window.onmousemove = (e) => {
   const nextPercentageRefined = Math.max(Math.min(nextPercentageRaw, 0), -100);
   //need to keep track of where x% is, bc it restarts at 0 if else
   slider.dataset.percentage = nextPercentageRefined;
+
   slider.animate(
     {
       transform: `translate(${nextPercentageRefined}%, 0%)`,
     },
     { duration: 1200, fill: "forwards" }
   );
+
+  //slider.style.transform = `translate(${nextPercentageRefined}%, 0%)`;
 
   for (const image of slider.getElementsByClassName("image")) {
     image.animate(
@@ -444,6 +438,8 @@ function centerImage(clickEvent, currPicSent, currPicIndex) {
   //new height of image
   const scaleHeight = windowHeight * 0.6;
 
+  console.log("centering image");
+
   //new width of image
   const scaleWidth = scaleHeight * (5 / 7);
 
@@ -458,6 +454,7 @@ function centerImage(clickEvent, currPicSent, currPicIndex) {
   //distance from middle of image to center of page
   let deltaMiddle = position + scaleWidth / 2 - homeX;
   let deltaMiddleV2 = position - scaleWidth / 2 - homeX;
+  let deltaMiddleV3 = position + scaleWidth / 2 - homeX;
   /*
   console.log("startX", position, endX);
   console.log("midpoint", (position + endX) / 2);
@@ -476,13 +473,15 @@ function centerImage(clickEvent, currPicSent, currPicIndex) {
 
   slider.dataset.percentage = nextPercentageRefined;
   //currPercentage +
+
   slider.animate(
     {
       transform: `translate(${nextPercentageRefined}%, 0%)`,
     },
-    { duration: 800, fill: "forwards" } //500 instead of 1000
+    { duration: 1000, fill: "forwards", easing: "cubic-bezier(0, 0, 0.19, 1)" } //500 instead of 1000
   );
 
+  //slider.style.transform = `translate(${nextPercentageRefined}%, 0%)`;
   //500 - (image.width /2)
 
   const currPicPosX = position - scaleWidth / 2;
@@ -504,7 +503,7 @@ function newPosX(newWidth, newGap) {
     let wouldStartV2 = homeX + pIndex * (newWidth + newGap) - newWidth / 2;
 
     picture.dataset.posX = wouldStart + percentageMoved / percentPerPixelLarge;
-
+    console.log(picture.dataset.posX);
     //542.5 + 1 + (373.28 + 104.52)
     //542 + + 104.52 + (1 * 373.28)
   });
@@ -518,7 +517,7 @@ function setNewPosX() {
   Array.from(pictures).forEach(function (picture, pIndex) {
     const newPosX = parseFloat(picture.dataset.posXStart) + pixelsMoved;
     //console.log(sliderPercentage, pixelsMoved, newPosX);
-    picture.posX = newPosX;
+    picture.dataset.posX = newPosX;
   });
 }
 
@@ -590,6 +589,8 @@ for (let i = 0; i < pictures.length; i++) {
     const scaleHeight = windowHeight * 0.6;
     const scaleWidth = scaleHeight * (5 / 7);
 
+    slider.classList.add("slider-in-focus");
+
     /*
     if (!viewMode) {
       newPosX(scaleWidth, newImageGap);
@@ -624,7 +625,12 @@ for (let i = 0; i < pictures.length; i++) {
       .getElementById(`${titleName}`)
       .getElementsByClassName("title");
 
-    const exploreWord = document.getElementsByClassName("line-w")[i];
+    //const exploreWord = document.getElementsByClassName("line-w")[i];
+    const exploreWord = newPicText.getElementsByClassName("explore")[0];
+
+    console.log("EXPLOREWORD", exploreWord);
+
+    currExploreWord = exploreWord;
     //console.log("eword", exploreWord);
     exploreWord.style.pointerEvents = "auto";
     exploreWord.style.cursor = "pointer";
@@ -814,19 +820,6 @@ function putTextAway(currTitle) {
   const leftInfo = document.getElementsByClassName("info-left-leter");
   const rightInfo = document.getElementsByClassName("info-right-letter");
 
-  /*
-  for (let x = 0; x < sTopRow.length; x++) {
-    //console.log(topRow[x]);
-    let curr = sTopRow[x];
-    console.log(curr, "curr");
-    let delay = x * 200;
-    delay = delay * 0.001;
-    curr.style.transform = "translate3d(101%, 0%, 0px)";
-    //curr.style.animationDelay = `${delay}s`;
-    curr.style.animationDelay = `${0.0}s`;
-    curr.classList.remove("glow");
-    curr.classList.add("fade");
-  }*/
   removeRow(sTopRow);
 
   const bEndIndex = sBottomRow.length - 1;
@@ -896,6 +889,13 @@ function putTextAway(currTitle) {
   const putLi = document.getElementById(`${currTitle}`);
   putLi.style.display = "none";
 
+  */
+
+  /*
+  console.log(currExploreWord, "EXPLOREPIC");
+  currExploreWord.removeEventListener("click", function () {
+    exploreClick();
+  });
   */
 }
 
@@ -1113,6 +1113,7 @@ function getOldPos(givenRow) {
   }
 }
 
+//this is the "photographs" return "button"
 const photosReturn = document.getElementById("photos");
 const photosSign = document.getElementById("photos-sign");
 const photosLine = document.getElementById("photos-line");
@@ -1188,9 +1189,23 @@ function removePhotosSign() {
   photosReturn.style.pointerEvents = "none";
   photosReturn.style.cursor = "auto";
 
+  /*
   photosReturn.removeEventListener("click", () => {
     removeExploreClick();
   });
+  */
+
+  /*
+  photosReturn.addEventListener("click", function () {
+    exploreClick();
+  });
+  */
+  /*
+  console.log(currExploreWord, "EXPLOREPIC");
+  currExploreWord.removeEventListener("click", function () {
+    exploreClick();
+  });
+  */
 
   addExplore();
 }

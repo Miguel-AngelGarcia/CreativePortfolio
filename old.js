@@ -1,118 +1,3 @@
-const canvas = document.getElementById("myCanvas");
-const context = canvas.getContext("2d");
-
-const startX = canvas.width / 2;
-const startY = canvas.height / 2;
-
-class Picture {
-  constructor() {
-    const image = new Image();
-    let pictureFileName = `./Images/matera.jpg`;
-    image.src = "./Images/matera.jpg";
-
-    image.onload = () => {
-      const scale = 0.25; //1000 x 1400
-      this.image = image;
-      this.width = image.width; //250
-      this.height = image.height; //350
-
-      console.log(this.width, this.height);
-    };
-
-    this.position = {
-      x: startX - 131.25 / 2,
-      y: startY - 350 / 2,
-    };
-  }
-
-  /*
-
-drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
-FROM SOURCE
-sx - subrectangle x -> think startX of image
-sx - subrectangle y -> think startY of image 
-sWidth - subrectangle width
-sHeight - subrectangle height
-
-TO CANVAS
-dx - destinationX
-dy - destination y
-drawImage 
-    */
-  // 15 x 40 aspect ratio is goal
-  draw() {
-    context.drawImage(
-      this.image,
-      370,
-      300,
-      131.25,
-      350,
-      this.position.x,
-      this.position.y,
-      131.25,
-      350
-    );
-  }
-
-  update() {
-    if (this.image) {
-      this.draw();
-    }
-  }
-}
-
-const picture = new Picture();
-
-function animate() {
-  requestAnimationFrame(animate);
-
-  context.fillStyle = "transparent";
-  context.fillRect(0, 0, canvas.width, canvas.height);
-
-  picture.update();
-}
-
-animate();
-
-
-function(t) {
-  const i = _A;
-  R.Is.def(t) && "n0" === t.target.id && "out" === i.mode && (location.href = "/"), i.mode = "out", this.gMax();
-  const s = i.data.modeOut();
-  this.pSet(this.pTarg, s), this.color.targ = this.colorBase, i.nav.color({
-    default: !0
-  }), i.pgn.up(), i.fx.title({
-    a: "hide",
-    d: 500,
-    delay: 0,
-    r: !1
-  }), i.fx.info({
-    a: "hide",
-    d: 500,
-    delay: 0
-  }), i.fx.explore({
-    a: "hide",
-    d: 500,
-    delay: 0
-  }), i.pgnX.hideCurr({
-    r: !1,
-    out: !0
-  })
-}
-
-
-
-
-function(t) {
-  const i = "mouseenter" === t.type ? "arrow" : "cross";
-  this.morph({
-    d: 700,
-    e: "o5",
-    shape: i
-  })
-}
-
-
 //const slider = document.getElementById("picture-group-slider");
 //const sliderContainer = document.getElementById("slider-container");
 const bgColorDiv = document.getElementById("app");
@@ -135,6 +20,7 @@ let currIndex = null;
 let currFirstColor = defaultFirstColor;
 let currSecColor = defaultSecColor;
 let oldTitle = null;
+let viewMode = false;
 
 slider.dataset.percentage = "0";
 
@@ -213,6 +99,38 @@ function emergencyRowLayout(currentRow) {
   });
 }
 
+function roundNumber() {}
+
+const positionInfo = document.getElementsByClassName("position");
+window.onload = (event) => {
+  console.log("posInfo", positionInfo);
+
+  Array.from(positionInfo).forEach(function (posInfoPiece) {
+    posInfoPiece.style.color = "rgb(186, 196, 184)";
+    posInfoPiece.animate(
+      {
+        transform: `translate3d(0%, 0%, 0px)`,
+      },
+      { duration: 1200, fill: "forwards" }
+    );
+    //posInfoPiece.style.animationDelay = "5500"; NOT WORKING
+  });
+
+  aboutBtn.animate(
+    {
+      transform: `translate3d(0%, 0%, 0px)`,
+    },
+    { duration: 1200, fill: "forwards" }
+  );
+
+  Array.from(pictures).forEach(function (picture) {
+    //remove the "unexplore class thing"
+    picture.classList.remove("un-explore-action");
+  });
+
+  aboutBtn.style.pointerEvents = "all";
+};
+
 let scroll = 0;
 let scrolly = Math.max(Math.min(rightMax, scroll), leftMax);
 let timer = null;
@@ -224,28 +142,61 @@ window.onmousedown = (e) => {
   slider.dataset.mouseDownAt = e.clientX;
 };
 
+function resetImagesToStart() {
+  Array.from(pictures).forEach(function (picture, picIndex) {
+    picture.classList.remove("chosen");
+    picture.classList.add("scroll-on-chosen");
+    //added below to remove effects after 1st image explored
+    picture.classList.remove("un-explore-action");
+  });
+}
+
+/*
+This will make slider go from Large images to Small
+Will also return last selected image to grey/no color
+*/
+function resetSliderToStart() {
+  slider.classList.remove("selected");
+  slider.classList.add("unselected");
+}
+
+function resetSelectedImageColor() {
+  pictureSelectedImage.classList.remove("selected-pic");
+}
+
+//while moving slide container
 sliderContainer.addEventListener("wheel", function (e) {
   slider.dataset.mouseScrollAt = e.clientX;
+
+  //console.log(e.deltaX);
 
   //if user click on "explore," can only click exit to go back
   if (exploreLock) return;
 
-  if (pictureSelected) {
+  if (pictureSelected /*|| viewMode*/) {
     changeColor(defaultFirstColor, defaultSecColor);
-
+    /*
     Array.from(pictures).forEach(function (picture, picIndex) {
       picture.classList.remove("chosen");
       picture.classList.add("scroll-on-chosen");
+      //added below to remove effects after 1st image explored
+      picture.classList.remove("un-explore-action");
     });
     pictureSelectedImage.classList.remove("selected-pic");
     slider.classList.remove("selected");
     slider.classList.add("unselected");
-    pictureSelected = false;
-    pictureSelectedImage = null;
+    */
+    resetImagesToStart();
+    resetSliderToStart();
+    resetSelectedImageColor();
 
     putTextAway(currTitle, currIndex);
     console.log("slideEventListener");
+    putBackSmallImage(pictureSelectedImage, currIndex);
     //removeExploreClick();
+
+    pictureSelected = false;
+    pictureSelectedImage = null;
   }
 
   let rangedScroll = scrolly;
@@ -266,7 +217,7 @@ sliderContainer.addEventListener("wheel", function (e) {
 
   rangedScroll = Math.max(scroll, leftMax);
 
-  const percen = (rangedScroll / maxDe) * 10;
+  const percen = (rangedScroll / maxDe) * -10;
   //ORIGINAL;
   //const percen = (rangedScroll / maxDe) * 100; //v2
 
@@ -410,21 +361,21 @@ window.onmousemove = (e) => {
 window.onmouseup = (e) => {
   slider.dataset.mouseDownAt = 0;
   slider.dataset.prevPercentage = slider.dataset.percentage;
-
-  //console.log(e.toElement.nodeName);
-
   //when pic is selected AFTER one pic is in forus
   //we want to center second image, and grey out first + rest
   //keep 12vh gap
+
+  console.log("is pic selected?", pictureSelected);
 
   if (pictureSelected && e.target === pictureSelectedImage) {
     return;
   }
 
   //if image is selected (large image in focus) and another image is clicked, put title text away
-  if (pictureSelected && e.toElement.nodeName === "IMG") {
+  //(pictureSelected && e.toElement.nodeName === "IMG") didnt work on firefox
+  if (pictureSelected && e.target.localName === "img") {
+    console.log("onmouseup going to putTextAway");
     putTextAway(currTitle, currIndex);
-    console.log("onmouseup");
   }
 
   //if click target NOT already selected image, put text away
@@ -478,8 +429,10 @@ for (const image of slider.getElementsByClassName("image")) {
   imageWidth = windowHeight * 0.15;
 
   const posValueX = homeX + testI * (imageWidth + imageGap);
+  const posValueLargeX = homeX + testI * (imageWidthLarge + newImageGap);
   image.dataset.posXStart = posValueX;
   image.dataset.posX = posValueX;
+  image.dataset.posXStartLarge = posValueLargeX;
   testI++;
 }
 
@@ -487,28 +440,24 @@ for (const image of slider.getElementsByClassName("image")) {
 MAKE images next to centered image zoomed in a little?
 */
 
-function centerImage(clickEvent, currPicSent) {
-  const clickX = clickEvent.clientX;
-
-  const imageMargin = windowHeight * 0.1;
-
-  const newImageGap = imageGapStart + imageMargin;
-
-  const imageWidth = currPicSent.clientWidth;
-
+function centerImage(clickEvent, currPicSent, currPicIndex) {
+  //new height of image
   const scaleHeight = windowHeight * 0.6;
+
+  //new width of image
   const scaleWidth = scaleHeight * (5 / 7);
 
-  //const clickedImage = document.getElementById(imageID);
+  //get start of image and end of image
   let position = parseFloat(currPicSent.dataset.posX);
-  //let endX = parseFloat(position) + imageWidth;
+  //new version
+  let positionV2 = parseFloat(currPicSent.dataset.posX) + scaleWidth / 2;
+
   let endX = parseFloat(position) + scaleWidth;
 
-  let poseScale = position * scaleHeight;
-  let posEndX = endX * scaleWidth;
-
   //let deltaMiddle = (position + endX) / 2 - homeX; //ORIGINAL
+  //distance from middle of image to center of page
   let deltaMiddle = position + scaleWidth / 2 - homeX;
+  let deltaMiddleV2 = position - scaleWidth / 2 - homeX;
   /*
   console.log("startX", position, endX);
   console.log("midpoint", (position + endX) / 2);
@@ -516,8 +465,10 @@ function centerImage(clickEvent, currPicSent) {
   console.log("deltaMiddle", deltaMiddle);
   */
   //const usingPercentage = deltaMiddle * percentPerPixel * -1; //ORIGINAL
+
   const usingPercentage = deltaMiddle * percentPerPixelLarge * -1;
 
+  //how far image is pixel wise from middle
   const nextPercentageRaw =
     parseFloat(slider.dataset.prevPercentage) + usingPercentage;
 
@@ -529,12 +480,17 @@ function centerImage(clickEvent, currPicSent) {
     {
       transform: `translate(${nextPercentageRefined}%, 0%)`,
     },
-    { duration: 1000, fill: "forwards" }
+    { duration: 800, fill: "forwards" } //500 instead of 1000
   );
 
   //500 - (image.width /2)
 
-  slider.dataset.prevPercentage = slider.dataset.prevPercentage;
+  const currPicPosX = position - scaleWidth / 2;
+  currPicSent.dataset.posX = currPicPosX;
+  slider.dataset.prevPercentage = nextPercentageRefined;
+
+  setNewPosXFromLarge();
+  viewMode = true;
 }
 
 function newPosX(newWidth, newGap) {
@@ -545,10 +501,37 @@ function newPosX(newWidth, newGap) {
 
     let wouldStart = homeX + pIndex * (newWidth + newGap);
 
+    let wouldStartV2 = homeX + pIndex * (newWidth + newGap) - newWidth / 2;
+
     picture.dataset.posX = wouldStart + percentageMoved / percentPerPixelLarge;
 
     //542.5 + 1 + (373.28 + 104.52)
     //542 + + 104.52 + (1 * 373.28)
+  });
+}
+
+function setNewPosX() {
+  const sliderPercentage = parseFloat(slider.dataset.percentage);
+
+  const pixelsMoved = slideWidth * (sliderPercentage / 100);
+
+  Array.from(pictures).forEach(function (picture, pIndex) {
+    const newPosX = parseFloat(picture.dataset.posXStart) + pixelsMoved;
+    //console.log(sliderPercentage, pixelsMoved, newPosX);
+    picture.posX = newPosX;
+  });
+}
+
+function setNewPosXFromLarge() {
+  const sliderPercentage = parseFloat(slider.dataset.percentage);
+
+  const pixelsMoved = slideWidthLarge * (sliderPercentage / 100);
+
+  Array.from(pictures).forEach(function (picture, pIndex) {
+    const imageLargePosX = parseFloat(picture.dataset.posXStartLarge);
+    const newPosX = imageLargePosX + pixelsMoved;
+    //console.log(sliderPercentage, pixelsMoved, imageLargePosX, newPosX);
+    picture.dataset.posX = newPosX;
   });
 }
 
@@ -563,12 +546,16 @@ for (let i = 0; i < pictures.length; i++) {
     if (currPic === pictureSelectedImage) return;
 
     if (pictureSelected) {
+      //add grey filter back to old image
       pictureSelectedImage.classList.remove("selected-pic");
-
       //MOVE THIS IN GOOD SPOT
-      selectedPicLineItem.style.display = "none";
+      //THIS CAUSED PROBLEM
+      //NEED TO CHANGE/
+      //IFFFFF image is outisde viewport, make hidden?
+      //selectedPicLineItem.style.display = "none";
 
       oldTitle = currTitle;
+      //console.log(oldTitle, currTitle);
       //(oldTitle);
       //console.log("puttextawat", oldTitle);
     }
@@ -582,11 +569,6 @@ for (let i = 0; i < pictures.length; i++) {
     currSecColor = currPic.dataset.secColor;
 
     changeColor(currFirstColor, currSecColor);
-
-    let newLeftPicIndex = i - 1;
-    let newRightPicIndex = i + 1;
-
-    //console.log("left", newLeftPicIndex, "right", newRightPicIndex);
 
     const newPicText = document.getElementById(`title-${i}`);
     newPicText.style.display = "block";
@@ -604,11 +586,16 @@ for (let i = 0; i < pictures.length; i++) {
 
     //getText(titleName, i);
 
+    //OLD newPosX position
     const scaleHeight = windowHeight * 0.6;
     const scaleWidth = scaleHeight * (5 / 7);
 
+    /*
+    if (!viewMode) {
+      newPosX(scaleWidth, newImageGap);
+    }
+    */
     newPosX(scaleWidth, newImageGap);
-
     centerImage(e, currPic, i);
     getText(titleName, i);
     //currPic.classList.add("chosen");
@@ -642,10 +629,9 @@ for (let i = 0; i < pictures.length; i++) {
     exploreWord.style.pointerEvents = "auto";
     exploreWord.style.cursor = "pointer";
     exploreWord.addEventListener("click", function () {
-      exploreClick(e, currIndex);
+      exploreClick(currIndex);
 
       const testRow = rowRow;
-      console.log(testRow);
       const topRow = testRow[0].children;
       const bottomRow = testRow[1].children;
 
@@ -810,43 +796,16 @@ function getText(titleID) {
   });
 
   addExplore();
-  /*
-  //adds 'Explore thing' to page
-  const eTop = document
-    .getElementById(`${titleID}`)
-    .getElementsByClassName("explore-top")[0];
-  const eMiddle = document
-    .getElementById(`${titleID}`)
-    .getElementsByClassName("explore-middle")[0];
-  const eBottom = document
-    .getElementById(`${titleID}`)
-    .getElementsByClassName("explore-bottom")[0];
-  const exploreArray = [eTop, eMiddle, eBottom];
-
-  Array.from(exploreArray).forEach(function (exploreItem, eIndex) {
-    let delay = eIndex * 200 + 800;
-    delay = delay * 0.001;
-    exploreItem.animate(
-      {
-        transform: `translate3d(0%, 0%, 0px)`, //OLD<- `translate(${nextPercenRefined}%, -50%)`
-      },
-      { duration: 800, fill: "forwards" }
-    );
-    exploreItem.animationDelay = `${delay}s`;
-  });
-  */
-
-  //eTop.addEventListener("click", exploreClick(e));
 }
 
 function putTextAway(currTitle) {
-  console.log(currIndex, "putting away");
+  console.log(currIndex, "putting away", currTitle);
 
   const sTopRow = document
     .getElementById(`${currTitle}`)
     .getElementsByClassName("top-letter");
 
-  console.log("sTopRow", sTopRow);
+  //console.log("sTopRow", sTopRow);
 
   const sBottomRow = document
     .getElementById(`${currTitle}`)
@@ -855,6 +814,7 @@ function putTextAway(currTitle) {
   const leftInfo = document.getElementsByClassName("info-left-leter");
   const rightInfo = document.getElementsByClassName("info-right-letter");
 
+  /*
   for (let x = 0; x < sTopRow.length; x++) {
     //console.log(topRow[x]);
     let curr = sTopRow[x];
@@ -862,10 +822,12 @@ function putTextAway(currTitle) {
     let delay = x * 200;
     delay = delay * 0.001;
     curr.style.transform = "translate3d(101%, 0%, 0px)";
-    curr.style.animationDelay = `${delay}s`;
+    //curr.style.animationDelay = `${delay}s`;
+    curr.style.animationDelay = `${0.0}s`;
     curr.classList.remove("glow");
     curr.classList.add("fade");
-  }
+  }*/
+  removeRow(sTopRow);
 
   const bEndIndex = sBottomRow.length - 1;
   const maxTime = bEndIndex * 200;
@@ -935,75 +897,12 @@ function putTextAway(currTitle) {
   putLi.style.display = "none";
 
   */
-
-  /*
-  Array.from(exploreArray).forEach(function (exploreItem, eIndex) {
-    console.log(exploreItem);
-    let delay = eIndex * 200 + 200;
-    delay = delay * 0.001;
-
-    exploreItem.animate(
-      {
-        transform: `translate3d(0%, 0%, 0px)`, //OLD<- `translate(${nextPercenRefined}%, -50%)`
-      },
-      { duration: 200, fill: "forwards" }
-    );
-    exploreItem.animationDelay = `${delay}s`;
-  }); */
-
-  /*
-  eTop.animate(
-    {
-      transform: `translate3d(0%, -101%, 0px)`, //OLD<- `translate(${nextPercenRefined}%, -50%)`
-    },
-    { duration: 200, fill: "forwards" }
-  );
-
-  eMiddle.animate(
-    {
-      transform: `translate3d(0%, 110%, 0px)`, //OLD<- `translate(${nextPercenRefined}%, -50%)`
-    },
-    { duration: 200, fill: "forwards" }
-  );
-
-  eBottom.animate(
-    {
-      transform: `translate3d(0%, -110%, 0px)`, //OLD<- `translate(${nextPercenRefined}%, -50%)`
-    },
-    { duration: 200, fill: "forwards" }
-  );
-  */
 }
 
 //if image scrolls though middle x, it has css trnsition that goes and does not stay
 
 //Add event listener for left and right arrow keys
 //if pic selected, move one over with arrow key direction
-
-const positionInfo = document.getElementsByClassName("position");
-window.onload = (event) => {
-  console.log("posInfo", positionInfo);
-
-  Array.from(positionInfo).forEach(function (posInfoPiece) {
-    posInfoPiece.style.color = "rgb(186, 196, 184)";
-    posInfoPiece.animate(
-      {
-        transform: `translate3d(0%, 0%, 0px)`,
-      },
-      { duration: 1200, fill: "forwards" }
-    );
-    //posInfoPiece.style.animationDelay = "5500"; NOT WORKING
-  });
-
-  aboutBtn.animate(
-    {
-      transform: `translate3d(0%, 0%, 0px)`,
-    },
-    { duration: 1200, fill: "forwards" }
-  );
-
-  aboutBtn.style.pointerEvents = "all";
-};
 
 //NEED TO FIX THIS CLOSE THANG
 
@@ -1060,48 +959,98 @@ function end(t) {
 */
 
 //will move all other photos (not selected) up and off screen
-function exploreClick(e, index) {
+function exploreClick(index) {
   exploreLock = true;
   fillPhotosSign();
   Array.from(pictures).forEach(function (picture, pIndex) {
     if (pIndex !== index) {
       console.log("moving index pic", pIndex);
       //picture.style.translate = "translate3d(0%, -100%, 0px)";
+      picture.classList.remove("un-explore-action");
       picture.classList.add("explore-action");
     }
   });
+
+  removeExplore(currTitle);
+}
+
+//will move all other photos (not selected) up and off screen
+function exploreClickV2(e, index) {
+  exploreLock = true;
+  fillPhotosSign();
+  Array.from(pictures).forEach(function (picture, pIndex) {
+    if (pIndex !== index) {
+      picture.animate(
+        {
+          transform: "translate(0%, -100vh)",
+        },
+        {
+          duration: 1000,
+          fill: "both",
+          easing: "cubic-bezier(0.17, 0.74, 0.27, 0.94)",
+        }
+      );
+    }
+  });
+
+  removeExplore(currTitle);
 }
 
 function removeExploreClick() {
   exploreLock = false;
 
   Array.from(pictures).forEach(function (picture, pIndex) {
-    console.log("moving index pic", pIndex);
-    //picture.style.translate = "translate3d(0%, -100%, 0px)";
+    if (picture !== pictureSelectedImage) {
+      console.log("moving index pic", pIndex);
+      //picture.style.translate = "translate3d(0%, -100%, 0px)";
 
-    //picture.classList.add("un-explore-action");
-    picture.classList.remove("explore-action");
-    //picture.classList.remove("un-explore-action");
+      //picture.classList.add("un-explore-action");
+      picture.classList.remove("explore-action");
+      picture.classList.add("un-explore-action");
+      //picture.classList.remove("un-explore-action");
 
-    /*
-    picture.animate(
-      {
-        //transform: "translate(0%, -10vh)",
-        transform: "translate(0%, -10vh)",
-      },
-      { duration: 1000, fill: "forwards" }
-    );
-    */
+      /*
+      picture.animate(
+        {
+          //transform: "translate(0%, -10vh)",
+          transform: "translate(0%, -10vh)",
+        },
+        { duration: 1000, fill: "forwards" }
+      );
+      */
+    }
   });
 
   resetText();
 }
 
+function removeExploreClickV2() {
+  Array.from(pictures).forEach(function (picture, pIndex) {
+    if (picture !== pictureSelectedImage) {
+      console.log("moving index pic", pIndex);
+
+      picture.animate(
+        {
+          //transform: "translate(0%, -10vh)",
+          transform: "translate(0%, -10vh)",
+        },
+        {
+          duration: 1000,
+          fill: "both",
+          easing: "cubic-bezier(0.17, 0.74, 0.27, 0.94)",
+          //easing: "ease-in",
+        }
+      );
+    }
+  });
+
+  resetText();
+  exploreLock = false;
+}
+
 function exploreTextLeft(rowOfLetters, constant) {
   let startPosX = 0;
   let lastLetter = 0;
-
-  console.log("exploreleft", rowOfLetters);
 
   for (let rX = 0; rX < rowOfLetters.length; rX++) {
     let rItem = rowOfLetters[rX];
@@ -1149,7 +1098,6 @@ function getOldPos(givenRow) {
 
     let ogPos = cuuItem.style.transform;
     transformString = ogPos;
-    console.log("cuuItem", cuuItem.style.transform);
 
     let constant = 200;
     let potentialTime = givenRow.length * 100 + constant;
@@ -1213,6 +1161,7 @@ function fillPhotosSign() {
   });
 }
 
+//after a user clicks to go back to photos, the "photographs" label will disapear
 function removePhotosSign() {
   const sign = photosSign.children[0];
   sign.style.transform = "translate3d(0%, -101%, 0px)";
@@ -1242,13 +1191,14 @@ function removePhotosSign() {
   photosReturn.removeEventListener("click", () => {
     removeExploreClick();
   });
+
+  addExplore();
 }
 
 //reading material
 //https://udn.realityripple.com/docs/Web/API/Element/animate
 
 function removeExplore(givenCurrTitle) {
-  console.log("removeexplore", givenCurrTitle);
   const eTop = document
     .getElementById(`${givenCurrTitle}`)
     .getElementsByClassName("explore-top")[0];
@@ -1260,13 +1210,14 @@ function removeExplore(givenCurrTitle) {
     .getElementsByClassName("explore-bottom")[0];
 
   eTop.style.transform = "translate3d(0%, -101%, 0px)";
-  eTop.style.animationDelay = "2s";
-  eMiddle.style.transform = "translate3d(0%, -110%, 0px)";
+  eTop.style.transitionDelay = "0s";
+  eMiddle.style.transform = "translate3d(0%, 110%, 0px)";
+  eMiddle.style.transitionDelay = "0s";
   eBottom.style.transform = "translate3d(0%, -110%, 0px)";
+  eBottom.style.transitionDelay = "0s";
 }
 
 function addExplore() {
-  console.log("init, addExploore");
   const eTop = document
     .getElementById(`${currTitle}`)
     .getElementsByClassName("explore-top")[0];
@@ -1276,8 +1227,180 @@ function addExplore() {
   const eBottom = document
     .getElementById(`${currTitle}`)
     .getElementsByClassName("explore-bottom")[0];
+  const exploreArrayItems = [eTop, eMiddle, eBottom];
 
   eTop.style.transform = "translate3d(0%, 0%, 0px)";
   eMiddle.style.transform = "translate3d(0%, 0%, 0px)";
   eBottom.style.transform = "translate3d(0%, 0%, 0px)";
+
+  exploreArrayItems.forEach(function (eArrayItem) {
+    eArrayItem.style.transform = "translate3d(0%, 0%, 0px)";
+    eArrayItem.style.transitionDelay = "1s";
+  });
+}
+
+function removeRow(sTopRow) {
+  for (let x = 0; x < sTopRow.length; x++) {
+    //console.log(topRow[x]);
+    let curr = sTopRow[x];
+
+    let delay = x * 200;
+    delay = delay * 0.001;
+    curr.style.transform = "translate3d(101%, 0%, 0px)";
+    //curr.style.animationDelay = `${delay}s`;
+    curr.style.animationDelay = `${0.0}s`;
+    curr.classList.remove("glow");
+    curr.classList.add("fade");
+  }
+}
+
+//REALIZING after first click, "exlpore' tages clash with each other"
+//Maybe trisiton delay needs to be added back?
+
+/*take centered image and make it center in small slider
+1.) take x-position, add 1/2 of large image width 
+---> ex: start x of large is 747 (small statr is 864)
+---> large image middle is at 1/2 of page. when it becomes small left side starts at middle?
+2.) calc % slider moves for this image to be at mid point of page
+3.) turn large pics into small
+4.) mode previous centered image (selected image) to middle of screen
+*/
+function putBackSmallImage(centeredPic, currPicIndex) {
+  //new height of image
+  const scaleHeight = windowHeight * 0.6;
+
+  //new width of image
+  const scaleWidth = scaleHeight * (5 / 7);
+
+  //console.log(centeredPic);
+
+  //get start of image and add 1/2 of large0image width
+  let position = parseFloat(centeredPic.dataset.posX) + scaleWidth / 2;
+  //console.log("px", position);
+
+  //let deltaMiddle = (position + endX) / 2 - homeX; //ORIGINAL
+  //distance from middle of image to center of page
+  let deltaMiddleV1 = position + scaleWidth / 2 - homeX;
+  let deltaMiddleV2 = position - homeX;
+  let deltaMiddle = parseFloat(centeredPic.dataset.posXStart) - homeX;
+
+  //does this have to be calc from start x of small image?????
+
+  const usingPercentage = deltaMiddle * percentPerPixel * -1;
+
+  console.log("using%", usingPercentage);
+
+  //how far image is pixel wise from middle
+  const nextPercentageRaw =
+    parseFloat(slider.dataset.prevPercentage) + usingPercentage;
+
+  const nextPercentageRefined = Math.max(Math.min(nextPercentageRaw, 0), -100);
+
+  slider.dataset.percentage = nextPercentageRefined;
+  //currPercentage +
+  slider.animate(
+    {
+      transform: `translate(${nextPercentageRefined}%, 0%)`,
+    },
+    { duration: 800, fill: "forwards" } //500 instead of 1000
+  );
+
+  //500 - (image.width /2)
+
+  const currPicPosX = homeX;
+  centeredPic.dataset.posX = currPicPosX;
+  slider.dataset.prevPercentage = nextPercentageRefined;
+
+  //NEED THIS
+  //need to give proper X
+  setNewPosX();
+
+  viewMode = false;
+}
+
+addEventListener("keyup", ({ key }) => {
+  if (!viewMode) return;
+
+  switch (key) {
+    case "ArrowRight":
+      if (currIndex < pictures.length - 1) {
+        const rightIndex = currIndex + 1;
+        const rightPicture = pictures[rightIndex];
+
+        putTextAway(currTitle, currIndex);
+        resetSelectedImageColor();
+        arrowSelect(rightPicture, rightIndex, "ArrowRight");
+      }
+      break;
+
+    case "ArrowLeft":
+      if (currIndex > 0) {
+        const leftIndex = currIndex - 1;
+        const leftPicture = pictures[leftIndex];
+
+        putTextAway(currTitle, currIndex);
+        resetSelectedImageColor();
+        arrowSelect(leftPicture, leftIndex, "ArrowRight");
+      }
+      break;
+  }
+});
+
+function arrowSelect(sentPicture, sentIndex, key) {
+  const titleName = `title-${sentIndex}`;
+
+  //dont need this bc only works when in viewMode anyway???
+  pictureSelected = true;
+  pictureSelectedImage = sentPicture;
+
+  currFirstColor = sentPicture.dataset.firstColor;
+  currSecColor = sentPicture.dataset.secColor;
+
+  changeColor(currFirstColor, currSecColor);
+
+  const nextPicText = document.getElementById(`title-${sentIndex}`);
+  nextPicText.style.display = "block";
+
+  sentPicture.classList.add("selected-pic");
+
+  //sets outer variables
+  currTitle = titleName;
+  currIndex = sentIndex;
+  selectedPicLineItem = nextPicText;
+
+  const scaleHeight = windowHeight * 0.6;
+  const scaleWidth = scaleHeight * (5 / 7);
+
+  newPosX(scaleWidth, newImageGap);
+  centerImage(key, sentPicture, sentIndex);
+  getText(titleName, sentIndex);
+
+  //DONT NEED THIS IN ARROW FUNCTIONS???
+  //Array.from(pictures).forEach(function (picture) {
+  //  picture.classList.add("chosen");
+  //  picture.classList.remove("scroll-on-chosen");
+  //});
+
+  //DONT NEED THIS IN ARROW FUNCTIONS???
+  //slider.classList.add("selected");
+  //slider.classList.remove("unselected");
+
+  const rowRow = document
+    .getElementById(`${titleName}`)
+    .getElementsByClassName("title");
+
+  const exploreWord = document.getElementsByClassName("line-w")[sentIndex];
+  //console.log("eword", exploreWord);
+  exploreWord.style.pointerEvents = "auto";
+  exploreWord.style.cursor = "pointer";
+  exploreWord.addEventListener("click", function () {
+    exploreClick(currIndex);
+
+    const testRow = rowRow;
+    const topRow = testRow[0].children;
+    const bottomRow = testRow[1].children;
+
+    exploreTextLeft(topRow, 0);
+    exploreTextLeft(bottomRow, 200);
+  });
 }
