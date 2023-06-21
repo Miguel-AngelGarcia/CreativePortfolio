@@ -1276,7 +1276,7 @@ function fillPhotosSign() {
   */
 
   const target = photosTarget.children[0];
-  photosTarget.getElementsByClassName("line")[0];
+  //photosTarget.getElementsByClassName("line")[0];
   const targetDiv = target.getElementsByClassName("line")[0].children;
 
   const photosArray = [targetDiv[1], targetDiv[0], target, line, sign];
