@@ -11,6 +11,7 @@ const abtCloseLines = document.getElementsByClassName("line-about");
 const posBottomLeft = document.getElementsByClassName("position");
 //like person's position
 const positionInfo = document.getElementsByClassName("position");
+const linksInfo = document.getElementsByClassName("links");
 
 const slider = document.querySelector(".picture-group-slider");
 const sliderContainer = document.getElementById("slider-container");
@@ -113,6 +114,11 @@ function changeColor(changeToFirstColor, changeToSecColor) {
     posElem.style.color = changeToFirstColor;
   });
 
+  Array.from(linksInfo).forEach(function (linkInfoPiece) {
+    linkInfoPiece.style.color = changeToFirstColor;
+    //posInfoPiece.style.animationDelay = "5500"; NOT WORKING
+  });
+
   //changes about & close color
   aboutBtn.style.color = changeToFirstColor;
 
@@ -176,6 +182,17 @@ function loadRest() {
   Array.from(positionInfo).forEach(function (posInfoPiece) {
     posInfoPiece.style.color = "rgb(186, 196, 184)";
     posInfoPiece.animate(
+      {
+        transform: `translate3d(0%, 0%, 0px)`,
+      },
+      { duration: 1200, fill: "forwards" }
+    );
+    //posInfoPiece.style.animationDelay = "5500"; NOT WORKING
+  });
+
+  Array.from(linksInfo).forEach(function (linkInfoPiece) {
+    linkInfoPiece.style.color = "rgb(186, 196, 184)";
+    linkInfoPiece.animate(
       {
         transform: `translate3d(0%, 0%, 0px)`,
       },
