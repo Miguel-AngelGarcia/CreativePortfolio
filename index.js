@@ -302,9 +302,9 @@ sliderContainer.addEventListener("wheel", function (e) {
 
   rangedScroll = Math.max(scroll, leftMax);
 
-  const percen = (rangedScroll / maxDe) * -10;
+  const percenV1 = (rangedScroll / maxDe) * -10;
   //ORIGINAL;
-  //const percen = (rangedScroll / maxDe) * 100; //v2
+  const percen = (rangedScroll / maxDe) * -25; //v2
 
   //const percen = testX; //v3 TEST
 
