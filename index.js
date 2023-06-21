@@ -1,6 +1,7 @@
 //const slider = document.getElementById("picture-group-slider");
 //const sliderContainer = document.getElementById("slider-container");
 const bgColorDiv = document.getElementById("app");
+const loadNum = document.getElementsByClassName("loadNum");
 const nameButtonLetters = document
   .getElementById("personNameButton")
   .getElementsByTagName("span");
@@ -8,6 +9,8 @@ const aboutBtn = document.getElementById("about-0");
 const closeBtn = document.getElementById("close-1");
 const abtCloseLines = document.getElementsByClassName("line-about");
 const posBottomLeft = document.getElementsByClassName("position");
+//like person's position
+const positionInfo = document.getElementsByClassName("position");
 
 const testExploreWord = document.getElementsByClassName("explore");
 
@@ -25,7 +28,7 @@ let currSecColor = defaultSecColor;
 let oldTitle = null;
 let viewMode = false;
 
-slider.dataset.percentage = "0";
+//slider.dataset.percentage = "0";
 
 const pictures = document.getElementsByClassName("image");
 const homeX = window.innerWidth / 2;
@@ -61,6 +64,43 @@ let exploreLock = false;
 const percentPerPixel = (1 / parseFloat(slideWidth)) * 100;
 
 const percentPerPixelLarge = (1 / parseFloat(slideWidthLarge)) * 100;
+
+window.onload = (event) => {
+  Array.from(pictures).forEach(function (picture) {
+    //remove the "unexplore class thing"
+    picture.classList.remove("un-explore-action");
+  });
+
+  let loadNumString = "";
+  //work on 000 numbers to show loading
+  Array.from(loadNum).forEach(function (num) {
+    num.style.color = "rgb(186, 196, 184)";
+    loadNumString += num.innerHTML;
+  });
+
+  aboutBtn.style.pointerEvents = "all";
+
+  //starts at 0
+  let i = 0;
+  console.log(loadNumString);
+  let myInterval = setInterval(function () {
+    console.log(typeof i);
+    if (i == 100) {
+      console.log("done");
+      clearInterval(myInterval);
+      loadRest();
+    }
+
+    loadNumString = String(i).padStart(3, "0");
+
+    loadNum[0].innerHTML = loadNumString[0];
+    loadNum[1].innerHTML = loadNumString[1];
+    loadNum[2].innerHTML = loadNumString[2];
+    console.log(loadNumString, i);
+
+    i++;
+  }, 7);
+};
 
 function changeColor(changeToFirstColor, changeToSecColor) {
   //change bgColor
@@ -102,9 +142,39 @@ function emergencyRowLayout(currentRow) {
   });
 }
 
-const positionInfo = document.getElementsByClassName("position");
-window.onload = (event) => {
-  console.log("posInfo", positionInfo);
+function loadRest() {
+  Array.from(loadNum).forEach(function (loadedNum) {
+    loadedNum.animate(
+      {
+        transform: `translate3d(110%, 0%, 0px)`, //OLD<- `translate(${nextPercenRefined}%, -50%)`
+      },
+      { duration: 400, fill: "forwards" }
+    );
+  });
+
+  Array.from(nameButtonLetters).forEach(function (nameLetter) {
+    console.log(nameLetter);
+    nameLetter.animate(
+      {
+        transform: `translate3d(0%, 0%, 0px)`, //OLD<- `translate(${nextPercenRefined}%, -50%)`
+      },
+      {
+        duration: 400,
+        fill: "forwards",
+        delay: 200,
+        easing: "cubic-bezier(0, 0, 0.19, 1)",
+      }
+    );
+  });
+
+  sliderContainer.classList.remove("hidden");
+
+  /*
+  slider.animate(
+    { left: "50%" },
+    { duration: 1000, fill: "forwards", easing: "cubic-bezier(0, 0, 0.19, 1)" }
+  );
+  */
 
   Array.from(positionInfo).forEach(function (posInfoPiece) {
     posInfoPiece.style.color = "rgb(186, 196, 184)";
@@ -121,16 +191,22 @@ window.onload = (event) => {
     {
       transform: `translate3d(0%, 0%, 0px)`,
     },
-    { duration: 1200, fill: "forwards" }
+    { duration: 1200, fill: "forwards", easing: "cubic-bezier(0, 0, 0.19, 1)" }
   );
 
-  Array.from(pictures).forEach(function (picture) {
-    //remove the "unexplore class thing"
-    picture.classList.remove("un-explore-action");
+  Array.from(pictures).forEach(function (picture, picIndex) {
+    delay = picIndex * 100 + 1000;
+    picture.animate(
+      { left: "0%" },
+      {
+        duration: 500,
+        fill: "forwards",
+        easing: "cubic-bezier(0, 0, 0.19, 1)",
+        delay: delay,
+      }
+    );
   });
-
-  aboutBtn.style.pointerEvents = "all";
-};
+}
 
 let scroll = 0;
 let scrolly = Math.max(Math.min(rightMax, scroll), leftMax);
@@ -198,6 +274,7 @@ sliderContainer.addEventListener("wheel", function (e) {
   let testX = parseFloat(e.deltaX) / parseFloat(Math.abs(e.deltaX));
 
   if (isNaN(testX)) {
+    console.log(testX, "NAN");
     testX = -1;
   }
 
@@ -465,12 +542,16 @@ function centerImage(clickEvent, currPicSent, currPicIndex) {
 
   const usingPercentage = deltaMiddle * percentPerPixelLarge * -1;
 
+  console.log("deltaMiddle", deltaMiddle);
+  console.log("usingper", usingPercentage);
   //how far image is pixel wise from middle
   const nextPercentageRaw =
     parseFloat(slider.dataset.prevPercentage) + usingPercentage;
+  usingPercentage;
 
+  console.log("nextpR", nextPercentageRaw);
   const nextPercentageRefined = Math.max(Math.min(nextPercentageRaw, 0), -100);
-
+  console.log("nextpR", nextPercentageRefined);
   slider.dataset.percentage = nextPercentageRefined;
   //currPercentage +
 
@@ -597,6 +678,7 @@ for (let i = 0; i < pictures.length; i++) {
     }
     */
     newPosX(scaleWidth, newImageGap);
+    //setNewPosX();
     centerImage(e, currPic, i);
     getText(titleName, i);
     //currPic.classList.add("chosen");
@@ -1386,7 +1468,8 @@ function arrowSelect(sentPicture, sentIndex, key) {
   const scaleHeight = windowHeight * 0.6;
   const scaleWidth = scaleHeight * (5 / 7);
 
-  newPosX(scaleWidth, newImageGap);
+  //newPosX(scaleWidth, newImageGap);
+  setNewPosXFromLarge();
   centerImage(key, sentPicture, sentIndex);
   getText(titleName, sentIndex);
 

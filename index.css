@@ -74,13 +74,22 @@ ul {
   transition: background 1000ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
+#load {
+  position: absolute;
+  top: 40px;
+  left: 40px;
+  font-size: 50px;
+  line-height: 50px;
+  letter-spacing: -0.23em;
+}
+
 #personNameButton {
   position: absolute;
   top: 40px;
   left: 40px;
   font-size: 50px;
   line-height: 50px;
-  letter-spacing: -0.1em;
+  letter-spacing: -0.04em;
 }
 
 #personNameButton > span,
@@ -103,6 +112,20 @@ ul {
 
 #personNameButton span {
   will-change: color, transform;
+  float: left;
+}
+
+#load span {
+  will-change: transform;
+  overflow: hidden;
+  float: left;
+}
+
+#load span span {
+  padding-right: 10px;
+  display: block;
+  will-change: transform;
+  transform: translate3d(0%, 0, 0);
 }
 
 .about,
@@ -512,6 +535,12 @@ animation-duration: 1s;
   position: relative;
 }
 
+.hidden {
+  display: none;
+}
+
+/*will start of screen
+after page load, will come in*/
 .picture-group-slider {
   display: flex;
   gap: 2vh;
@@ -577,6 +606,8 @@ Hypothesis: animating the -10vhof removeExploreClick sticks. how do we remove?
   height: 40vh;
   object-fit: cover;
   object-position: 100% 50%;
+  left: 50vw;
+  position: relative;
 }
 
 .picture-group-slider > .image:hover {
