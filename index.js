@@ -12,8 +12,6 @@ const posBottomLeft = document.getElementsByClassName("position");
 //like person's position
 const positionInfo = document.getElementsByClassName("position");
 
-const testExploreWord = document.getElementsByClassName("explore");
-
 const slider = document.querySelector(".picture-group-slider");
 const sliderContainer = document.getElementById("slider-container");
 
@@ -27,6 +25,8 @@ let currFirstColor = defaultFirstColor;
 let currSecColor = defaultSecColor;
 let oldTitle = null;
 let viewMode = false;
+
+let currRow = null;
 
 //slider.dataset.percentage = "0";
 
@@ -56,6 +56,8 @@ let pictureSelected = false;
 let pictureSelectedImage = null;
 let selectedPicLineItem = null;
 
+let prevSelectedPicLineItem = null;
+
 let selectedPicRowLetters = null;
 
 let exploreLock = false;
@@ -82,11 +84,8 @@ window.onload = (event) => {
 
   //starts at 0
   let i = 0;
-  console.log(loadNumString);
   let myInterval = setInterval(function () {
-    console.log(typeof i);
     if (i == 100) {
-      console.log("done");
       clearInterval(myInterval);
       loadRest();
     }
@@ -96,7 +95,6 @@ window.onload = (event) => {
     loadNum[0].innerHTML = loadNumString[0];
     loadNum[1].innerHTML = loadNumString[1];
     loadNum[2].innerHTML = loadNumString[2];
-    console.log(loadNumString, i);
 
     i++;
   }, 7);
@@ -153,7 +151,6 @@ function loadRest() {
   });
 
   Array.from(nameButtonLetters).forEach(function (nameLetter) {
-    console.log(nameLetter);
     nameLetter.animate(
       {
         transform: `translate3d(0%, 0%, 0px)`, //OLD<- `translate(${nextPercenRefined}%, -50%)`
@@ -196,10 +193,12 @@ function loadRest() {
 
   Array.from(pictures).forEach(function (picture, picIndex) {
     delay = picIndex * 100 + 1000;
+    // 1000 +
+    //delay = 1000 + (1 / (picIndex + 1)) * 100;
     picture.animate(
       { left: "0%" },
       {
-        duration: 500,
+        duration: 400,
         fill: "forwards",
         easing: "cubic-bezier(0, 0, 0.19, 1)",
         delay: delay,
@@ -446,7 +445,15 @@ window.onmouseup = (e) => {
   //(pictureSelected && e.toElement.nodeName === "IMG") didnt work on firefox
   if (pictureSelected && e.target.localName === "img") {
     console.log("onmouseup going to putTextAway");
+
     putTextAway(currTitle, currIndex);
+
+    /*
+    console.log(currExploreWord, "EXPLOREPIC");
+    currExploreWord.removeEventListener("click", function () {
+      exploreClick();
+    });
+    */
   }
 
   //if click target NOT already selected image, put text away
@@ -507,6 +514,11 @@ for (const image of slider.getElementsByClassName("image")) {
   testI++;
 }
 
+function setPrevListItem() {
+  prevSelectedPicLineItem = selectedPicLineItem;
+  console.log("PREVLISTITEM", prevSelectedPicLineItem);
+}
+
 /*
 MAKE images next to centered image zoomed in a little?
 */
@@ -542,16 +554,16 @@ function centerImage(clickEvent, currPicSent, currPicIndex) {
 
   const usingPercentage = deltaMiddle * percentPerPixelLarge * -1;
 
-  console.log("deltaMiddle", deltaMiddle);
-  console.log("usingper", usingPercentage);
+  //console.log("deltaMiddle", deltaMiddle);
+  //console.log("usingper", usingPercentage);
   //how far image is pixel wise from middle
   const nextPercentageRaw =
     parseFloat(slider.dataset.prevPercentage) + usingPercentage;
   usingPercentage;
 
-  console.log("nextpR", nextPercentageRaw);
+  //console.log("nextpR", nextPercentageRaw);
   const nextPercentageRefined = Math.max(Math.min(nextPercentageRaw, 0), -100);
-  console.log("nextpR", nextPercentageRefined);
+  //console.log("nextpR", nextPercentageRefined);
   slider.dataset.percentage = nextPercentageRefined;
   //currPercentage +
 
@@ -584,7 +596,7 @@ function newPosX(newWidth, newGap) {
     let wouldStartV2 = homeX + pIndex * (newWidth + newGap) - newWidth / 2;
 
     picture.dataset.posX = wouldStart + percentageMoved / percentPerPixelLarge;
-    console.log(picture.dataset.posX);
+    //console.log(picture.dataset.posX);
     //542.5 + 1 + (373.28 + 104.52)
     //542 + + 104.52 + (1 * 373.28)
   });
@@ -634,7 +646,8 @@ for (let i = 0; i < pictures.length; i++) {
       //IFFFFF image is outisde viewport, make hidden?
       //selectedPicLineItem.style.display = "none";
 
-      oldTitle = currTitle;
+      //oldTitle = currTitle;
+      //console.log("OLD TITLE", oldTitle);
       //console.log(oldTitle, currTitle);
       //(oldTitle);
       //console.log("puttextawat", oldTitle);
@@ -707,6 +720,8 @@ for (let i = 0; i < pictures.length; i++) {
       .getElementById(`${titleName}`)
       .getElementsByClassName("title");
 
+    currRow = rowRow;
+
     //const exploreWord = document.getElementsByClassName("line-w")[i];
     const exploreWord = newPicText.getElementsByClassName("explore")[0];
 
@@ -716,17 +731,37 @@ for (let i = 0; i < pictures.length; i++) {
     //console.log("eword", exploreWord);
     exploreWord.style.pointerEvents = "auto";
     exploreWord.style.cursor = "pointer";
-    exploreWord.addEventListener("click", function () {
+    /*
+    exploreWord.addEventListener("click", function (e) {
       exploreClick(currIndex);
+
+      console.log(e.target);
 
       const testRow = rowRow;
       const topRow = testRow[0].children;
       const bottomRow = testRow[1].children;
 
+      console.log("TESTROW", testRow, topRow, bottomRow);
+
       exploreTextLeft(topRow, 0);
       exploreTextLeft(bottomRow, 200);
     });
+    */
+    exploreWord.addEventListener("click", exploreWordAction);
   });
+}
+
+function exploreWordAction() {
+  exploreClick(currIndex);
+
+  const testRow = currRow;
+  const topRow = testRow[0].children;
+  const bottomRow = testRow[1].children;
+
+  console.log("TESTROW", testRow, topRow, bottomRow);
+
+  exploreTextLeft(topRow, 0);
+  exploreTextLeft(bottomRow, 200);
 }
 
 function getText(titleID) {
@@ -889,6 +924,8 @@ function getText(titleID) {
 function putTextAway(currTitle) {
   console.log(currIndex, "putting away", currTitle);
 
+  setPrevListItem();
+
   const sTopRow = document
     .getElementById(`${currTitle}`)
     .getElementsByClassName("top-letter");
@@ -975,10 +1012,12 @@ function putTextAway(currTitle) {
 
   /*
   console.log(currExploreWord, "EXPLOREPIC");
-  currExploreWord.removeEventListener("click", function () {
-    exploreClick();
-  });
+  currExploreWord.removeEventListener("click", exploreWordAction);
   */
+
+  setTimeout(function () {
+    prevSelectedPicLineItem.style.display = "none";
+  }, 1000);
 }
 
 //if image scrolls though middle x, it has css trnsition that goes and does not stay
@@ -1046,7 +1085,6 @@ function exploreClick(index) {
   fillPhotosSign();
   Array.from(pictures).forEach(function (picture, pIndex) {
     if (pIndex !== index) {
-      console.log("moving index pic", pIndex);
       //picture.style.translate = "translate3d(0%, -100%, 0px)";
       picture.classList.remove("un-explore-action");
       picture.classList.add("explore-action");
@@ -1083,7 +1121,6 @@ function removeExploreClick() {
 
   Array.from(pictures).forEach(function (picture, pIndex) {
     if (picture !== pictureSelectedImage) {
-      console.log("moving index pic", pIndex);
       //picture.style.translate = "translate3d(0%, -100%, 0px)";
 
       //picture.classList.add("un-explore-action");
