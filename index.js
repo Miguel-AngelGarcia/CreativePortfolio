@@ -1282,6 +1282,7 @@ function fillPhotosSign() {
   const photosArray = [targetDiv[1], targetDiv[0], target, line, sign];
 
   Array.from(targetDiv).forEach(function (tDivLine) {
+    tDivLine.style.transitionDuration = "0ms";
     tDivLine.style.background = currFirstColor;
   });
 
@@ -1320,10 +1321,13 @@ function removePhotosSign() {
   });
 
   target.style.transform = "translate3d(0%, 101%, 0px)";
-  target.style.color = defaultSecColor;
 
   photosReturn.style.pointerEvents = "none";
   photosReturn.style.cursor = "auto";
+
+  setTimeout(function () {
+    target.style.color = defaultSecColor;
+  }, 1000);
 
   /*
   photosReturn.removeEventListener("click", () => {
@@ -1471,6 +1475,8 @@ function putBackSmallImage(centeredPic, currPicIndex) {
 
 addEventListener("keyup", ({ key }) => {
   if (!viewMode) return;
+
+  if (exploreLock) return;
 
   switch (key) {
     case "ArrowRight":
