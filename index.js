@@ -748,6 +748,15 @@ for (let i = 0; i < pictures.length; i++) {
 
     currRow = rowRow;
 
+    //gets blog element of current li/image and sets it.
+    //add this to arrow function
+    const testBlog = document
+      .getElementById(`${titleName}`)
+      .getElementsByClassName("blog")[0];
+
+    currBlog = testBlog;
+    console.log("CURRGETTEXT", testBlog);
+
     //const exploreWord = document.getElementsByClassName("line-w")[i];
     const exploreWord = newPicText.getElementsByClassName("explore")[0];
 
@@ -757,27 +766,13 @@ for (let i = 0; i < pictures.length; i++) {
     //console.log("eword", exploreWord);
     exploreWord.style.pointerEvents = "auto";
     exploreWord.style.cursor = "pointer";
-    /*
-    exploreWord.addEventListener("click", function (e) {
-      exploreClick(currIndex);
 
-      console.log(e.target);
-
-      const testRow = rowRow;
-      const topRow = testRow[0].children;
-      const bottomRow = testRow[1].children;
-
-      console.log("TESTROW", testRow, topRow, bottomRow);
-
-      exploreTextLeft(topRow, 0);
-      exploreTextLeft(bottomRow, 200);
-    });
-    */
     exploreWord.addEventListener("click", exploreWordAction);
   });
 }
 
 function exploreWordAction() {
+  console.log("in exploreClick", currIndex, currRow[0].innerText);
   exploreClick(currIndex);
 
   const testRow = currRow;
@@ -789,22 +784,47 @@ function exploreWordAction() {
   exploreTextLeft(topRow, 0);
   exploreTextLeft(bottomRow, 200);
 
+  /* move to getText???
   const testBlog = document
-    .getElementById(`${currTitle}`)
+    .getElementById(`title-${currIndex}`)
     .getElementsByClassName("blog")[0];
 
   currBlog = testBlog;
+  console.log("CURR", testBlog);
+  */
 
-  testBlog.style.display = "block";
-  testBlog.style.color = currFirstColor;
+  /*
+  currBlog.style.display = "block";
+  currBlog.style.color = currFirstColor;
 
-  const textBlog = testBlog.children[0];
+  const textBlog = currBlog.children[0];
   //textBlog.style.transform = "translate3d(-50%, 0%, 0px)";
+  console.log(textBlog);
 
   textBlog.animate(
     {
-      /*transform: "translate3d(0%, 0%, 0px)"*/ opacity: 1,
+      opacity: 1,
     },
+    {
+      duration: 800,
+      fill: "forwards",
+      easing: "ease-in",
+      delay: 400,
+    }
+  ); */
+
+  blogTestReturn();
+}
+
+function blogTestReturn() {
+  currBlog.style.display = "block";
+  currBlog.style.color = currFirstColor;
+
+  const textBlog = currBlog.children[0];
+  console.log(textBlog);
+
+  textBlog.animate(
+    { opacity: 1 },
     {
       duration: 800,
       fill: "forwards",
@@ -1065,6 +1085,23 @@ function putTextAway(currTitle) {
   currExploreWord.removeEventListener("click", exploreWordAction);
   */
 
+  /*
+  setTimeout(function () {
+    console.log(currBlog);
+    console.log("here");
+    currBlog.style.color = currSecColor;
+    currBlog.style.display = "none";
+    currBlog = null;
+  }, 500);
+  */
+
+  //gotta move this to when "photographs" is clicked
+
+  console.log("CURRBLOG", currBlog);
+  currBlog.style.color = currSecColor;
+  currBlog.style.display = "none";
+  currBlog = null;
+
   setTimeout(function () {
     prevSelectedPicLineItem.style.display = "none";
   }, 1000);
@@ -1089,8 +1126,6 @@ aboutBtn.addEventListener("click", function (e) {
   );
 
   aboutBtn.style.pointerEvents = "none";
-
-  removeExploreClick();
 
   closeBtn.animate(
     {
@@ -1172,22 +1207,10 @@ function removeExploreClick() {
 
   Array.from(pictures).forEach(function (picture, pIndex) {
     if (picture !== pictureSelectedImage) {
-      //picture.style.translate = "translate3d(0%, -100%, 0px)";
-
       //picture.classList.add("un-explore-action");
       picture.classList.remove("explore-action");
       picture.classList.add("un-explore-action");
       //picture.classList.remove("un-explore-action");
-
-      /*
-      picture.animate(
-        {
-          //transform: "translate(0%, -10vh)",
-          transform: "translate(0%, -10vh)",
-        },
-        { duration: 1000, fill: "forwards" }
-      );
-      */
     }
   });
 
@@ -1260,6 +1283,31 @@ function resetText() {
   getOldPos(firstRow);
   getOldPos(secRow);
   removePhotosSign();
+
+  console.log("CURRBLOGRESETTEXT", currBlog);
+  const textBlog = currBlog.children[0];
+  //textBlog.style.transform = "translate3d(-50%, 0%, 0px)";
+
+  textBlog.animate(
+    {
+      opacity: 0,
+    },
+    {
+      duration: 300,
+      fill: "forwards",
+      easing: "ease-in",
+      delay: 0,
+    }
+  );
+  /*
+  setTimeout(function () {
+    console.log(currBlog);
+    console.log("here");
+    currBlog.style.color = currSecColor;
+    currBlog.style.display = "none";
+    currBlog = null;
+  }, 500);
+  */
 }
 
 function getOldPos(givenRow) {
@@ -1379,7 +1427,7 @@ function removePhotosSign() {
 
 //reading material
 //https://udn.realityripple.com/docs/Web/API/Element/animate
-
+//gets rids of the "explore" button on bottom of page for image/li
 function removeExplore(givenCurrTitle) {
   const eTop = document
     .getElementById(`${givenCurrTitle}`)
@@ -1555,6 +1603,13 @@ function arrowSelect(sentPicture, sentIndex, key) {
   const scaleHeight = windowHeight * 0.6;
   const scaleWidth = scaleHeight * (5 / 7);
 
+  const testBlog = document
+    .getElementById(`${titleName}`)
+    .getElementsByClassName("blog")[0];
+
+  currBlog = testBlog;
+  console.log("CURRGETTEXT", currBlog, titleName);
+
   //newPosX(scaleWidth, newImageGap);
   setNewPosXFromLarge();
   centerImage(key, sentPicture, sentIndex);
@@ -1578,6 +1633,7 @@ function arrowSelect(sentPicture, sentIndex, key) {
   //console.log("eword", exploreWord);
   exploreWord.style.pointerEvents = "auto";
   exploreWord.style.cursor = "pointer";
+
   exploreWord.addEventListener("click", function () {
     exploreClick(currIndex);
 
@@ -1587,5 +1643,9 @@ function arrowSelect(sentPicture, sentIndex, key) {
 
     exploreTextLeft(topRow, 0);
     exploreTextLeft(bottomRow, 200);
+
+    blogTestReturn();
   });
+
+  //exploreWord.addEventListener("click", exploreWordAction);
 }

@@ -536,7 +536,7 @@ animation-duration: 1s;
 }
 .information-left div div:nth-child(1) {
   width: 30px;
-  font-size: 6px;
+  font-size: 9px;
 }
 .information-left div div:nth-child(2) {
   width: 130px;
@@ -981,11 +981,13 @@ https://stackoverflow.com/questions/31713468/css-blur-filter-performance
   /*match width in JS to title left?*/
   width: calc((100vw - var(--largeWidth)) * 0.25);
   right: 40px;
+  z-index: -1;
 }
 
 .blog > div {
   /*transform: translate3d(0%, -101%, 0px);*/
   opacity: 0;
+
   will-change: transform;
 }
 
