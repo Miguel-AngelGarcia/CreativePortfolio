@@ -9,6 +9,14 @@ const aboutBtn = document.getElementById("about-0");
 const closeBtn = document.getElementById("close-1");
 const abtCloseLines = document.getElementsByClassName("line-about");
 const posBottomLeft = document.getElementsByClassName("position");
+
+//this is the "photographs" return "button"
+const photosReturn = document.getElementById("photos");
+const photosSign = document.getElementById("photos-sign");
+const photosLine = document.getElementById("photos-line");
+const photosTarget = document.getElementById("photos-target");
+const photosX = document.getElementById("p-s-p");
+
 //like person's position
 const positionInfo = document.getElementsByClassName("position");
 const linksInfo = document.getElementsByClassName("links");
@@ -26,6 +34,7 @@ let currFirstColor = defaultFirstColor;
 let currSecColor = defaultSecColor;
 let oldTitle = null;
 let viewMode = false;
+let currBlog = null;
 
 let currRow = null;
 
@@ -779,6 +788,30 @@ function exploreWordAction() {
 
   exploreTextLeft(topRow, 0);
   exploreTextLeft(bottomRow, 200);
+
+  const testBlog = document
+    .getElementById(`${currTitle}`)
+    .getElementsByClassName("blog")[0];
+
+  currBlog = testBlog;
+
+  testBlog.style.display = "block";
+  testBlog.style.color = currFirstColor;
+
+  const textBlog = testBlog.children[0];
+  //textBlog.style.transform = "translate3d(-50%, 0%, 0px)";
+
+  textBlog.animate(
+    {
+      /*transform: "translate3d(0%, 0%, 0px)"*/ opacity: 1,
+    },
+    {
+      duration: 800,
+      fill: "forwards",
+      easing: "ease-in",
+      delay: 400,
+    }
+  );
 }
 
 function getText(titleID) {
@@ -1046,6 +1079,7 @@ function putTextAway(currTitle) {
 
 aboutBtn.addEventListener("click", function (e) {
   //console.log(e.target);
+
   aboutBtn.animate(
     {
       transform: `translate3d(0%, -110%, 0px)`,
@@ -1249,13 +1283,6 @@ function getOldPos(givenRow) {
   }
 }
 
-//this is the "photographs" return "button"
-const photosReturn = document.getElementById("photos");
-const photosSign = document.getElementById("photos-sign");
-const photosLine = document.getElementById("photos-line");
-const photosTarget = document.getElementById("photos-target");
-const photosX = document.getElementById("p-s-p");
-
 function fillPhotosSign() {
   //div right under '#photos-sign' -> tranform: translate3d(0%, 0%, 0px)
   const sign = photosSign.children[0];
@@ -1282,7 +1309,7 @@ function fillPhotosSign() {
   const photosArray = [targetDiv[1], targetDiv[0], target, line, sign];
 
   Array.from(targetDiv).forEach(function (tDivLine) {
-    tDivLine.style.transitionDuration = "0ms";
+    //tDivLine.style.transitionDuration = "0ms";
     tDivLine.style.background = currFirstColor;
   });
 
@@ -1298,6 +1325,24 @@ function fillPhotosSign() {
     removeExploreClick();
   });
 }
+
+/* MOVE THIS TO changeColor()
+const sign = photosSign.children[0];
+const line = photosLine.children[0];
+const target = photosTarget.children[0];
+const targetDiv = target.getElementsByClassName("line")[0].children;
+
+line.style.borderRightColor = currFirstColor;
+
+ Array.from(targetDiv).forEach(function (tDivLine) {
+    //tDivLine.style.transitionDuration = "0ms";
+    tDivLine.style.background = currFirstColor;
+  });
+
+  target.style.color = currFirstColor;
+  
+photosX.style.fill = currFirstColor;
+*/
 
 //after a user clicks to go back to photos, the "photographs" label will disapear
 function removePhotosSign() {
@@ -1328,24 +1373,6 @@ function removePhotosSign() {
   setTimeout(function () {
     target.style.color = defaultSecColor;
   }, 1000);
-
-  /*
-  photosReturn.removeEventListener("click", () => {
-    removeExploreClick();
-  });
-  */
-
-  /*
-  photosReturn.addEventListener("click", function () {
-    exploreClick();
-  });
-  */
-  /*
-  console.log(currExploreWord, "EXPLOREPIC");
-  currExploreWord.removeEventListener("click", function () {
-    exploreClick();
-  });
-  */
 
   addExplore();
 }
