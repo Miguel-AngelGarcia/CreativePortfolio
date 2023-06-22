@@ -391,6 +391,30 @@ window.onmousemove = (e) => {
   /*do nothing if explore is clicked. dont want pic to move*/
   if (exploreLock) return;
 
+  if (pictureSelected && e.target === pictureSelectedImage) {
+    console.log(e.target.localName);
+    return;
+  }
+
+  if (
+    pictureSelected &&
+    e.target.localName === "img" &&
+    e.target !== pictureSelectedImage
+  ) {
+    console.log(e.target.localName);
+    changeColor(defaultFirstColor, defaultSecColor);
+
+    resetImagesToStart();
+    resetSliderToStart();
+    resetSelectedImageColor();
+
+    pictureSelected = false;
+    pictureSelectedImage = null;
+
+    putTextAway(currTitle, currIndex);
+    return;
+  }
+
   /*
   bug workaround
   after clicking on image, if you click on "explore" text will not be put away
