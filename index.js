@@ -429,7 +429,8 @@ window.onmousemove = (e) => {
   // NOTICED pictures pop on and aut for some reason
   //move this to mouseup? if delta x > 1?
   // IF NOT EXPLORE
-  if (pictureSelected && e.toElement.nodeName !== "IMG") {
+  //OLD -> (pictureSelected && e.toElement.nodeName !== "IMG")
+  if (pictureSelected && e.toElement.localName !== "img") {
     changeColor(defaultFirstColor, defaultSecColor);
 
     resetImagesToStart();
@@ -1376,7 +1377,7 @@ function fillPhotosSign() {
 
   const target = photosTarget.children[0];
   //photosTarget.getElementsByClassName("line")[0];
-  const targetDiv = target.getElementsByClassName("line")[0].children;
+  const targetDiv = target.getElementsByClassName("line-photos")[0].children;
 
   const photosArray = [targetDiv[1], targetDiv[0], target, line, sign];
 
@@ -1429,13 +1430,15 @@ function removePhotosSign() {
   const target = photosTarget.children[0];
 
   photosTarget.getElementsByClassName("line")[0];
-  const targetDiv = target.getElementsByClassName("line")[0].children;
+  const targetDiv = target.getElementsByClassName("line-photos")[0].children;
 
   const photosArray = [targetDiv[1], targetDiv[0], target, line, sign];
 
+  /*
   Array.from(targetDiv).forEach(function (tDivLine) {
     tDivLine.style.background = defaultSecColor;
   });
+  */
 
   target.style.transform = "translate3d(0%, 101%, 0px)";
 
