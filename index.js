@@ -1252,9 +1252,21 @@ aboutBtn.addEventListener("click", function (e) {
   moveAboutIn(techList, 600, 400);
 
   slider.animate(
-    { left: "101%" },
+    { opacity: 0 },
+    { duration: 400, fill: "forwards", easing: "cubic-bezier(0, 0, 0.19, 1)" }
+  );
+
+  slider.animate(
+    { gap: "12vh" },
+    { duration: 400, fill: "backwards", easing: "cubic-bezier(0, 0, 0.19, 1)" }
+  );
+
+  slider.animate(
     {
-      duration: 600,
+      left: "101%",
+    },
+    {
+      duration: 1000,
       fill: "forwards",
       easing: "cubic-bezier(0, 0, 0.19, 1)",
       delay: 0,
@@ -1265,14 +1277,16 @@ aboutBtn.addEventListener("click", function (e) {
     duration = Math.max(0, 600 - picIndex * 100);
     console.log(duration);
     // 1000 +
-    //delay = 1000 + (1 / (picIndex + 1)) * 100;
+    delay = 1000 + (1 / (picIndex + 1)) * 100;
     picture.animate(
-      { left: "100%" },
       {
-        duration: duration,
+        left: "100%",
+      },
+      {
+        duration: 1000,
         fill: "forwards",
         easing: "cubic-bezier(0, 0, 0.19, 1)",
-        delay: 0,
+        delay: delay,
       }
     );
   });
@@ -1368,8 +1382,12 @@ closeBtn.addEventListener("click", function (e) {
     { duration: 1200, fill: "forwards", easing: "cubic-bezier(0, 0, 0.19, 1)" }
   );
 
+  slider.animate({ opacity: 1 }, { duration: 0, fill: "forwards" });
+
   slider.animate(
-    { left: "50%" },
+    {
+      left: "50%",
+    },
     {
       duration: 400,
       fill: "forwards",
