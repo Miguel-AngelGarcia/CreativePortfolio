@@ -1016,7 +1016,7 @@ function getText(titleID) {
   addExplore();
 }
 
-function putTextAway(currTitle) {
+function putTextAway(currTitle, currIndex) {
   console.log(currIndex, "putting away", currTitle);
 
   setPrevListItem();
@@ -1129,7 +1129,7 @@ function putTextAway(currTitle) {
 
   setTimeout(function () {
     prevSelectedPicLineItem.style.display = "none";
-  }, 1000);
+  }, 300); //was 1000
 }
 
 //if image scrolls though middle x, it has css trnsition that goes and does not stay
@@ -1149,6 +1149,25 @@ aboutBtn.addEventListener("click", function (e) {
     },
     { duration: 600, fill: "forwards" }
   );
+
+  if (viewMode) {
+    putTextAway(currTitle, currIndex);
+  }
+
+  changeColor(defaultFirstColor, defaultSecColor);
+  Array.from(nameButtonLetters).forEach(function (nameLetter) {
+    nameLetter.animate(
+      {
+        transform: `translate3d(110%, 0%, 0px)`, //OLD<- `translate(${nextPercenRefined}%, -50%)`
+      },
+      {
+        duration: 400,
+        fill: "forwards",
+        delay: 200,
+        easing: "cubic-bezier(0, 0, 0.19, 1)",
+      }
+    );
+  });
 
   aboutBtn.style.pointerEvents = "none";
 
@@ -1605,6 +1624,24 @@ addEventListener("keyup", ({ key }) => {
   }
 });
 
+function imageTexts() {
+  console.log("in imageTexts");
+  const imageTexts = document.getElementById("li").children;
+  console.log("CURRINDEX", currIndex);
+  /*
+  Array.from(imageTexts).forEach(function (imageText, itIndex) {
+    console.log("IMIndex", itIndex, "Curr", currIndex);
+    console.log(typeof itIndex, typeof currIndex);
+    if (itIndex != currIndex) {
+      setTimeout(function () {
+        imageText.style.display = "none";
+      }, 1000);
+    }
+  });
+  */
+  console.log("her now");
+}
+
 function arrowSelect(sentPicture, sentIndex, key) {
   const titleName = `title-${sentIndex}`;
 
@@ -1673,6 +1710,8 @@ function arrowSelect(sentPicture, sentIndex, key) {
 
     blogTestReturn();
   });
+
+  imageTexts();
 
   //exploreWord.addEventListener("click", exploreWordAction);
 }
