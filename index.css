@@ -120,10 +120,111 @@ ul {
   float: left;
 }
 
+#a {
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+#a,
+#a-left {
+  width: 100%;
+  position: absolute;
+}
+
+#a-left {
+  left: 40px;
+  top: 50px;
+}
+
 #load span {
   will-change: transform;
   overflow: hidden;
   float: left;
+}
+
+.a-name {
+  font-size: calc(13.33333vh + 50px);
+  line-height: calc(9.96vh + 44.7px);
+  letter-spacing: -0.025em;
+}
+
+.a-name > span {
+  overflow: hidden;
+  font-size: 100%;
+  float: left;
+}
+
+#a-cont div,
+.a-list-item li {
+  overflow: hidden;
+}
+
+#a-cont a,
+.a-list-item div {
+  transform: translate3d(0, 110%, 0);
+  will-change: transform;
+}
+
+#a-cont {
+  position: absolute;
+  left: 50px;
+  bottom: calc(6.66667vh + 50px);
+  font-size: 16px;
+  line-height: 18px;
+}
+
+#a-cont a {
+  display: table;
+  pointer-events: all;
+}
+
+.a-name span span {
+  display: block;
+  will-change: transform;
+  transform: translate3d(-101%, 0, 0);
+  will-change: transform;
+}
+
+/*need this so MIGUELGARCIA doesnt occur
+we want MIGUEL
+        GARCIA
+*/
+.a-name::after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+#a-list {
+  position: absolute;
+  font-size: 14px;
+  line-height: 16px;
+  top: calc(0.15 * 100vh);
+  width: 50%;
+  left: 50%;
+  /*right: 0;*/
+}
+
+#a-list > li {
+  float: left;
+  width: calc((100vw * 0.5) / 3);
+}
+
+.a-list-item {
+  position: relative;
+  height: 385px;
+}
+
+.a-list-item a {
+  pointer-events: all;
+  text-decoration: none;
+}
+
+.a-list-item li:not(:first-child) {
+  position: absolute;
+  left: 0;
 }
 
 #load span span {

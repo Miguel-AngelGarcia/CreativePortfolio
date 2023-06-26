@@ -17,6 +17,18 @@ const photosLine = document.getElementById("photos-line");
 const photosTarget = document.getElementById("photos-target");
 const photosX = document.getElementById("p-s-p");
 
+//for when about gets clicked
+const aboutNames = document.getElementById("a-left").children;
+const aboutFirst = aboutNames[0].children;
+const aboutLast = aboutNames[1].children;
+
+const aboutContacts = document.getElementById("a-cont").children;
+
+const aboutLists = document.getElementById("a-list").children;
+const projList = aboutLists[0].getElementsByTagName("li");
+const langList = aboutLists[1].getElementsByTagName("li");
+const techList = aboutLists[2].getElementsByTagName("li");
+
 //like person's position
 const positionInfo = document.getElementsByClassName("position");
 const linksInfo = document.getElementsByClassName("links");
@@ -180,13 +192,6 @@ function loadRest() {
   });
 
   sliderContainer.classList.remove("hidden");
-
-  /*
-  slider.animate(
-    { left: "50%" },
-    { duration: 1000, fill: "forwards", easing: "cubic-bezier(0, 0, 0.19, 1)" }
-  );
-  */
 
   Array.from(positionInfo).forEach(function (posInfoPiece) {
     posInfoPiece.style.color = "rgb(186, 196, 184)";
@@ -1138,6 +1143,91 @@ function putTextAway(currTitle, currIndex) {
 //if pic selected, move one over with arrow key direction
 
 //NEED TO FIX THIS CLOSE THANG
+function moveAboutNameRight(aboutRowSent) {
+  Array.from(aboutRowSent).forEach(function (aboutLetter) {
+    aboutLetter.children[0].animate(
+      {
+        transform: `translate3d(0%, 0%, 0px)`, //OLD<- `translate(${nextPercenRefined}%, -50%)`
+        color: defaultFirstColor,
+      },
+      {
+        duration: 400,
+        fill: "forwards",
+        delay: 200,
+        easing: "cubic-bezier(0, 0, 0.19, 1)",
+      }
+    );
+  });
+}
+
+//for things that move up when about is clicked
+function moveAboutIn(aboutSentItemSet, timeDuration, timeDelay) {
+  Array.from(aboutSentItemSet).forEach(function (aboutItem) {
+    console.log("ABTITEM", aboutItem);
+    aboutItem.children[0].animate(
+      {
+        transform: `translate3d(0%, 0%, 0px)`, //OLD<- `translate(${nextPercenRefined}%, -50%)`
+        color: defaultFirstColor,
+      },
+      {
+        duration: timeDuration,
+        fill: "forwards",
+        delay: timeDelay,
+        easing: "cubic-bezier(0, 0, 0.19, 1)",
+      }
+    );
+  });
+}
+
+//puts about stuff back
+function moveAboutOut(aboutSentItemSet, timeDuration, timeDelay, coords) {
+  Array.from(aboutSentItemSet).forEach(function (aboutItem) {
+    console.log("ABTITEM", aboutItem);
+    aboutItem.children[0].animate(
+      {
+        transform: `translate3d${coords}`, //OLD<- `translate(${nextPercenRefined}%, -50%)`
+        //color: defaultFirstColor,
+      },
+      {
+        duration: timeDuration,
+        fill: "forwards",
+        delay: timeDelay,
+        easing: "cubic-bezier(0, 0, 0.19, 1)",
+      }
+    );
+  });
+}
+
+calcTopForAboutListItem(projList);
+calcTopForAboutListItem(langList);
+calcTopForAboutListItem(techList);
+
+function calcTopForAboutListItem(listItem) {
+  //const workingWith = listItem;
+  let lastStartLetter = null;
+  let lastLetterValue = 0;
+  let order = 0;
+
+  for (let i = 1; i < listItem.length; i++) {
+    let element = listItem[i];
+    let workingWith = listItem[i].children[0].innerText;
+    let startLetter = workingWith[0];
+    let letterValue = startLetter.charCodeAt(0) - 65;
+
+    if (startLetter === lastStartLetter) {
+      console.log(lastStartLetter);
+      console.log(order);
+      order += 1;
+    }
+
+    lastStartLetter = startLetter;
+
+    let topValue = 44 + (letterValue + order) * 14;
+    let topValueString = topValue + "px";
+    element.style.top = topValueString;
+  }
+  //Array.from(listItem)
+}
 
 aboutBtn.addEventListener("click", function (e) {
   //console.log(e.target);
@@ -1154,6 +1244,39 @@ aboutBtn.addEventListener("click", function (e) {
     putTextAway(currTitle, currIndex);
   }
 
+  moveAboutIn(aboutFirst, 400, 200);
+  moveAboutIn(aboutLast, 400, 200);
+  moveAboutIn(aboutContacts, 600, 400);
+  moveAboutIn(projList, 600, 400);
+  moveAboutIn(langList, 600, 400);
+  moveAboutIn(techList, 600, 400);
+
+  slider.animate(
+    { left: "101%" },
+    {
+      duration: 600,
+      fill: "forwards",
+      easing: "cubic-bezier(0, 0, 0.19, 1)",
+      delay: 0,
+    }
+  );
+
+  Array.from(pictures).forEach(function (picture, picIndex) {
+    duration = Math.max(0, 600 - picIndex * 100);
+    console.log(duration);
+    // 1000 +
+    //delay = 1000 + (1 / (picIndex + 1)) * 100;
+    picture.animate(
+      { left: "100%" },
+      {
+        duration: duration,
+        fill: "forwards",
+        easing: "cubic-bezier(0, 0, 0.19, 1)",
+        delay: 0,
+      }
+    );
+  });
+
   changeColor(defaultFirstColor, defaultSecColor);
   Array.from(nameButtonLetters).forEach(function (nameLetter) {
     nameLetter.animate(
@@ -1167,6 +1290,17 @@ aboutBtn.addEventListener("click", function (e) {
         easing: "cubic-bezier(0, 0, 0.19, 1)",
       }
     );
+  });
+
+  Array.from(linksInfo).forEach(function (linkInfoPiece) {
+    linkInfoPiece.style.color = "rgb(186, 196, 184)";
+    linkInfoPiece.animate(
+      {
+        transform: `translate3d(0%, -101%, 0px)`,
+      },
+      { duration: 400, fill: "forwards" }
+    );
+    //posInfoPiece.style.animationDelay = "5500"; NOT WORKING
   });
 
   aboutBtn.style.pointerEvents = "none";
@@ -1183,14 +1317,12 @@ aboutBtn.addEventListener("click", function (e) {
 });
 
 closeBtn.addEventListener("click", function (e) {
-  /*
-  aboutBtn.animate(
-    {
-      transform: `translate3d(0%, 0%, 0px)`,
-      color: currFirstColor,
-    },
-    { duration: 1200, fill: "forwards" }
-  ); */
+  moveAboutOut(projList, 200, 0, "(0%, 110%, 0)");
+  moveAboutOut(langList, 200, 0, "(0%, 110%, 0)");
+  moveAboutOut(techList, 200, 0, "(0%, 110%, 0)");
+  moveAboutOut(aboutFirst, 200, 0, "(110%, 0%, 0)");
+  moveAboutOut(aboutLast, 200, 0, "(110%, 0%, 0)");
+  moveAboutOut(aboutContacts, 200, 0, "(0, 110%, 0)");
 
   closeBtn.animate(
     {
@@ -1199,6 +1331,70 @@ closeBtn.addEventListener("click", function (e) {
     },
     { duration: 600, fill: "forwards" }
   );
+
+  Array.from(nameButtonLetters).forEach(function (nameLetter) {
+    nameLetter.style.transform = "transalte3d(-110%, 0%, 0px)";
+    nameLetter.animate(
+      {
+        transform: `translate3d(0%, 0%, 0px)`, //OLD<- `translate(${nextPercenRefined}%, -50%)`
+      },
+      {
+        duration: 400,
+        fill: "forwards",
+        delay: 200,
+        easing: "cubic-bezier(0, 0, 0.19, 1)",
+      }
+    );
+  });
+
+  Array.from(linksInfo).forEach(function (linkInfoPiece) {
+    linkInfoPiece.style.transform = "translate3d(0%, 110%, 0px)";
+    linkInfoPiece.style.color = "rgb(186, 196, 184)";
+    linkInfoPiece.animate(
+      {
+        transform: `translate3d(0%, 0%, 0px)`,
+      },
+      { duration: 1200, fill: "forwards" }
+    );
+    //posInfoPiece.style.animationDelay = "5500"; NOT WORKING
+  });
+
+  aboutBtn.style.transform = "translate3d(110%, 0%, 0px)";
+  aboutBtn.animate(
+    {
+      transform: `translate3d(0%, 0%, 0px)`,
+      color: defaultFirstColor,
+    },
+    { duration: 1200, fill: "forwards", easing: "cubic-bezier(0, 0, 0.19, 1)" }
+  );
+
+  slider.animate(
+    { left: "50%" },
+    {
+      duration: 400,
+      fill: "forwards",
+      easing: "cubic-bezier(0, 0, 0.19, 1)",
+      delay: 0,
+    }
+  );
+
+  Array.from(pictures).forEach(function (picture, picIndex) {
+    delay = picIndex * 100 + 500;
+    // 1000 +
+    //delay = 1000 + (1 / (picIndex + 1)) * 100;
+    picture.animate(
+      { left: "0%" },
+      {
+        duration: 400,
+        fill: "forwards",
+        easing: "cubic-bezier(0, 0, 0.19, 1)",
+        delay: delay,
+      }
+    );
+  });
+
+  closeBtn.style.pointerEvents = "none";
+  aboutBtn.style.pointerEvents = "all";
 });
 
 /*

@@ -257,6 +257,7 @@
 #a-list > li {
   float: left;
 }
+
 .a-li {
   position: relative;
   height: 385px;
@@ -268,7 +269,7 @@
   position: absolute;
   left: 0;
 }
-.a-li span:first-child {
+.a-li li:first-child {
   position: absolute;
   top: 0;
   left: -17px;
