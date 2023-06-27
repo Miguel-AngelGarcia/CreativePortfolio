@@ -1163,11 +1163,10 @@ function moveAboutNameRight(aboutRowSent) {
 //for things that move up when about is clicked
 function moveAboutIn(aboutSentItemSet, timeDuration, timeDelay) {
   Array.from(aboutSentItemSet).forEach(function (aboutItem) {
-    console.log("ABTITEM", aboutItem);
+    aboutItem.children[0].style.color = defaultFirstColor;
     aboutItem.children[0].animate(
       {
         transform: `translate3d(0%, 0%, 0px)`, //OLD<- `translate(${nextPercenRefined}%, -50%)`
-        color: defaultFirstColor,
       },
       {
         duration: timeDuration,
@@ -1180,7 +1179,13 @@ function moveAboutIn(aboutSentItemSet, timeDuration, timeDelay) {
 }
 
 //puts about stuff back
-function moveAboutOut(aboutSentItemSet, timeDuration, timeDelay, coords) {
+function moveAboutOut(
+  aboutSentItemSet,
+  timeDuration,
+  timeDelay,
+  coords,
+  resetCoords
+) {
   Array.from(aboutSentItemSet).forEach(function (aboutItem) {
     console.log("ABTITEM", aboutItem);
     aboutItem.children[0].animate(
@@ -1195,6 +1200,9 @@ function moveAboutOut(aboutSentItemSet, timeDuration, timeDelay, coords) {
         easing: "cubic-bezier(0, 0, 0.19, 1)",
       }
     );
+
+    let toDelay = timeDuration + timeDelay + 10;
+    resetAnimatedElement(aboutItem.children[0], `${resetCoords}`, toDelay);
   });
 }
 
@@ -1229,16 +1237,30 @@ function calcTopForAboutListItem(listItem) {
   //Array.from(listItem)
 }
 
+function resetAnimatedElement(elementToReset, resetCoords, resetDelay) {
+  elementToReset.animate(
+    { transform: `translate3d${resetCoords}`, opacity: 0 },
+    { duration: 0, fill: "forwards", delay: resetDelay }
+  );
+
+  elementToReset.animate(
+    { opacity: 1 },
+    { duration: 0, fill: "forwards", delay: resetDelay + 10 }
+  );
+}
+
 aboutBtn.addEventListener("click", function (e) {
   //console.log(e.target);
 
   aboutBtn.animate(
     {
-      transform: `translate3d(0%, -110%, 0px)`,
+      transform: `translate3d(0%, -120%, 0px)`,
       color: currSecColor,
     },
     { duration: 600, fill: "forwards" }
   );
+
+  resetAnimatedElement(aboutBtn, "(0%, 120%, 0px)", 600);
 
   if (viewMode) {
     putTextAway(currTitle, currIndex);
@@ -1304,6 +1326,8 @@ aboutBtn.addEventListener("click", function (e) {
         easing: "cubic-bezier(0, 0, 0.19, 1)",
       }
     );
+
+    resetAnimatedElement(nameLetter, "(-110%, 0%, 0px)", 610);
   });
 
   Array.from(linksInfo).forEach(function (linkInfoPiece) {
@@ -1315,6 +1339,8 @@ aboutBtn.addEventListener("click", function (e) {
       { duration: 400, fill: "forwards" }
     );
     //posInfoPiece.style.animationDelay = "5500"; NOT WORKING
+
+    resetAnimatedElement(linkInfoPiece, "(0%, 101%, 0px)", 400);
   });
 
   aboutBtn.style.pointerEvents = "none";
@@ -1331,20 +1357,22 @@ aboutBtn.addEventListener("click", function (e) {
 });
 
 closeBtn.addEventListener("click", function (e) {
-  moveAboutOut(projList, 200, 0, "(0%, 110%, 0)");
-  moveAboutOut(langList, 200, 0, "(0%, 110%, 0)");
-  moveAboutOut(techList, 200, 0, "(0%, 110%, 0)");
-  moveAboutOut(aboutFirst, 200, 0, "(110%, 0%, 0)");
-  moveAboutOut(aboutLast, 200, 0, "(110%, 0%, 0)");
-  moveAboutOut(aboutContacts, 200, 0, "(0, 110%, 0)");
+  moveAboutOut(projList, 200, 0, "(0%, -110%, 0px)", "(0%, 110%, 0px)");
+  moveAboutOut(langList, 200, 0, "(0%, -110%, 0px)", "(0%, 110%, 0px)");
+  moveAboutOut(techList, 200, 0, "(0%, -110%, 0px)", "(0%, 110%, 0px)");
+  moveAboutOut(aboutFirst, 200, 0, "(110%, 0%, 0px)", "(-110%, 0%, 0px)");
+  moveAboutOut(aboutLast, 200, 0, "(110%, 0%, 0px)", "(-110%, 0%, 0px)");
+  moveAboutOut(aboutContacts, 200, 0, "(0, -110%, 0px)", "(0%, 110%, 0px)");
 
   closeBtn.animate(
     {
-      transform: `translate3d(0%, -110%, 0px)`,
+      transform: `translate3d(0%, -120%, 0px)`,
       color: currSecColor,
     },
     { duration: 600, fill: "forwards" }
   );
+
+  resetAnimatedElement(closeBtn, "(0%, 120%, 0px)", 600);
 
   Array.from(nameButtonLetters).forEach(function (nameLetter) {
     nameLetter.style.transform = "transalte3d(-110%, 0%, 0px)";

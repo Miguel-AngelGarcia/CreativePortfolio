@@ -183,7 +183,7 @@ ul {
 .a-name span span {
   display: block;
   will-change: transform;
-  transform: translate3d(-101%, 0, 0);
+  transform: translate3d(-101%, 0%, 0);
   will-change: transform;
 }
 
