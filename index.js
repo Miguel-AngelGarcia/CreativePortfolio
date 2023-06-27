@@ -864,7 +864,7 @@ function blogTestReturn() {
   );
 }
 
-function getText(titleID) {
+function getText(titleID, titleIndex) {
   currTitle = titleID;
   console.log("getting", titleID);
 
@@ -1128,9 +1128,12 @@ function putTextAway(currTitle, currIndex) {
   //gotta move this to when "photographs" is clicked
 
   console.log("CURRBLOG", currBlog);
-  currBlog.style.color = currSecColor;
-  currBlog.style.display = "none";
-  currBlog = null;
+
+  if (currBlog !== null) {
+    currBlog.style.color = currSecColor;
+    currBlog.style.display = "none";
+    currBlog = null;
+  }
 
   setTimeout(function () {
     prevSelectedPicLineItem.style.display = "none";
@@ -1255,7 +1258,7 @@ aboutBtn.addEventListener("click", function (e) {
   aboutBtn.animate(
     {
       transform: `translate3d(0%, -120%, 0px)`,
-      color: currSecColor,
+      //color: currSecColor,
     },
     { duration: 600, fill: "forwards" }
   );
@@ -1345,10 +1348,10 @@ aboutBtn.addEventListener("click", function (e) {
 
   aboutBtn.style.pointerEvents = "none";
 
+  closeBtn.style.color = defaultFirstColor;
   closeBtn.animate(
     {
       transform: `translate3d(0%, 0%, 0px)`,
-      color: currFirstColor,
     },
     { duration: 1200, fill: "forwards" }
   );
@@ -1367,7 +1370,7 @@ closeBtn.addEventListener("click", function (e) {
   closeBtn.animate(
     {
       transform: `translate3d(0%, -120%, 0px)`,
-      color: currSecColor,
+      //color: currSecColor,
     },
     { duration: 600, fill: "forwards" }
   );
@@ -1401,11 +1404,11 @@ closeBtn.addEventListener("click", function (e) {
     //posInfoPiece.style.animationDelay = "5500"; NOT WORKING
   });
 
-  aboutBtn.style.transform = "translate3d(110%, 0%, 0px)";
+  //aboutBtn.style.transform = "translate3d(110%, 0%, 0px)";
   aboutBtn.animate(
     {
       transform: `translate3d(0%, 0%, 0px)`,
-      color: defaultFirstColor,
+      //color: defaultFirstColor,
     },
     { duration: 1200, fill: "forwards", easing: "cubic-bezier(0, 0, 0.19, 1)" }
   );
@@ -1441,6 +1444,16 @@ closeBtn.addEventListener("click", function (e) {
 
   closeBtn.style.pointerEvents = "none";
   aboutBtn.style.pointerEvents = "all";
+
+  if (viewMode) {
+    changeColor(currFirstColor, currSecColor);
+    console.log(currTitle, currIndex);
+
+    const resetPicText = document.getElementById(`title-${currIndex}`);
+    resetPicText.style.display = "block";
+
+    getText(currTitle, currIndex);
+  }
 });
 
 /*
