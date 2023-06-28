@@ -447,12 +447,16 @@ sliderContainer.addEventListener("touchmove", function (e) {
   let touchX = e.touches[0].clientX;
   let touchXDelta = parseFloat(slider.dataset.userTouchAt) - touchX;
   const maxDelta = window.innerWidth / 2;
+  const deltaTouchMiddle = touchX - maxDelta;
 
   let workingX = parseFloat(touchX) / parseFloat(Math.abs(touchX));
   console.log(touchXDelta);
 
   //const percentage = (touchXDelta / maxDelta) * -100;
-  const percentage = (touchXDelta / maxDelta) * -25;
+  //const percentage = (touchXDelta / maxDelta) * -25;
+  //const percentage = (touchX / touchX / maxDelta) * -25;
+
+  const percentage = deltaTouchMiddle * percentPerPixel;
 
   console.log(percentage, "%");
 
