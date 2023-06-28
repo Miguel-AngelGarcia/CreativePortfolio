@@ -1268,9 +1268,13 @@ function moveAboutNameRight(aboutRowSent) {
 }
 
 //for things that move up when about is clicked
-function moveAboutIn(aboutSentItemSet, timeDuration, timeDelay) {
-  Array.from(aboutSentItemSet).forEach(function (aboutItem) {
+function moveAboutIn(aboutSentItemSet, timeDuration, timeDelay, delayFlag) {
+  Array.from(aboutSentItemSet).forEach(function (aboutItem, aiIndex) {
     aboutItem.children[0].style.color = defaultFirstColor;
+    if (delayFlag === 1) {
+      timeDelay = 400 + aiIndex * 75;
+      console.log(timeDelay, aiIndex);
+    }
     aboutItem.children[0].animate(
       {
         transform: `translate3d(0%, 0%, 0px)`, //OLD<- `translate(${nextPercenRefined}%, -50%)`
@@ -1377,12 +1381,12 @@ aboutBtn.addEventListener("click", function (e) {
     removePhotosSign();
   }
 
-  moveAboutIn(aboutFirst, 400, 200);
-  moveAboutIn(aboutLast, 400, 200);
-  moveAboutIn(aboutContacts, 600, 400);
-  moveAboutIn(projList, 600, 400);
-  moveAboutIn(langList, 600, 400);
-  moveAboutIn(techList, 600, 400);
+  moveAboutIn(aboutFirst, 400, 200, 0);
+  moveAboutIn(aboutLast, 400, 200, 0);
+  moveAboutIn(aboutContacts, 600, 400, 1);
+  moveAboutIn(projList, 600, 400, 1);
+  moveAboutIn(langList, 600, 400, 1);
+  moveAboutIn(techList, 600, 400, 1);
 
   slider.animate(
     { opacity: 0 },
@@ -1433,7 +1437,7 @@ aboutBtn.addEventListener("click", function (e) {
       {
         duration: 400,
         fill: "forwards",
-        delay: 200,
+        delay: 0,
         easing: "cubic-bezier(0, 0, 0.19, 1)",
       }
     );
