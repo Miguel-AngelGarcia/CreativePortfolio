@@ -426,9 +426,13 @@ sliderContainer.addEventListener("touchmove", function (e) {
   let touchXDelta = parseFloat(slider.dataset.userTouchAt) - touchX;
   const maxDelta = window.innerWidth / 2;
 
-  let workingX = parseFloat(touchX) / parseFloat(Math.abs(e.deltaX));
+  let workingX = parseFloat(touchX) / parseFloat(Math.abs(touchX));
 
-  const percentage = (touchXDelta / maxDelta) * -10;
+  //const percentage = (touchXDelta / maxDelta) * -100;
+  const percentage = (touchXDelta / 100 / maxDelta) * -100;
+
+  console.log(percentage, "%");
+
   const nextPercentageRaw =
     parseFloat(slider.dataset.prevPercentage) + percentage;
 
