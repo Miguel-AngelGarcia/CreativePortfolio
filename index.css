@@ -1176,3 +1176,21 @@ https://stackoverflow.com/questions/31713468/css-blur-filter-performance
     display: none;
   }
 }
+
+@media (max-aspect-ratio: 1/1) {
+  #a-list {
+    position: absolute;
+    font-size: 14px;
+    line-height: 16px;
+    top: calc(0.35 * 100vh);
+    width: 100%;
+    left: 0%;
+    padding-left: 50px;
+    padding-right: 50px;
+    /*right: 0;*/
+  }
+
+  #a-list li {
+    width: calc(0.333 * 100vw);
+  }
+}

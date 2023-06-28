@@ -1269,6 +1269,10 @@ aboutBtn.addEventListener("click", function (e) {
     putTextAway(currTitle, currIndex);
   }
 
+  if (exploreLock) {
+    removePhotosSign();
+  }
+
   moveAboutIn(aboutFirst, 400, 200);
   moveAboutIn(aboutLast, 400, 200);
   moveAboutIn(aboutContacts, 600, 400);
@@ -1445,6 +1449,9 @@ closeBtn.addEventListener("click", function (e) {
   closeBtn.style.pointerEvents = "none";
   aboutBtn.style.pointerEvents = "all";
 
+
+  //should we replace the below with some sort of saveState?
+  //abd just restore?
   if (viewMode) {
     changeColor(currFirstColor, currSecColor);
     console.log(currTitle, currIndex);
@@ -1453,6 +1460,11 @@ closeBtn.addEventListener("click", function (e) {
     resetPicText.style.display = "block";
 
     getText(currTitle, currIndex);
+  }
+
+  if (exploreLock) {
+    removeExplore(currTitle);
+    fillPhotosSign();
   }
 });
 

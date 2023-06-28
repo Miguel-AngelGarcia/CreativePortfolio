@@ -2,7 +2,7 @@
   "name": "creativeportfolio",
   "version": "1.0.0",
   "description": "Creating a launchpad for a Creative's portfolio.",
-  "main": "src/index.js",
+  "main": "./html",
   "scripts": {
     "dev": "react-scripts start",
     "start": "serve -s build",
