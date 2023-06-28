@@ -18,9 +18,10 @@ const photosTarget = document.getElementById("photos-target");
 const photosX = document.getElementById("p-s-p");
 
 //for when about gets clicked
-const aboutNames = document.getElementById("a-left").children;
-const aboutFirst = aboutNames[0].children;
-const aboutLast = aboutNames[1].children;
+const aboutLeft = document.getElementById("a-left").children;
+const aboutFirst = aboutLeft[0].children;
+const aboutLast = aboutLeft[1].children;
+const aboutParagraph = aboutLeft[2].children;
 
 const aboutContacts = document.getElementById("a-cont").children;
 
@@ -1387,6 +1388,7 @@ aboutBtn.addEventListener("click", function (e) {
   moveAboutIn(projList, 600, 400, 1);
   moveAboutIn(langList, 600, 400, 1);
   moveAboutIn(techList, 600, 400, 1);
+  moveAboutIn(aboutParagraph, 600, 400, 1);
 
   slider.animate(
     { opacity: 0 },
@@ -1478,6 +1480,7 @@ closeBtn.addEventListener("click", function (e) {
   moveAboutOut(aboutFirst, 200, 0, "(110%, 0%, 0px)", "(-110%, 0%, 0px)");
   moveAboutOut(aboutLast, 200, 0, "(110%, 0%, 0px)", "(-110%, 0%, 0px)");
   moveAboutOut(aboutContacts, 200, 0, "(0, -110%, 0px)", "(0%, 110%, 0px)");
+  moveAboutOut(aboutParagraph, 200, 0, "(0, -110%, 0px)", "(0%, 110%, 0px)");
 
   closeBtn.animate(
     {

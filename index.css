@@ -156,6 +156,23 @@ ul {
   float: left;
 }
 
+.a-about {
+  font-size: 14px;
+  line-height: 16px;
+  padding-top: 10vh;
+}
+
+.a-about span {
+  display: block;
+}
+.a-about > span {
+  overflow: hidden;
+}
+.a-about span span {
+  transform: translate3d(0%, 110%, 0px);
+  will-change: transform;
+}
+
 #a-cont div,
 .a-list-item li {
   overflow: hidden;
@@ -1177,6 +1194,18 @@ https://stackoverflow.com/questions/31713468/css-blur-filter-performance
   }
 }
 
+@media screen and (max-width: 825px) {
+  .a-about {
+    display: none;
+  }
+}
+
+@media screen and (max-height: 575px) {
+  .a-about {
+    display: none;
+  }
+}
+
 @media (max-aspect-ratio: 1/1) {
   #a-list {
     position: absolute;
@@ -1192,5 +1221,9 @@ https://stackoverflow.com/questions/31713468/css-blur-filter-performance
 
   #a-list li {
     width: calc(0.333 * 100vw);
+  }
+
+  .a-about {
+    display: none;
   }
 }
