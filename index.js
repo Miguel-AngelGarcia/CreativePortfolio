@@ -311,6 +311,8 @@ sliderContainer.addEventListener("wheel", function (e) {
   scroll += e.deltaX; //ORIGINAL
   //scroll += testX; TEST
 
+  console.log("SCROLL", scroll);
+
   testScrollCount += testX;
   maxCount = Math.max(testScrollCount, leftMax);
 
@@ -385,6 +387,79 @@ sliderContainer.addEventListener(
   },
   false
 );
+
+let touchStartX = 0;
+let touchEndX = 0;
+/*
+sliderContainer.addEventListener("touchstart", function (e) {
+  //slider.dataset.toughScrollAt = e.clientX;
+
+  console.log(e);
+});
+
+sliderContainer.addEventListener("touchend", function (e) {
+  //slider.dataset.toughScrollAt = e.clientX;
+
+  console.log(e);
+});
+*/
+/*
+sliderContainer.addEventListener("touchmove", function (e) {
+  //slider.dataset.toughScrollAt = e.clientX;
+
+  console.log("MOOOOVE", e.touches[0].clientX);
+});
+*/
+
+sliderContainer.addEventListener("touchstart", function (e) {
+  //slider.dataset.toughScrollAt = e.clientX;
+  slider.dataset.userTouchAt = e.touches[0].clientX;
+  console.log(slider.dataset.userTouchAt);
+});
+
+sliderContainer.addEventListener("touchmove", function (e) {
+  //slider.dataset.userTouchAt = e.clientX;
+
+  console.log(e.touches[0].clientX);
+
+  let touchX = e.touches[0].clientX;
+  let touchXDelta = parseFloat(slider.dataset.userTouchAt) - touchX;
+  const maxDelta = window.innerWidth / 2;
+
+  let workingX = parseFloat(touchX) / parseFloat(Math.abs(e.deltaX));
+
+  const percentage = (touchXDelta / maxDelta) * -10;
+  const nextPercentageRaw =
+    parseFloat(slider.dataset.prevPercentage) + percentage;
+
+  const nextPercentageRefined = Math.max(Math.min(nextPercentageRaw, 0), -100);
+  //need to keep track of where x% is, bc it restarts at 0 if else
+  slider.dataset.percentage = nextPercentageRefined;
+
+  slider.animate(
+    {
+      transform: `translate(${nextPercentageRefined}%, 0%)`,
+    },
+    { duration: 1200, fill: "forwards" }
+  );
+
+  Array.from(pictures).forEach(function (picture) {
+    picture.animate(
+      {
+        objectPosition: `${nextPercentageRefined + 100}% 0%`,
+      },
+      { duration: 1200, fill: "forwards" }
+    );
+  });
+
+  slider.dataset.prevPercentage = nextPercentageRefined;
+});
+
+sliderContainer.addEventListener("touchend", function (e) {
+  //slider.dataset.toughScrollAt = e.clientX;
+  slider.dataset.userTouchAt = 0;
+  slider.dataset.prevPercentage = slider.dataset.percentage;
+});
 
 /* clicking and dragging across screen need to move our pictures on 
  the track/slider
@@ -1448,7 +1523,6 @@ closeBtn.addEventListener("click", function (e) {
 
   closeBtn.style.pointerEvents = "none";
   aboutBtn.style.pointerEvents = "all";
-
 
   //should we replace the below with some sort of saveState?
   //abd just restore?
