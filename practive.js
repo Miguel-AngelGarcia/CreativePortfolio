@@ -1,13 +1,38 @@
 sliderContainer.addEventListener("touchstart", function (e) {
   //slider.dataset.toughScrollAt = e.clientX;
   slider.dataset.userTouchAt = e.touches[0].clientx;
-  console.log(e);
 });
 
 sliderContainer.addEventListener("ontouchmove", function (e) {
   //slider.dataset.userTouchAt = e.clientX;
+  console.log(pictureSelected, e.touches[0].target);
+  if (exploreLock) return;
 
-  console.log(e.touches[0].clientx);
+  if (pictureSelected && e.touches.target === pictureSelectedImage) {
+    console.log(e.target.localName);
+    return;
+  }
+
+  if (
+    pictureSelected &&
+    e.touches.target.localName === "img" &&
+    e.target !== pictureSelectedImage
+  ) {
+    console.log(e.target.localName);
+    changeColor(defaultFirstColor, defaultSecColor);
+
+    resetImagesToStart();
+    resetSliderToStart();
+    resetSelectedImageColor();
+
+    pictureSelected = false;
+    pictureSelectedImage = null;
+
+    putTextAway(currTitle, currIndex);
+    return;
+  }
+
+  console.log(e.touches[0]);
 
   let touchX = e.touches[0].clientx;
   let touchXDelta = parseFloat(slider.dataset.userTouchAt) - touchX;

@@ -411,16 +411,38 @@ sliderContainer.addEventListener("touchmove", function (e) {
 });
 */
 
+window.ontouchmove = (e) => {
+  if (pictureSelected) {
+    changeColor(defaultFirstColor, defaultSecColor);
+
+    resetImagesToStart();
+    resetSliderToStart();
+    resetSelectedImageColor();
+
+    pictureSelected = false;
+    pictureSelectedImage = null;
+
+    putTextAway(currTitle, currIndex);
+    //removeExploreClick();
+    return;
+  }
+};
+
 sliderContainer.addEventListener("touchstart", function (e) {
   //slider.dataset.toughScrollAt = e.clientX;
   slider.dataset.userTouchAt = e.touches[0].clientX;
-  console.log(slider.dataset.userTouchAt);
 });
 
 sliderContainer.addEventListener("touchmove", function (e) {
   //slider.dataset.userTouchAt = e.clientX;
 
-  console.log(e.touches[0].clientX);
+  console.log(e.touches[0].target.localName);
+
+  if (exploreLock) return;
+
+  if (pictureSelected) {
+    return;
+  }
 
   let touchX = e.touches[0].clientX;
   let touchXDelta = parseFloat(slider.dataset.userTouchAt) - touchX;
@@ -455,8 +477,6 @@ sliderContainer.addEventListener("touchmove", function (e) {
       { duration: 1200, fill: "forwards" }
     );
   });
-
-  slider.dataset.prevPercentage = nextPercentageRefined;
 });
 
 sliderContainer.addEventListener("touchend", function (e) {
