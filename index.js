@@ -449,9 +449,10 @@ sliderContainer.addEventListener("touchmove", function (e) {
   const maxDelta = window.innerWidth / 2;
 
   let workingX = parseFloat(touchX) / parseFloat(Math.abs(touchX));
+  console.log(touchXDelta);
 
   //const percentage = (touchXDelta / maxDelta) * -100;
-  const percentage = (touchXDelta / maxDelta) * -100;
+  const percentage = (touchXDelta / maxDelta) * -25;
 
   console.log(percentage, "%");
 
