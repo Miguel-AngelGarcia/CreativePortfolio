@@ -108,6 +108,7 @@ window.onload = (event) => {
   });
 
   aboutBtn.style.pointerEvents = "all";
+  aboutBtn.style.cursor = "pointer";
 
   //starts at 0
   let i = 0;
@@ -153,7 +154,7 @@ function changeColor(changeToFirstColor, changeToSecColor) {
       line.style.backgroundColor = changeToFirstColor;
     });
   });
-  closeBtn.style.color = changeToFirstColor;
+  //closeBtn.style.color = changeToFirstColor;
 }
 
 function emergencyRowLayout(currentRow) {
@@ -544,7 +545,8 @@ window.onmousemove = (e) => {
   //move this to mouseup? if delta x > 1?
   // IF NOT EXPLORE
   //OLD -> (pictureSelected && e.toElement.nodeName !== "IMG")
-  if (pictureSelected && e.toElement.localName !== "img") {
+  /*
+  if (pictureSelected && e.target.localName !== "img") {
     changeColor(defaultFirstColor, defaultSecColor);
 
     resetImagesToStart();
@@ -556,6 +558,30 @@ window.onmousemove = (e) => {
 
     putTextAway(currTitle, currIndex);
     //removeExploreClick();
+    return;
+  }
+  */
+  //DO THIS INSTEAD? no moving??
+  console.log("AHNAMETOUCH", e.target.localName);
+
+  if (pictureSelected && e.target.localName === "main") {
+    console.log(e.target.localName);
+    changeColor(defaultFirstColor, defaultSecColor);
+
+    resetImagesToStart();
+    resetSliderToStart();
+    resetSelectedImageColor();
+
+    pictureSelected = false;
+    pictureSelectedImage = null;
+
+    putTextAway(currTitle, currIndex);
+    return;
+  }
+
+  //trying to avoid resetting images when 'name button' or 'about' is clicked while moving mouse
+  //better to promote a non-moving click
+  if (pictureSelected && e.target.localName !== "img") {
     return;
   }
 
@@ -1490,6 +1516,7 @@ aboutBtn.addEventListener("click", function (e) {
   );
 
   closeBtn.style.pointerEvents = "all";
+  closeBtn.style.cursor = "pointer";
 });
 
 closeBtn.addEventListener("click", function (e) {
