@@ -47,8 +47,8 @@ let currFirstColor = defaultFirstColor;
 let currSecColor = defaultSecColor;
 let oldTitle = null;
 let viewMode = false;
-let currBlog = null;
 
+let currBlog = null;
 let currRow = null;
 
 //slider.dataset.percentage = "0";
@@ -80,6 +80,10 @@ let pictureSelectedImage = null;
 let selectedPicLineItem = null;
 
 let prevSelectedPicLineItem = null;
+let prevSelectedBlog = null;
+let prevSelectedTitle = null;
+let prevSelectedIndex = null;
+let prevChoiceProperties = [0, null, null, null, null];
 
 let selectedPicRowLetters = null;
 
@@ -680,6 +684,34 @@ function setPrevListItem() {
   console.log("PREVLISTITEM", prevSelectedPicLineItem);
 }
 
+function setPrevSelection() {
+  prevSelectedPicLineItem = selectedPicLineItem;
+  prevSelectedBlog = currBlog;
+  prevSelectedTitle = currTitle;
+  prevSelectedIndex = currIndex;
+  prevChoiceProperties = [
+    1,
+    currTitle,
+    currIndex,
+    selectedPicLineItem,
+    currBlog,
+  ];
+}
+
+function resetSelectionVar() {
+  prevSelectedPicLineItem = null;
+  prevSelectedBlog = null;
+  prevSelectedTitle = null;
+  prevSelectedIndex = null;
+}
+
+function restorePrevSelection() {
+  currTitle = prevChoiceProperties[1];
+  currIndex = prevChoiceProperties[2];
+  selectedPicLineItem = prevChoiceProperties[3];
+  currBlog = prevChoiceProperties[4];
+}
+
 /*
 MAKE images next to centered image zoomed in a little?
 */
@@ -919,43 +951,14 @@ function exploreWordAction() {
   exploreTextLeft(topRow, 0);
   exploreTextLeft(bottomRow, 200);
 
-  /* move to getText???
-  const testBlog = document
-    .getElementById(`title-${currIndex}`)
-    .getElementsByClassName("blog")[0];
-
-  currBlog = testBlog;
-  console.log("CURR", testBlog);
-  */
-
-  /*
-  currBlog.style.display = "block";
-  currBlog.style.color = currFirstColor;
-
-  const textBlog = currBlog.children[0];
-  //textBlog.style.transform = "translate3d(-50%, 0%, 0px)";
-  console.log(textBlog);
-
-  textBlog.animate(
-    {
-      opacity: 1,
-    },
-    {
-      duration: 800,
-      fill: "forwards",
-      easing: "ease-in",
-      delay: 400,
-    }
-  ); */
-
-  blogTestReturn();
+  blogTestReturn(currBlog);
 }
 
-function blogTestReturn() {
-  currBlog.style.display = "block";
-  currBlog.style.color = currFirstColor;
+function blogTestReturn(givenBlog) {
+  givenBlog.style.display = "block";
+  givenBlog.style.color = currFirstColor;
 
-  const textBlog = currBlog.children[0];
+  const textBlog = givenBlog.children[0];
   console.log(textBlog);
 
   textBlog.animate(
@@ -1129,7 +1132,8 @@ function getText(titleID, titleIndex) {
 function putTextAway(currTitle, currIndex) {
   console.log(currIndex, "putting away", currTitle);
 
-  setPrevListItem();
+  //setPrevListItem();
+  setPrevSelection();
 
   const sTopRow = document
     .getElementById(`${currTitle}`)
@@ -1237,6 +1241,7 @@ function putTextAway(currTitle, currIndex) {
   if (currBlog !== null) {
     currBlog.style.color = currSecColor;
     currBlog.style.display = "none";
+    currBlog.children[0].style.opacity = 0;
     currBlog = null;
   }
 
@@ -1274,7 +1279,6 @@ function moveAboutIn(aboutSentItemSet, timeDuration, timeDelay, delayFlag) {
     aboutItem.children[0].style.color = defaultFirstColor;
     if (delayFlag === 1) {
       timeDelay = 400 + aiIndex * 75;
-      console.log(timeDelay, aiIndex);
     }
     aboutItem.children[0].animate(
       {
@@ -1376,10 +1380,65 @@ aboutBtn.addEventListener("click", function (e) {
 
   if (viewMode) {
     putTextAway(currTitle, currIndex);
+
+    for (const image of slider.getElementsByClassName("image")) {
+      image.animate(
+        { scale: 1.1 }, // `translate(${nextPercenRefined}% -50%)`
+        { duration: 400, fill: "forwards" }
+      );
+    }
   }
 
   if (exploreLock) {
     removePhotosSign();
+    resetBlogText(prevChoiceProperties[4]);
+  }
+
+  //want these things to fade away
+  slider.animate(
+    { opacity: 0 },
+    { duration: 400, fill: "forwards", easing: "cubic-bezier(0, 0, 0.19, 1)" }
+  );
+
+  if (!viewMode && !exploreLock) {
+    slider.animate(
+      { gap: "12vh" },
+      {
+        duration: 400,
+        fill: "backwards",
+        easing: "cubic-bezier(0, 0, 0.19, 1)",
+      }
+    );
+
+    Array.from(pictures).forEach(function (picture, picIndex) {
+      duration = Math.max(0, 600 - picIndex * 100);
+      console.log(duration);
+      // 1000 +
+      delay = 1000 + (1 / (picIndex + 1)) * 100;
+      picture.animate(
+        {
+          left: "100%",
+        },
+        {
+          duration: 1000,
+          fill: "forwards",
+          easing: "cubic-bezier(0, 0, 0.19, 1)",
+          delay: delay,
+        }
+      );
+    });
+
+    slider.animate(
+      {
+        left: "101%",
+      },
+      {
+        duration: 1000,
+        fill: "forwards",
+        easing: "cubic-bezier(0, 0, 0.19, 1)",
+        delay: 0,
+      }
+    );
   }
 
   moveAboutIn(aboutFirst, 400, 200, 0);
@@ -1389,46 +1448,6 @@ aboutBtn.addEventListener("click", function (e) {
   moveAboutIn(langList, 600, 400, 1);
   moveAboutIn(techList, 600, 400, 1);
   moveAboutIn(aboutParagraph, 600, 400, 1);
-
-  slider.animate(
-    { opacity: 0 },
-    { duration: 400, fill: "forwards", easing: "cubic-bezier(0, 0, 0.19, 1)" }
-  );
-
-  slider.animate(
-    { gap: "12vh" },
-    { duration: 400, fill: "backwards", easing: "cubic-bezier(0, 0, 0.19, 1)" }
-  );
-
-  slider.animate(
-    {
-      left: "101%",
-    },
-    {
-      duration: 1000,
-      fill: "forwards",
-      easing: "cubic-bezier(0, 0, 0.19, 1)",
-      delay: 0,
-    }
-  );
-
-  Array.from(pictures).forEach(function (picture, picIndex) {
-    duration = Math.max(0, 600 - picIndex * 100);
-    console.log(duration);
-    // 1000 +
-    delay = 1000 + (1 / (picIndex + 1)) * 100;
-    picture.animate(
-      {
-        left: "100%",
-      },
-      {
-        duration: 1000,
-        fill: "forwards",
-        easing: "cubic-bezier(0, 0, 0.19, 1)",
-        delay: delay,
-      }
-    );
-  });
 
   changeColor(defaultFirstColor, defaultSecColor);
   Array.from(nameButtonLetters).forEach(function (nameLetter) {
@@ -1514,7 +1533,7 @@ closeBtn.addEventListener("click", function (e) {
       {
         transform: `translate3d(0%, 0%, 0px)`,
       },
-      { duration: 1200, fill: "forwards" }
+      { duration: 800, fill: "forwards" }
     );
     //posInfoPiece.style.animationDelay = "5500"; NOT WORKING
   });
@@ -1528,34 +1547,15 @@ closeBtn.addEventListener("click", function (e) {
     { duration: 1200, fill: "forwards", easing: "cubic-bezier(0, 0, 0.19, 1)" }
   );
 
-  slider.animate({ opacity: 1 }, { duration: 0, fill: "forwards" });
-
   slider.animate(
-    {
-      left: "50%",
-    },
+    { opacity: 1 },
     {
       duration: 400,
       fill: "forwards",
       easing: "cubic-bezier(0, 0, 0.19, 1)",
-      delay: 0,
+      delay: 200,
     }
   );
-
-  Array.from(pictures).forEach(function (picture, picIndex) {
-    delay = picIndex * 100 + 500;
-    // 1000 +
-    //delay = 1000 + (1 / (picIndex + 1)) * 100;
-    picture.animate(
-      { left: "0%" },
-      {
-        duration: 400,
-        fill: "forwards",
-        easing: "cubic-bezier(0, 0, 0.19, 1)",
-        delay: delay,
-      }
-    );
-  });
 
   closeBtn.style.pointerEvents = "none";
   aboutBtn.style.pointerEvents = "all";
@@ -1563,6 +1563,7 @@ closeBtn.addEventListener("click", function (e) {
   //should we replace the below with some sort of saveState?
   //abd just restore?
   if (viewMode) {
+    restorePrevSelection();
     changeColor(currFirstColor, currSecColor);
     console.log(currTitle, currIndex);
 
@@ -1570,11 +1571,52 @@ closeBtn.addEventListener("click", function (e) {
     resetPicText.style.display = "block";
 
     getText(currTitle, currIndex);
+
+    for (const image of slider.getElementsByClassName("image")) {
+      image.animate(
+        { scale: 1 / 1.1 }, // `translate(${nextPercenRefined}% -50%)`
+        {
+          duration: 600,
+          fill: "forwards",
+          delay: 200,
+          easing: "cubic-bezier(0, 0, 0.19, 1)",
+        }
+      );
+    }
   }
 
   if (exploreLock) {
     removeExplore(currTitle);
     fillPhotosSign();
+    blogTestReturn(prevChoiceProperties[4]);
+  }
+
+  if (!viewMode && !exploreLock) {
+    slider.animate(
+      {
+        left: "50%",
+      },
+      {
+        duration: 400,
+        fill: "forwards",
+        easing: "cubic-bezier(0, 0, 0.19, 1)",
+        delay: 200,
+      }
+    );
+    Array.from(pictures).forEach(function (picture, picIndex) {
+      delay = picIndex * 100 + 500;
+      // 1000 +
+      //delay = 1000 + (1 / (picIndex + 1)) * 100;
+      picture.animate(
+        { left: "0%" },
+        {
+          duration: 400,
+          fill: "forwards",
+          easing: "cubic-bezier(0, 0, 0.19, 1)",
+          delay: delay,
+        }
+      );
+    });
   }
 });
 
@@ -1705,8 +1747,14 @@ function resetText() {
   getOldPos(secRow);
   removePhotosSign();
 
-  console.log("CURRBLOGRESETTEXT", currBlog);
-  const textBlog = currBlog.children[0];
+  if (currBlog) {
+    resetBlogText(currBlog);
+  }
+}
+
+function resetBlogText(givenBlog) {
+  console.log("CURRBLOGRESETTEXT", givenBlog);
+  const textBlog = givenBlog.children[0];
   //textBlog.style.transform = "translate3d(-50%, 0%, 0px)";
 
   textBlog.animate(
@@ -1720,15 +1768,6 @@ function resetText() {
       delay: 0,
     }
   );
-  /*
-  setTimeout(function () {
-    console.log(currBlog);
-    console.log("here");
-    currBlog.style.color = currSecColor;
-    currBlog.style.display = "none";
-    currBlog = null;
-  }, 500);
-  */
 }
 
 function getOldPos(givenRow) {
@@ -2085,7 +2124,7 @@ function arrowSelect(sentPicture, sentIndex, key) {
     exploreTextLeft(topRow, 0);
     exploreTextLeft(bottomRow, 200);
 
-    blogTestReturn();
+    blogTestReturn(currBlog);
   });
 
   imageTexts();
