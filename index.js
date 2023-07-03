@@ -477,7 +477,7 @@ sliderContainer.addEventListener("touchmove", function (e) {
     {
       transform: `translate(${nextPercentageRefined}%, 0%)`,
     },
-    { duration: 1200, fill: "forwards" }
+    { duration: 1, fill: "forwards" }
   );
 
   Array.from(pictures).forEach(function (picture) {
