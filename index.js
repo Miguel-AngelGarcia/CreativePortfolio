@@ -352,7 +352,7 @@ sliderContainer.addEventListener("wheel", function (e) {
     {
       transform: `translate(${nextPercenRefined}%, 0%)`, //OLD<- `translate(${nextPercenRefined}%, -50%)`
     },
-    { duration: 1200, fill: "forwards" }
+    { duration: /*1200*/ 200, fill: "forwards" }
   );
 
   //slider.style.transform = `translate(${nextPercenRefined}%, 0%)`;
@@ -477,7 +477,7 @@ sliderContainer.addEventListener("touchmove", function (e) {
     {
       transform: `translate(${nextPercentageRefined}%, 0%)`,
     },
-    { duration: 1, fill: "forwards" }
+    { duration: 100, fill: "forwards" }
   );
 
   Array.from(pictures).forEach(function (picture) {
@@ -485,7 +485,7 @@ sliderContainer.addEventListener("touchmove", function (e) {
       {
         objectPosition: `${nextPercentageRefined + 100}% 0%`,
       },
-      { duration: 1200, fill: "forwards" }
+      { duration: 100, fill: "forwards" }
     );
   });
 });
