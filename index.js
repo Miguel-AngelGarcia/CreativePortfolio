@@ -1741,7 +1741,12 @@ function exploreTextLeft(rowOfLetters, constant) {
   for (let rX = 0; rX < rowOfLetters.length; rX++) {
     let rItem = rowOfLetters[rX];
 
-    let currLetterWidth = rItem.clientWidth - 0.0333 * 2 * windowHeight;
+    let styles = getComputedStyle(rItem.children[0]);
+    let padding = parseFloat(styles.getPropertyValue("padding-left"));
+    console.log("IREITEM", padding);
+
+    //let currLetterWidthV1 = rItem.clientWidth - 0.0333 * 2 * windowHeight;
+    let currLetterWidth = rItem.clientWidth - padding * 2;
 
     //console.log("item", rItem);
 
