@@ -437,12 +437,11 @@ window.ontouchmove = (e) => {
 sliderContainer.addEventListener("touchstart", function (e) {
   //slider.dataset.toughScrollAt = e.clientX;
   slider.dataset.userTouchAt = e.touches[0].clientX;
+  console.log("TOUCH DOWN AT", slider.dataset.userTouchAt);
 });
 
 sliderContainer.addEventListener("touchmove", function (e) {
   //slider.dataset.userTouchAt = e.clientX;
-
-  console.log(e.touches[0].target.localName);
 
   if (exploreLock) return;
 
@@ -456,18 +455,22 @@ sliderContainer.addEventListener("touchmove", function (e) {
   const deltaTouchMiddle = touchX - maxDelta;
 
   let workingX = parseFloat(touchX) / parseFloat(Math.abs(touchX));
-  console.log(touchXDelta);
+  console.log("MOVED FROM", touchX, "TO", touchXDelta);
+  console.log(e);
 
   //const percentage = (touchXDelta / maxDelta) * -100;
   //const percentage = (touchXDelta / maxDelta) * -25;
   //const percentage = (touchX / touchX / maxDelta) * -25;
 
-  const percentage = deltaTouchMiddle * percentPerPixel;
+  const percentageV1 = deltaTouchMiddle * percentPerPixel;
+  const percentageV2 = (touchXDelta / maxDelta) * -100;
+  const percentage = (touchXDelta / window.innerWidth) * -100;
 
   console.log(percentage, "%");
 
   const nextPercentageRaw =
     parseFloat(slider.dataset.prevPercentage) + percentage;
+  console.log("NEXT%", nextPercentageRaw);
 
   const nextPercentageRefined = Math.max(Math.min(nextPercentageRaw, 0), -100);
   //need to keep track of where x% is, bc it restarts at 0 if else
