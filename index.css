@@ -1211,4 +1211,24 @@ https://stackoverflow.com/questions/31713468/css-blur-filter-performance
   .a-about {
     display: none;
   }
+
+  /*
+  .title {
+    height: 28.125vh;
+    line-height: 28.125vh;
+    font-size: 20.5vh;
+  }
+  */
+
+  .title-top-row {
+    top: calc(50% - 35.5vh);
+  }
+
+  .title-bottom-row {
+    top: calc(50% + 24.4vh);
+  }
+
+  .blog-content {
+    display: none;
+  }
 }
