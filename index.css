@@ -690,10 +690,51 @@ animation-duration: 1s;
 
 /*Image track*/
 #slider-container {
+  position: relative;
+}
+
+.slider-container {
   width: 100vw;
   height: 40vh;
   top: 30vh;
-  position: relative;
+}
+
+.expanded {
+  animation-duration: 0.5s;
+  animation-delay: 0s;
+  animation-name: container-expansion;
+  animation-fill-mode: forwards;
+}
+
+@keyframes container-expansion {
+  0% {
+    height: 40vh;
+    top: 30vh;
+  }
+
+  100% {
+    top: 20vh;
+    height: 60vh;
+  }
+}
+
+.shriveled {
+  animation-duration: 0.5s;
+  animation-delay: 0s;
+  animation-name: container-shrivel;
+  animation-fill-mode: forwards;
+}
+
+@keyframes container-shrivel {
+  0% {
+    top: 20vh;
+    height: 60vh;
+  }
+
+  100% {
+    height: 40vh;
+    top: 30vh;
+  }
 }
 
 .hidden {
@@ -728,7 +769,7 @@ Hypothesis: animating the -10vhof removeExploreClick sticks. how do we remove?
 */
 
 .selected {
-  animation-duration: 1s;
+  animation-duration: 0.2s;
   animation-delay: 0s;
   animation-name: slider-gap-expansion;
   animation-timing-function: (cubic-bezier(0.94, 0.63, 0.14, 0.53));
@@ -740,7 +781,7 @@ Hypothesis: animating the -10vhof removeExploreClick sticks. how do we remove?
   animation-delay: 0s;
   animation-name: slider-gap-shrivel;
   animation-timing-function: (cubic-bezier(0.94, 0.63, 0.14, 0.53));
-  animation-fill-mode: backwards;
+  animation-fill-mode: forwards;
 }
 
 @keyframes slider-gap-expansion {
@@ -789,8 +830,10 @@ Hypothesis: animating the -10vhof removeExploreClick sticks. how do we remove?
   animation-timing-function: (cubic-bezier(0.53, 0.14, 0.63, 0.94));
   animation-fill-mode: forwards;
   /*the animation makles it look like it moves in when loading*/
+
   height: 60vh;
   width: calc(60vh * (5 / 7));
+
   /*transform: translate(0%, -10vh);*/
 }
 
@@ -822,7 +865,7 @@ Hypothesis: animating the -10vhof removeExploreClick sticks. how do we remove?
   animation-name: animate-glow;
   animation-timing-function: ease;
 } */
-
+/*VERSION 1
 @keyframes selected-pic-an {
   0% {
     transform: translate(0%, 0%);
@@ -836,7 +879,26 @@ Hypothesis: animating the -10vhof removeExploreClick sticks. how do we remove?
     width: calc(60vh * (5 / 7));
   }
 }
+*/
 
+@keyframes selected-pic-an {
+  0% {
+    transform: translate(0%, 0%);
+    height: 40vh;
+    width: 15vh;
+  }
+
+  50% {
+    height: 60vh;
+  }
+
+  100% {
+    /*transform: translate(0%, -10vh);*/
+    width: calc(60vh * (5 / 7));
+  }
+}
+
+/* VERSION!
 @keyframes scroll-selected-pic-an {
   0% {
     transform: translate(0%, -10vh);
@@ -846,6 +908,23 @@ Hypothesis: animating the -10vhof removeExploreClick sticks. how do we remove?
 
   100% {
     transform: translate(0%, 0%);
+    margin-left: 0vh;
+    height: 40vh;
+  }
+}
+*/
+
+@keyframes scroll-selected-pic-an {
+  0% {
+    height: 60vh;
+    width: calc(60vh * (5 / 7));
+  }
+
+  50% {
+    height: 40vh;
+  }
+
+  100% {
     margin-left: 0vh;
     height: 40vh;
   }

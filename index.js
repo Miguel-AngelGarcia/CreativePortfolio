@@ -95,6 +95,11 @@ const percentPerPixel = (1 / parseFloat(slideWidth)) * 100;
 const percentPerPixelLarge = (1 / parseFloat(slideWidthLarge)) * 100;
 
 window.onload = (event) => {
+  calcImageCenteredPercentage();
+
+  //remove shriveled
+  sliderContainer.classList.remove("shriveled");
+
   Array.from(pictures).forEach(function (picture) {
     //remove the "unexplore class thing"
     picture.classList.remove("un-explore-action");
@@ -170,6 +175,28 @@ function emergencyRowLayout(currentRow) {
       parseFloat(currLetter.clientWidth) / 2;
 
     currLetter.style.transform = `translate3d(${funcLocation}px, 0%, 0px)`;
+  });
+}
+
+//for each image in slider, will calc % needed to center the image
+//run this before load??? to get width before it shrinks
+function calcImageCenteredPercentage() {
+  const scaleHeight = windowHeight * 0.6;
+  const scaleWidth = scaleHeight * (5 / 7);
+
+  Array.from(pictures).forEach(function (pic, picIndex) {
+    //picWidth * ImageGap * picIndex)
+    const posValueLargeX = homeX + picIndex * (imageWidthLarge + newImageGap);
+    let picMiddle = posValueLargeX + scaleWidth / 2;
+
+    console.log(posValueLargeX, picMiddle);
+
+    let deltaMiddlePicCenter = homeX - picMiddle; //eg -> 500 - 670 = -170
+    console.log(deltaMiddlePicCenter);
+    const usingPercentage = deltaMiddlePicCenter * percentPerPixelLarge;
+
+    pic.dataset.centerPercentage = usingPercentage.toFixed(7);
+    console.log("pic%", pic.dataset.centerPercentage);
   });
 }
 
@@ -272,6 +299,8 @@ function resetSliderToStart() {
   slider.classList.remove("selected");
   slider.classList.add("unselected");
   slider.classList.remove("slider-in-focus");
+  sliderContainer.classList.remove("expanded");
+  sliderContainer.classList.add("shriveled");
 }
 
 function resetSelectedImageColor() {
@@ -746,7 +775,7 @@ function restorePrevSelection() {
 MAKE images next to centered image zoomed in a little?
 */
 
-function centerImage(clickEvent, currPicSent, currPicIndex) {
+function centerImageV1(clickEvent, currPicSent, currPicIndex) {
   //new height of image
   const scaleHeight = windowHeight * 0.6;
 
@@ -794,7 +823,10 @@ function centerImage(clickEvent, currPicSent, currPicIndex) {
     {
       transform: `translate(${nextPercentageRefined}%, 0%)`,
     },
-    { duration: 1000, fill: "forwards", easing: "cubic-bezier(0, 0, 0.19, 1)" } //500 instead of 1000
+    {
+      duration: 1000,
+      fill: "forwards" /*easing: "cubic-bezier(0, 0, 0.19, 1)"*/,
+    } //500 instead of 1000
   );
 
   //slider.style.transform = `translate(${nextPercentageRefined}%, 0%)`;
@@ -803,6 +835,29 @@ function centerImage(clickEvent, currPicSent, currPicIndex) {
   const currPicPosX = position - scaleWidth / 2;
   currPicSent.dataset.posX = currPicPosX;
   slider.dataset.prevPercentage = nextPercentageRefined;
+
+  setNewPosXFromLarge();
+  viewMode = true;
+}
+
+function centerImage(clickEvent, currPicSent, currPicIndex) {
+  const usingPercentage = currPicSent.dataset.centerPercentage;
+
+  slider.dataset.percentage = usingPercentage;
+  //currPercentage +
+
+  slider.animate(
+    {
+      transform: `translate(${usingPercentage}%, 0%)`,
+    },
+    {
+      duration: 500 /*1000*/,
+      fill: "forwards",
+      easing: "cubic-bezier(0, 0, 0.19, 1)",
+    } //500 instead of 1000
+  );
+
+  slider.dataset.prevPercentage = usingPercentage;
 
   setNewPosXFromLarge();
   viewMode = true;
@@ -918,6 +973,10 @@ for (let i = 0; i < pictures.length; i++) {
     centerImage(e, currPic, i);
     getText(titleName, i);
     //currPic.classList.add("chosen");
+
+    sliderContainer.classList.remove("shriveled");
+    sliderContainer.classList.add("expanded");
+
     Array.from(pictures).forEach(function (picture) {
       picture.classList.add("chosen");
       picture.classList.remove("scroll-on-chosen");
