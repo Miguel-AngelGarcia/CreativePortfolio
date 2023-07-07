@@ -719,7 +719,7 @@ animation-duration: 1s;
 }
 
 .shriveled {
-  animation-duration: 0.5s;
+  animation-duration: 1.2s; /*1s before*/
   animation-delay: 0s;
   animation-name: container-shrivel;
   animation-fill-mode: forwards;
@@ -777,7 +777,7 @@ Hypothesis: animating the -10vhof removeExploreClick sticks. how do we remove?
 }
 
 .unselected {
-  animation-duration: 1s;
+  animation-duration: 1.2s;
   animation-delay: 0s;
   animation-name: slider-gap-shrivel;
   animation-timing-function: (cubic-bezier(0.94, 0.63, 0.14, 0.53));
@@ -838,15 +838,18 @@ Hypothesis: animating the -10vhof removeExploreClick sticks. how do we remove?
 }
 
 .picture-group-slider > .scroll-on-chosen {
-  animation-duration: 1s;
+  animation-duration: 1.2s;
   animation-delay: 0s;
   animation-name: scroll-selected-pic-an;
   animation-timing-function: (cubic-bezier(0.94, 0.63, 0.14, 0.53));
-  animation-fill-mode: backwards;
+  animation-fill-mode: forwards;
 
+  /*
+  animation-fill-mode: backwards;
   height: 40vh;
   width: 15vh;
   transform: translate(0%, 0vh);
+  */
 }
 
 /*MAYBE just zoom-in slider when an image is clicked?*/
@@ -921,7 +924,6 @@ Hypothesis: animating the -10vhof removeExploreClick sticks. how do we remove?
   }
 
   50% {
-    height: 40vh;
   }
 
   100% {
@@ -950,7 +952,7 @@ Hypothesis: animating the -10vhof removeExploreClick sticks. how do we remove?
 
 @keyframes explore-action {
   0% {
-    transform: translate(0%, -10vh);
+    transform: translate(0%, 0vh);
   }
 
   100% {
@@ -972,7 +974,7 @@ Hypothesis: animating the -10vhof removeExploreClick sticks. how do we remove?
   }
 
   100% {
-    transform: translate(0%, -10vh);
+    transform: translate(0%, 0vh);
   }
 }
 /*

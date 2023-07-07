@@ -79,6 +79,7 @@ let pictureSelected = false;
 let pictureSelectedImage = null;
 let selectedPicLineItem = null;
 
+let firstClick = false;
 let prevSelectedPicLineItem = null;
 let prevSelectedBlog = null;
 let prevSelectedTitle = null;
@@ -289,6 +290,8 @@ function resetImagesToStart() {
     //added below to remove effects after 1st image explored
     picture.classList.remove("un-explore-action");
   });
+
+  firstClick = false;
 }
 
 /*
@@ -381,7 +384,7 @@ sliderContainer.addEventListener("wheel", function (e) {
     {
       transform: `translate(${nextPercenRefined}%, 0%)`, //OLD<- `translate(${nextPercenRefined}%, -50%)`
     },
-    { duration: /*1200*/ 200, fill: "forwards" }
+    { duration: /*1200*/ 400, fill: "forwards" }
   );
 
   //slider.style.transform = `translate(${nextPercenRefined}%, 0%)`;
@@ -845,13 +848,18 @@ function centerImage(clickEvent, currPicSent, currPicIndex) {
 
   slider.dataset.percentage = usingPercentage;
   //currPercentage +
+  let duration = 300;
+
+  if (firstClick) {
+    duration = 1000;
+  }
 
   slider.animate(
     {
       transform: `translate(${usingPercentage}%, 0%)`,
     },
     {
-      duration: 500 /*1000*/,
+      duration: duration /*1000*/,
       fill: "forwards",
       easing: "cubic-bezier(0, 0, 0.19, 1)",
     } //500 instead of 1000
@@ -861,6 +869,7 @@ function centerImage(clickEvent, currPicSent, currPicIndex) {
 
   setNewPosXFromLarge();
   viewMode = true;
+  firstClick = true;
 }
 
 function newPosX(newWidth, newGap) {
