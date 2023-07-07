@@ -384,7 +384,7 @@ sliderContainer.addEventListener("wheel", function (e) {
     {
       transform: `translate(${nextPercenRefined}%, 0%)`, //OLD<- `translate(${nextPercenRefined}%, -50%)`
     },
-    { duration: /*1200*/ 400, fill: "forwards" }
+    { duration: /*1200*/ 300, fill: "forwards" }
   );
 
   //slider.style.transform = `translate(${nextPercenRefined}%, 0%)`;
