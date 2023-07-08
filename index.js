@@ -384,17 +384,19 @@ sliderContainer.addEventListener("wheel", function (e) {
     {
       transform: `translate(${nextPercenRefined}%, 0%)`, //OLD<- `translate(${nextPercenRefined}%, -50%)`
     },
-    { duration: /*1200*/ 300, fill: "forwards" }
+    { duration: /**/ 200, fill: "forwards", easing: "ease-in" }
   );
 
   //slider.style.transform = `translate(${nextPercenRefined}%, 0%)`;
 
   let testI = 0;
   for (const image of slider.getElementsByClassName("image")) {
+    /*
     image.animate(
       { objectPosition: `${nextPercenRefined + 100}% 0%` }, // `translate(${nextPercenRefined}% -50%)`
-      { duration: 1200, fill: "forwards" }
+      { duration: 200, fill: "forwards" }
     );
+    */
 
     image.dataset.posX =
       parseFloat(image.dataset.posXStart) + nextPercenRefined / percentPerPixel;
