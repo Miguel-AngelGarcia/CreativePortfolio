@@ -190,14 +190,14 @@ function calcImageCenteredPercentage() {
     const posValueLargeX = homeX + picIndex * (imageWidthLarge + newImageGap);
     let picMiddle = posValueLargeX + scaleWidth / 2;
 
-    console.log(posValueLargeX, picMiddle);
+    //console.log(posValueLargeX, picMiddle);
 
     let deltaMiddlePicCenter = homeX - picMiddle; //eg -> 500 - 670 = -170
-    console.log(deltaMiddlePicCenter);
+    //console.log(deltaMiddlePicCenter);
     const usingPercentage = deltaMiddlePicCenter * percentPerPixelLarge;
 
     pic.dataset.centerPercentage = usingPercentage.toFixed(7);
-    console.log("pic%", pic.dataset.centerPercentage);
+    //console.log("pic%", pic.dataset.centerPercentage);
   });
 }
 
@@ -349,7 +349,7 @@ sliderContainer.addEventListener("wheel", function (e) {
   scroll += e.deltaX; //ORIGINAL
   //scroll += testX; TEST
 
-  console.log("SCROLL", scroll);
+  //console.log("SCROLL", scroll);
 
   testScrollCount += testX;
   maxCount = Math.max(testScrollCount, leftMax);
@@ -1020,12 +1020,10 @@ for (let i = 0; i < pictures.length; i++) {
       .getElementsByClassName("blog")[0];
 
     currBlog = testBlog;
-    console.log("CURRGETTEXT", testBlog);
+    //console.log("CURRGETTEXT", testBlog);
 
     //const exploreWord = document.getElementsByClassName("line-w")[i];
     const exploreWord = newPicText.getElementsByClassName("explore")[0];
-
-    console.log("EXPLOREWORD", exploreWord);
 
     currExploreWord = exploreWord;
     //console.log("eword", exploreWord);
@@ -1437,8 +1435,6 @@ function calcTopForAboutListItem(listItem) {
     let letterValue = startLetter.charCodeAt(0) - 65;
 
     if (startLetter === lastStartLetter) {
-      console.log(lastStartLetter);
-      console.log(order);
       order += 1;
     }
 
@@ -2083,8 +2079,6 @@ function putBackSmallImage(centeredPic, currPicIndex) {
   //does this have to be calc from start x of small image?????
 
   const usingPercentage = deltaMiddle * percentPerPixel * -1;
-
-  console.log("using%", usingPercentage);
 
   //how far image is pixel wise from middle
   const nextPercentageRaw =

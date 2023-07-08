@@ -699,8 +699,14 @@ animation-duration: 1s;
   top: 30vh;
 }
 
+/*
+Duration here needs to match duration of 100% height in
+image-chose 
+animation: selected-pic-an
+0.3s = 30% {60vh} 
+*/
 .expanded {
-  animation-duration: 0.5s;
+  animation-duration: 0.3s;
   animation-delay: 0s;
   animation-name: container-expansion;
   animation-fill-mode: forwards;
@@ -719,7 +725,7 @@ animation-duration: 1s;
 }
 
 .shriveled {
-  animation-duration: 1.2s; /*1s before*/
+  animation-duration: 1s; /*1s before*/
   animation-delay: 0s;
   animation-name: container-shrivel;
   animation-fill-mode: forwards;
@@ -777,7 +783,7 @@ Hypothesis: animating the -10vhof removeExploreClick sticks. how do we remove?
 }
 
 .unselected {
-  animation-duration: 1.2s;
+  animation-duration: 1s;
   animation-delay: 0s;
   animation-name: slider-gap-shrivel;
   animation-timing-function: (cubic-bezier(0.94, 0.63, 0.14, 0.53));
@@ -838,7 +844,7 @@ Hypothesis: animating the -10vhof removeExploreClick sticks. how do we remove?
 }
 
 .picture-group-slider > .scroll-on-chosen {
-  animation-duration: 1.2s;
+  animation-duration: 1s;
   animation-delay: 0s;
   animation-name: scroll-selected-pic-an;
   animation-timing-function: (cubic-bezier(0.94, 0.63, 0.14, 0.53));
@@ -891,7 +897,7 @@ Hypothesis: animating the -10vhof removeExploreClick sticks. how do we remove?
     width: 15vh;
   }
 
-  50% {
+  30% {
     height: 60vh;
   }
 
@@ -920,7 +926,7 @@ Hypothesis: animating the -10vhof removeExploreClick sticks. how do we remove?
 @keyframes scroll-selected-pic-an {
   0% {
     height: 60vh;
-    width: calc(60vh * (5 / 7));
+    /*width: calc(60vh * (5 / 7));*/
   }
 
   50% {
