@@ -328,7 +328,10 @@ sliderContainer.addEventListener("wheel", function (e) {
 
     putTextAway(currTitle, currIndex);
     console.log("slideEventListener");
-    putBackSmallImage(pictureSelectedImage, currIndex);
+    //putBackSmallImage(pictureSelectedImage, currIndex);
+
+    //use centerImage() instead. Does exactly what we want
+    centerImage(e, pictureSelectedImage, currIndex);
     //removeExploreClick();
 
     pictureSelected = false;
@@ -384,17 +387,19 @@ sliderContainer.addEventListener("wheel", function (e) {
     {
       transform: `translate(${nextPercenRefined}%, 0%)`, //OLD<- `translate(${nextPercenRefined}%, -50%)`
     },
-    { duration: /*1200*/ 300, fill: "forwards" }
+    { duration: /**/ 200, fill: "forwards", easing: "ease-in" }
   );
 
   //slider.style.transform = `translate(${nextPercenRefined}%, 0%)`;
 
   let testI = 0;
   for (const image of slider.getElementsByClassName("image")) {
+    /*
     image.animate(
       { objectPosition: `${nextPercenRefined + 100}% 0%` }, // `translate(${nextPercenRefined}% -50%)`
-      { duration: 1200, fill: "forwards" }
+      { duration: 200, fill: "forwards" }
     );
+    */
 
     image.dataset.posX =
       parseFloat(image.dataset.posXStart) + nextPercenRefined / percentPerPixel;
@@ -456,6 +461,8 @@ window.ontouchmove = (e) => {
     resetImagesToStart();
     resetSliderToStart();
     resetSelectedImageColor();
+
+    centerImage(e, pictureSelectedImage, currIndex);
 
     pictureSelected = false;
     pictureSelectedImage = null;
@@ -547,6 +554,8 @@ window.onmousemove = (e) => {
     return;
   }
 
+  //do we really want this?
+  //if picSelected, click on img, targetNot picSelected last
   if (
     pictureSelected &&
     e.target.localName === "img" &&
@@ -559,10 +568,11 @@ window.onmousemove = (e) => {
     resetSliderToStart();
     resetSelectedImageColor();
 
+    putTextAway(currTitle, currIndex);
+    //centerImage(e, pictureSelectedImage, currIndex);
+
     pictureSelected = false;
     pictureSelectedImage = null;
-
-    putTextAway(currTitle, currIndex);
     return;
   }
 
@@ -573,7 +583,8 @@ window.onmousemove = (e) => {
   added this because if user clicked 'explore' while image was centering, 
   images would leave screen but would return clicked image to non-centered size
   */
-  if (pictureSelected && e.toElement.nodeName == "DIV") {
+  if (pictureSelected && e.target.localName == "div") {
+    console.log(e.target.localName);
     return;
   }
 
@@ -607,6 +618,7 @@ window.onmousemove = (e) => {
     resetImagesToStart();
     resetSliderToStart();
     resetSelectedImageColor();
+    centerImage(e, pictureSelectedImage, currIndex);
 
     pictureSelected = false;
     pictureSelectedImage = null;
@@ -2057,7 +2069,7 @@ function removeRow(sTopRow) {
 3.) turn large pics into small
 4.) mode previous centered image (selected image) to middle of screen
 */
-function putBackSmallImage(centeredPic, currPicIndex) {
+function putBackSmallImageV1(centeredPic, currPicIndex) {
   //new height of image
   const scaleHeight = windowHeight * 0.6;
 
@@ -2107,6 +2119,8 @@ function putBackSmallImage(centeredPic, currPicIndex) {
 
   viewMode = false;
 }
+
+function putBackSmallImage(centeredPic, currPicIndex) {}
 
 addEventListener("keyup", ({ key }) => {
   if (!viewMode) return;
