@@ -89,6 +89,7 @@ let prevChoiceProperties = [0, null, null, null, null];
 let selectedPicRowLetters = null;
 
 let exploreLock = false;
+let aboutLock = false;
 
 //Percent per 1 pixel moves
 const percentPerPixel = (1 / parseFloat(slideWidth)) * 100;
@@ -317,7 +318,7 @@ sliderContainer.addEventListener("wheel", function (e) {
   //console.log(e.deltaX);
 
   //if user click on "explore," can only click exit to go back
-  if (exploreLock) return;
+  if (exploreLock || aboutLock) return;
 
   if (pictureSelected /*|| viewMode*/) {
     changeColor(defaultFirstColor, defaultSecColor);
@@ -328,7 +329,10 @@ sliderContainer.addEventListener("wheel", function (e) {
 
     putTextAway(currTitle, currIndex);
     console.log("slideEventListener");
-    putBackSmallImage(pictureSelectedImage, currIndex);
+    //putBackSmallImage(pictureSelectedImage, currIndex);
+
+    //use centerImage() instead. Does exactly what we want
+    centerImage(e, pictureSelectedImage, currIndex);
     //removeExploreClick();
 
     pictureSelected = false;
@@ -384,17 +388,19 @@ sliderContainer.addEventListener("wheel", function (e) {
     {
       transform: `translate(${nextPercenRefined}%, 0%)`, //OLD<- `translate(${nextPercenRefined}%, -50%)`
     },
-    { duration: /*1200*/ 300, fill: "forwards" }
+    { duration: /**/ 200, fill: "forwards", easing: "ease-in" }
   );
 
   //slider.style.transform = `translate(${nextPercenRefined}%, 0%)`;
 
   let testI = 0;
   for (const image of slider.getElementsByClassName("image")) {
+    /*
     image.animate(
       { objectPosition: `${nextPercenRefined + 100}% 0%` }, // `translate(${nextPercenRefined}% -50%)`
-      { duration: 1200, fill: "forwards" }
+      { duration: 200, fill: "forwards" }
     );
+    */
 
     image.dataset.posX =
       parseFloat(image.dataset.posXStart) + nextPercenRefined / percentPerPixel;
@@ -457,6 +463,8 @@ window.ontouchmove = (e) => {
     resetSliderToStart();
     resetSelectedImageColor();
 
+    centerImage(e, pictureSelectedImage, currIndex);
+
     pictureSelected = false;
     pictureSelectedImage = null;
 
@@ -475,7 +483,7 @@ sliderContainer.addEventListener("touchstart", function (e) {
 sliderContainer.addEventListener("touchmove", function (e) {
   //slider.dataset.userTouchAt = e.clientX;
 
-  if (exploreLock) return;
+  if (exploreLock || aboutLock) return;
 
   if (pictureSelected) {
     return;
@@ -540,13 +548,15 @@ window.onmousemove = (e) => {
 
   if (slider.dataset.mouseDownAt === "0") return;
   /*do nothing if explore is clicked. dont want pic to move*/
-  if (exploreLock) return;
+  if (exploreLock || aboutLock) return;
 
   if (pictureSelected && e.target === pictureSelectedImage) {
     console.log(e.target.localName);
     return;
   }
 
+  //do we really want this?
+  //if picSelected, click on img, targetNot picSelected last
   if (
     pictureSelected &&
     e.target.localName === "img" &&
@@ -559,10 +569,11 @@ window.onmousemove = (e) => {
     resetSliderToStart();
     resetSelectedImageColor();
 
+    putTextAway(currTitle, currIndex);
+    //centerImage(e, pictureSelectedImage, currIndex);
+
     pictureSelected = false;
     pictureSelectedImage = null;
-
-    putTextAway(currTitle, currIndex);
     return;
   }
 
@@ -573,7 +584,8 @@ window.onmousemove = (e) => {
   added this because if user clicked 'explore' while image was centering, 
   images would leave screen but would return clicked image to non-centered size
   */
-  if (pictureSelected && e.toElement.nodeName == "DIV") {
+  if (pictureSelected && e.target.localName == "div") {
+    console.log(e.target.localName);
     return;
   }
 
@@ -607,6 +619,7 @@ window.onmousemove = (e) => {
     resetImagesToStart();
     resetSliderToStart();
     resetSelectedImageColor();
+    centerImage(e, pictureSelectedImage, currIndex);
 
     pictureSelected = false;
     pictureSelectedImage = null;
@@ -1460,6 +1473,7 @@ function resetAnimatedElement(elementToReset, resetCoords, resetDelay) {
 }
 
 aboutBtn.addEventListener("click", function (e) {
+  aboutLock = true;
   //console.log(e.target);
 
   aboutBtn.animate(
@@ -1713,6 +1727,8 @@ closeBtn.addEventListener("click", function (e) {
       );
     });
   }
+
+  aboutLock = false;
 });
 
 /*
@@ -2057,7 +2073,7 @@ function removeRow(sTopRow) {
 3.) turn large pics into small
 4.) mode previous centered image (selected image) to middle of screen
 */
-function putBackSmallImage(centeredPic, currPicIndex) {
+function putBackSmallImageV1(centeredPic, currPicIndex) {
   //new height of image
   const scaleHeight = windowHeight * 0.6;
 
@@ -2108,10 +2124,12 @@ function putBackSmallImage(centeredPic, currPicIndex) {
   viewMode = false;
 }
 
+function putBackSmallImage(centeredPic, currPicIndex) {}
+
 addEventListener("keyup", ({ key }) => {
   if (!viewMode) return;
 
-  if (exploreLock) return;
+  if (exploreLock || aboutLock) return;
 
   switch (key) {
     case "ArrowRight":
