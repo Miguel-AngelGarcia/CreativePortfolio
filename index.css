@@ -832,7 +832,7 @@ Hypothesis: animating the -10vhof removeExploreClick sticks. how do we remove?
 
 .picture-group-slider > .chosen {
   animation-duration: 1s;
-  animation-delay: 0s;
+  /*animation-delay: 0.0001s;*/
   animation-name: selected-pic-an;
   animation-timing-function: (cubic-bezier(0.53, 0.14, 0.63, 0.94));
   animation-fill-mode: forwards;
@@ -846,7 +846,7 @@ Hypothesis: animating the -10vhof removeExploreClick sticks. how do we remove?
 
 .picture-group-slider > .scroll-on-chosen {
   animation-duration: 1s;
-  animation-delay: 0s;
+  /*animation-delay: 0.0001s;*/
   animation-name: scroll-selected-pic-an;
   animation-timing-function: (cubic-bezier(0.94, 0.63, 0.14, 0.53));
   animation-fill-mode: forwards;
@@ -893,7 +893,8 @@ Hypothesis: animating the -10vhof removeExploreClick sticks. how do we remove?
 
 @keyframes selected-pic-an {
   0% {
-    transform: translate(0%, 0%);
+    /*Got ride f this 8/16/23*/
+    /*transform: translate(0%, 0%);*/
     height: 40vh;
     width: 15vh;
   }
@@ -910,7 +911,8 @@ Hypothesis: animating the -10vhof removeExploreClick sticks. how do we remove?
 
 @keyframes nonselected-pic-an {
   0% {
-    transform: translate(0%, 0%);
+    /*Got ride f this 8/16/23*/
+    /*transform: translate(0%, 0%);*/
     height: 40vh;
     width: 15vh;
   }

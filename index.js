@@ -1509,6 +1509,7 @@ aboutBtn.addEventListener("click", function (e) {
   );
 
   if (!viewMode && !exploreLock) {
+    console.log("in gap thing");
     slider.animate(
       { gap: "12vh" },
       {
@@ -1602,6 +1603,7 @@ aboutBtn.addEventListener("click", function (e) {
 });
 
 closeBtn.addEventListener("click", function (e) {
+  //removes things that popped up on 'about'
   moveAboutOut(projList, 200, 0, "(0%, -110%, 0px)", "(0%, 110%, 0px)");
   moveAboutOut(langList, 200, 0, "(0%, -110%, 0px)", "(0%, 110%, 0px)");
   moveAboutOut(techList, 200, 0, "(0%, -110%, 0px)", "(0%, 110%, 0px)");
@@ -1682,8 +1684,10 @@ closeBtn.addEventListener("click", function (e) {
     getText(currTitle, currIndex);
 
     for (const image of slider.getElementsByClassName("image")) {
+      console.log("in amge things", image.height);
+      let scale = 1 / 1.1;
       image.animate(
-        { scale: 1 / 1.1 }, // `translate(${nextPercenRefined}% -50%)`
+        { scale: 1 }, // `translate(${nextPercenRefined}% -50%)`
         {
           duration: 600,
           fill: "forwards",
@@ -2062,7 +2066,7 @@ function removeRow(sTopRow) {
   }
 }
 
-//REALIZING after first click, "exlpore' tages clash with each other"
+//REALIZING after first click, "exlpore' tags clash with each other"
 //Maybe trisiton delay needs to be added back?
 
 /*take centered image and make it center in small slider
