@@ -999,6 +999,18 @@ for (let i = 0; i < pictures.length; i++) {
     sliderContainer.classList.remove("shriveled");
     sliderContainer.classList.add("expanded");
 
+    /*
+    Array.from(pictures).forEach(function (picture) {
+      if (
+        0 <= parseFloat(picture.dataset.posX) &&
+        parseFloat(picture.dataset.posX) <= window.innerWidth
+      ) {
+        console.log(picture.dataset.posX);
+        picture.classList.add("chosen");
+        picture.classList.remove("scroll-on-chosen");
+      }
+    });CENTER IMAGE?*/
+
     Array.from(pictures).forEach(function (picture) {
       picture.classList.add("chosen");
       picture.classList.remove("scroll-on-chosen");
@@ -1683,7 +1695,7 @@ closeBtn.addEventListener("click", function (e) {
 
     for (const image of slider.getElementsByClassName("image")) {
       image.animate(
-        { scale: 1 / 1.1 }, // `translate(${nextPercenRefined}% -50%)`
+        { scale: 1 }, // `translate(${nextPercenRefined}% -50%)`
         {
           duration: 600,
           fill: "forwards",
