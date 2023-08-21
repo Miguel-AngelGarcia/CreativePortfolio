@@ -197,7 +197,7 @@ function calcImageCenteredPercentage() {
     //console.log(deltaMiddlePicCenter);
     const usingPercentage = deltaMiddlePicCenter * percentPerPixelLarge;
 
-    pic.dataset.centerPercentage = usingPercentage.toFixed(7);
+    pic.dataset.centerPercentage = usingPercentage.toFixed(6);
     //console.log("pic%", pic.dataset.centerPercentage);
   });
 }
@@ -291,7 +291,6 @@ function resetImagesToStart() {
     //added below to remove effects after 1st image explored
     picture.classList.remove("un-explore-action");
   });
-
   firstClick = false;
 }
 
@@ -856,13 +855,13 @@ function centerImageV1(clickEvent, currPicSent, currPicIndex) {
   viewMode = true;
 }
 
-function centerImage(clickEvent, currPicSent, currPicIndex) {
+function centerImageV2(clickEvent, currPicSent, currPicIndex) {
   const usingPercentage = currPicSent.dataset.centerPercentage;
 
   slider.dataset.percentage = usingPercentage;
   //currPercentage +
-  let duration = 300;
-
+  let duration = 200;
+  console.log("CENTER IMAGE firstclick:", firstClick);
   if (firstClick) {
     duration = 1000;
   }
@@ -882,7 +881,40 @@ function centerImage(clickEvent, currPicSent, currPicIndex) {
 
   setNewPosXFromLarge();
   viewMode = true;
-  firstClick = true;
+}
+
+//V3
+function centerImage(clickEvent, currPicSent, currPicIndex) {
+  const usingPercentage = currPicSent.dataset.centerPercentage;
+
+  slider.dataset.percentage = usingPercentage;
+  //currPercentage +
+  let duration = 200;
+  console.log("CENTER IMAGE firstclick:", firstClick);
+  if (firstClick) {
+    duration = 1000;
+  }
+
+  /*
+  slider.animate(
+    {
+      transform: `translate(${usingPercentage}%, 0%)`,
+    },
+    {
+      duration: duration,
+      fill: "forwards",
+      easing: "cubic-bezier(0, 0, 0.19, 1)",
+    } //500 instead of 1000
+  );
+  */
+  //let transformString = `transform: translate${usingPercentage}%, 0%`
+  slider.setAttribute("style", `transform: translate(${usingPercentage}%, 0%)`);
+  //slider.setAttribute("style", `transition-duration: 100ms`);
+  //slider.setAttribute("style", "transform: translate(-20%, 0%)");
+  slider.dataset.prevPercentage = usingPercentage;
+
+  setNewPosXFromLarge();
+  viewMode = true;
 }
 
 function newPosX(newWidth, newGap) {
@@ -953,6 +985,7 @@ for (let i = 0; i < pictures.length; i++) {
       //console.log("puttextawat", oldTitle);
     }
     pictureSelected = true;
+
     //console.log("lastPic", pictureSelectedImage);
     //sets selected picture to the pic in question
     pictureSelectedImage = currPic;
@@ -994,6 +1027,7 @@ for (let i = 0; i < pictures.length; i++) {
     //setNewPosX();
     centerImage(e, currPic, i);
     getText(titleName, i);
+    firstClick = true;
     //currPic.classList.add("chosen");
 
     sliderContainer.classList.remove("shriveled");
