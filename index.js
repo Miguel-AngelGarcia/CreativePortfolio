@@ -855,21 +855,23 @@ function centerImageV1(clickEvent, currPicSent, currPicIndex) {
   viewMode = true;
 }
 
-function centerImageV2(clickEvent, currPicSent, currPicIndex) {
+//V2
+function centerImage(clickEvent, currPicSent, currPicIndex) {
   const usingPercentage = currPicSent.dataset.centerPercentage;
 
   slider.dataset.percentage = usingPercentage;
   //currPercentage +
-  let duration = 200;
-  console.log("CENTER IMAGE firstclick:", firstClick);
+  let duration = 300;
+  console.log("CENTER IMAGE firstclick:", firstClick, "RUNNING");
   if (firstClick) {
     duration = 1000;
   }
 
   slider.animate(
-    {
-      transform: `translate(${usingPercentage}%, 0%)`,
-    },
+    [
+      { transform: `translate(${slider.dataset.prevPercentage}%, 0%)` },
+      { transform: `translate(${usingPercentage}%, 0%)` },
+    ],
     {
       duration: duration /*1000*/,
       fill: "forwards",
@@ -879,18 +881,20 @@ function centerImageV2(clickEvent, currPicSent, currPicIndex) {
 
   slider.dataset.prevPercentage = usingPercentage;
 
+  //slider.setAttribute("style", `transform: translate(${usingPercentage}%, 0%)`);
+
   setNewPosXFromLarge();
   viewMode = true;
 }
 
 //V3
-function centerImage(clickEvent, currPicSent, currPicIndex) {
+function centerImageV3(clickEvent, currPicSent, currPicIndex) {
   const usingPercentage = currPicSent.dataset.centerPercentage;
 
   slider.dataset.percentage = usingPercentage;
   //currPercentage +
   let duration = 200;
-  console.log("CENTER IMAGE firstclick:", firstClick);
+  console.log("CENTER IMAGE firstclick:", firstClick, usingPercentage);
   if (firstClick) {
     duration = 1000;
   }
@@ -908,7 +912,7 @@ function centerImage(clickEvent, currPicSent, currPicIndex) {
   );
   */
   //let transformString = `transform: translate${usingPercentage}%, 0%`
-  slider.setAttribute("style", `transform: translate(${usingPercentage}%, 0%)`);
+  slider.setAttribute("style", `transform: translate(${50}%, 0%)`);
   //slider.setAttribute("style", `transition-duration: 100ms`);
   //slider.setAttribute("style", "transform: translate(-20%, 0%)");
   slider.dataset.prevPercentage = usingPercentage;
@@ -1027,11 +1031,8 @@ for (let i = 0; i < pictures.length; i++) {
     //setNewPosX();
     centerImage(e, currPic, i);
     getText(titleName, i);
-    firstClick = true;
-    //currPic.classList.add("chosen");
 
-    sliderContainer.classList.remove("shriveled");
-    sliderContainer.classList.add("expanded");
+    //currPic.classList.add("chosen");
 
     /*
     Array.from(pictures).forEach(function (picture) {
@@ -1045,14 +1046,20 @@ for (let i = 0; i < pictures.length; i++) {
       }
     });CENTER IMAGE?*/
 
-    Array.from(pictures).forEach(function (picture) {
-      picture.classList.add("chosen");
-      picture.classList.remove("scroll-on-chosen");
-    });
+    if (!firstClick) {
+      sliderContainer.classList.remove("shriveled");
+      sliderContainer.classList.add("expanded");
 
-    slider.classList.add("selected");
-    slider.classList.remove("unselected");
+      Array.from(pictures).forEach(function (picture) {
+        picture.classList.add("chosen");
+        picture.classList.remove("scroll-on-chosen");
+      });
 
+      slider.classList.add("selected");
+      slider.classList.remove("unselected");
+    }
+
+    firstClick = true;
     //set new X positions
     /*
     newPosX(scaleWidth, newImageGap);
