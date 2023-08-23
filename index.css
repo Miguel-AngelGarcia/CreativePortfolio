@@ -819,6 +819,7 @@ Hypothesis: animating the -10vhof removeExploreClick sticks. how do we remove?
   object-position: 100% 50%;
   left: 50vw;
   position: relative;
+  will-change: width height;
 }
 
 .picture-group-slider > .image:hover {
@@ -829,7 +830,7 @@ Hypothesis: animating the -10vhof removeExploreClick sticks. how do we remove?
   filter: grayscale(100%);
   transition: filter 600ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
   /*transition-delay: 0.6s;*/
-  will-change: filter;
+  will-change: filter width height;
 }
 
 .picture-group-slider > .chosen {

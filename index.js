@@ -1544,7 +1544,7 @@ aboutBtn.addEventListener("click", function (e) {
 
     for (const image of slider.getElementsByClassName("image")) {
       image.animate(
-        { scale: 1.1 }, // `translate(${nextPercenRefined}% -50%)`
+        [{ scale: 1 }, { scale: 1.1 }], // `translate(${nextPercenRefined}% -50%)`
         { duration: 400, fill: "forwards" }
       );
     }
@@ -1736,7 +1736,7 @@ closeBtn.addEventListener("click", function (e) {
 
     for (const image of slider.getElementsByClassName("image")) {
       image.animate(
-        { scale: 1 }, // `translate(${nextPercenRefined}% -50%)`
+        [{ scale: 1.1 }, { scale: 1 }], // `translate(${nextPercenRefined}% -50%)`
         {
           duration: 600,
           fill: "forwards",
