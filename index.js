@@ -336,6 +336,7 @@ sliderContainer.addEventListener("wheel", function (e) {
 
     pictureSelected = false;
     pictureSelectedImage = null;
+    viewMode = false;
   }
 
   let rangedScroll = scrolly;
