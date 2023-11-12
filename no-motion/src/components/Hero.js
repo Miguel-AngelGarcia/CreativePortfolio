@@ -4,13 +4,21 @@ import Image from "next/image";
 const Hero = () => {
   return (
     <div className="hero-wrapper">
-      <div id="hero" className="flex flex-row entire-viewport hero-flex">
+      <div id="hero" className="entire-viewport hero-flex">
         <div className="hero-left">
           <div className="hl-top-row">
             <div className="mg-box-div">
-              <div className="mg-box-cont">
-                <a>mg</a>
-              </div>
+              <a className="a-btn">
+                <div className="mg-box-cont">
+                  <Image
+                    src="./mg.svg"
+                    alt="my initials, 'm' & 'g'"
+                    width={400}
+                    height={200}
+                    className="mg-box-h1"
+                  />
+                </div>
+              </a>
             </div>
 
             <div className="avatar">
