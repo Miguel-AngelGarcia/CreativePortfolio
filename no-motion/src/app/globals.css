@@ -31,6 +31,7 @@ body {
   padding-right: 3rem;
   padding-left: 5rem;
   display: block;
+  overflow: visible;
 }
 
 .entire-viewport {
@@ -67,7 +68,7 @@ body {
 
 .hero-heading.loc {
   display: flex;
-  gap: 3rem;
+  gap: 3vw;
 }
 
 .filler {
@@ -83,6 +84,13 @@ body {
   gap: 20%;
 }
 
+.hltr-t {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 60%;
+}
+
 .avatar {
   height: 100%;
   width: 40%;
@@ -92,27 +100,52 @@ body {
   position: relative;
 }
 
-.avatar .name-cont {
-  height: 40%;
+.av-t {
+  height: 80%;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+
+  position: relative;
+
+  justify-content: space-around;
+}
+
+.name-cont {
+  height: 20%;
   background-color: steelblue;
   border-radius: 60px;
   padding: 0 auto 0 auto;
   position: relative;
 
-  right: 100%;
   rotate: -15deg;
+}
+
+.nc-t {
+  height: 80px;
+  width: fit-content;
+  padding: 0 20px;
+  border-radius: 60px;
+  padding: 0 auto 0 auto;
+  position: relative;
+
+  rotate: -5deg;
+}
+
+.nca-cont {
+  padding: 0 10px;
 }
 
 .name-cont-a {
   height: 100%;
-  width: 100%;
+
   border-radius: 20px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
-  padding: 0 0;
+  background-color: steelblue;
+  padding: 2px 10px;
 }
 
 .name-cont-a > p {
@@ -127,14 +160,23 @@ body {
   width: 100%;
   overflow: hidden;
 
-  position: absolute;
-  z-index: 100;
+  position: relative;
+  z-index: 1;
 }
 
-.avatar-img img {
-  max-height: 100%;
-  aspect-ratio: 3/4;
+.ai-t {
+  /*height: 100%;*/
 
+  aspect-ratio: 3 / 4;
+  border-radius: 20px;
+  /*position: relative;*/
+
+  overflow: hidden;
+  position: relative;
+  z-index: 100;
+}
+.avatar-img img {
+  /*height: 100%;*/
   object-fit: cover;
 }
 
@@ -142,7 +184,7 @@ body {
   width: 20%;
   display: flex;
   flex-direction: column;
-  justify-content: end;
+  justify-content: center;
 }
 
 .mg-box-cont {
@@ -152,27 +194,49 @@ body {
   rotate: 19deg;
 
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
 
   position: relative;
 }
 
 .mg-box-cont img {
-  padding: 0 5% 20%;
+  padding: 0 5%;
+}
+
+/*hero-left bottom row*/
+.hero-left-bot {
+  display: flex;
+  flex-direction: row;
+}
+
+.hlb-left,
+.hlb-right {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+
+  justify-content: space-between;
+}
+
+.get-in-touch-div {
+  rotate: -15deg;
+
+  justify-content: flex-end;
 }
 
 .btn-get-in-touch {
-  width: 100%;
   background-color: aquamarine;
-  height: 100%;
   border-radius: 20px;
+  height: 55px;
+  width: fit-content;
+  padding: 10px 20px 10px 20px;
 }
 
 .abt-me-div {
   width: 100%;
-  padding: 0 20% 0 20%;
-  height: 5%;
+  height: 80px;
+  width: fit-content;
 }
 
 .btn-about-me {
@@ -182,22 +246,26 @@ body {
   border-radius: 20px;
 }
 
-.get-in-touch-div {
+.btn-about-me {
+  background-color: rgb(255, 186, 255);
+  height: 100%;
   width: 100%;
-  height: 5%;
-  padding: 0 33% 0 33%;
-  rotate: -15deg;
+  border-radius: 20px;
+  padding: 0 20px 0 20px;
 }
 
-.name-cont-a > .typed-out {
+.name-cont-a .typed-out {
   overflow: hidden;
   border-right: 0.15em solid orange;
   white-space: nowrap;
   font-size: 1.6rem;
   width: 0;
   animation: typing 1s steps(20, end) forwards;
+
+  margin: 0 10px;
 }
 
+/*
 .name-cont-a > .typed-out:nth-child(2) {
   animation-delay: 1s;
 }
@@ -205,6 +273,7 @@ body {
 .name-cont-a > .typed-out:last-child {
   animation-delay: 1.3s;
 }
+*/
 
 @keyframes typing {
   0% {
@@ -240,8 +309,28 @@ body {
   rotate: 3deg;
 }
 
+.work-div {
+  width: auto;
+  display: flex;
+  flex-direction: row;
+}
+
+.work-btn {
+  height: 120px;
+  width: 120px;
+  background-color: #dffd36;
+  border-radius: 20px;
+}
+
+.work-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .a-btn {
   transition-duration: 0.3s;
+  display: flex;
 }
 .a-btn:hover {
   transform: scale(1.2);
@@ -269,12 +358,29 @@ body {
 .each-exp {
   display: flex;
   flex-direction: column;
+
+  /*
+  when it moves on hover, we don't
+  want the page to become scrollable 
+  from left to right.
+  (The page width expands)
+  */
+  overflow-x: hidden;
 }
 
 .exp-title {
   display: grid;
   grid-template-rows: auto;
   grid-template-columns: 0.5fr 1fr 1.25fr;
+
+  padding: 40px 0;
+  transition: transform 0.3s;
+}
+
+.exp-title {
+  display: grid;
+  grid-template-rows: auto;
+  grid-template-columns: minmax(100px, 0.5fr) 1fr 1.25fr;
 
   padding: 40px 0;
   transition: transform 0.3s;
@@ -325,6 +431,10 @@ body {
 }
 
 /*Stack*/
+.stack {
+  border-radius: 0 0 20px 20px;
+}
+
 .stack-cont {
   padding: 0 48px 250px 80px;
 }
@@ -339,7 +449,7 @@ body {
 .stack-title {
   width: 30%;
   font-size: 48px;
-  font-weight: 800;
+  font-weight: 400;
   line-height: 1.2;
 }
 
@@ -361,6 +471,7 @@ body {
   line-height: 1.2;
   text-align: left;
   font-weight: 400;
+  margin-bottom: 16px;
 }
 
 .stack-lang-det {
@@ -433,16 +544,280 @@ body {
   border-radius: 5px;
 }
 
+.sect-wrapper {
+  position: relative;
+  z-index: 1;
+  background-color: white;
+
+  border-radius: 0 0 20px 20px;
+}
+/*Footer*/
+.false-footer {
+  height: 100vh;
+  width: 100%;
+
+  margin-bottom: 20px;
+  position: relative;
+
+  z-index: -1;
+}
+.footer {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+
+  height: 100vh;
+  width: 100vw;
+
+  justify-content: center;
+  align-items: center;
+
+  top: auto;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  z-index: -1;
+  background-color: black;
+}
+
+/*change this with media query*/
+.footer {
+  padding: 0 8rem 0 8rem;
+}
+
+.test-sb {
+  height: 85vh;
+  width: 100%;
+  position: relative;
+  display: grid;
+
+  align-self: flex-end;
+
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 4fr 4fr 1fr;
+
+  padding-bottom: 20px;
+}
+
+.fill {
+  height: 100%;
+  width: 100%;
+
+  color: white;
+
+  text-align: center;
+}
+
+.footer-initials {
+  height: fit-content;
+  justify-self: start;
+  align-self: end;
+
+  grid-column-start: 1;
+  grid-column-end: 2;
+  grid-row-start: 3;
+  grid-row-end: 4;
+}
+.copy {
+  color: white;
+  justify-self: end;
+  align-self: flex-end;
+
+  grid-column-start: 2;
+  grid-column-end: 3;
+  grid-row-start: 3;
+  grid-row-end: 4;
+}
+
+/*
+change columns grid in media query.
+note above contact instead of side-by-side
+*/
+.footer-note {
+  grid-column-start: 1;
+  grid-column-end: 2;
+  grid-row-start: 1;
+  grid-row-end: 3;
+}
+
+.footer-contact {
+  grid-column-start: 2;
+  grid-column-end: 3;
+  grid-row-start: 1;
+  grid-row-end: 3;
+}
+
+.footer-note {
+  color: white;
+  font-size: 80px;
+  line-height: 1.2;
+  font-weight: 400;
+}
+
+.footer-note-gradient {
+  background-color: red;
+  background-image: linear-gradient(45deg, #f3ec78, #af4261);
+
+  background-size: 500% auto;
+  background-repeat: repeat;
+
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-fill-color: transparent;
+  -moz-background-clip: text;
+  -moz-text-fill-color: transparent;
+
+  animation: bg-motion 5s ease-in-out infinite alternate;
+}
+
+@keyframes bg-motion {
+  0% {
+    background-position: 0% 50%;
+  }
+  to {
+    background-position: 100% 50%;
+  }
+}
+
+.footer-contact {
+  display: flex;
+  flex-direction: column;
+}
+
 @media (max-width: 1000px) {
+  .hero-wrapper {
+    padding-left: 80px;
+    padding-right: 48px;
+    padding-bottom: 80px;
+    margin-bottom: 100px;
+  }
   .hero-flex {
+    flex-direction: column;
+    row-gap: 70px;
+  }
+
+  .her-flex > .hero-right {
+    align-self: flex-start;
+  }
+  .hero-left {
+    width: 100%;
+    height: auto;
     flex-direction: column;
   }
 
+  .hl-top-row {
+    height: 100%;
+    gap: 0;
+  }
+
+  .hltr-t {
+    height: auto;
+  }
+
+  .name-cont-a {
+    height: auto;
+    margin: 0;
+  }
+
+  .hero-right {
+    width: 100%;
+    height: min-content;
+  }
+
+  .hero-heading {
+    font-size: 16vw;
+  }
+
+  .av-t {
+    flex-direction: row-reverse;
+  }
+
+  .work-div {
+    justify-content: flex-end;
+  }
+  .work-btn {
+    transform: translateX(-20px);
+    rotate: -3deg;
+  }
+
+  .hlb-right {
+    justify-content: flex-start;
+  }
+
+  .in-div {
+    justify-content: flex-end;
+    height: fit-content;
+  }
+  .in-a {
+    width: fit-content;
+  }
+
+  /*
+  .mg-box-div {
+    width: 10%;
+    transform: translateX(50%);
+  }*/
+
+  .test-sb {
+  }
+
+  .footer {
+    padding: 0 40px 0 40px;
+
+    min-width: 0;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .footer-note {
+    grid-column-start: 1;
+    grid-column-end: 3;
+    grid-row-start: 1;
+    grid-row-end: 2;
+  }
+
+  .footer-contact {
+    grid-column-start: 1;
+    grid-column-end: 3;
+    grid-row-start: 2;
+    grid-row-end: 3;
+  }
+
+  .footer-note {
+    color: white;
+    font-size: 48px;
+    line-height: 1.2;
+    font-weight: 400;
+    align-self: center;
+  }
+}
+
+@media (max-width: 767px) {
+  .hero-wrapper {
+    padding-left: 30px;
+    padding-right: 20px;
+    padding-bottom: 20px;
+    margin-bottom: 100px;
+  }
+
+  .hero-flex {
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+    row-gap: 0px;
+    padding-bottom: 50px;
+  }
+
+  .her-flex > .hero-right {
+    align-self: flex-start;
+  }
   .hero-left {
     width: 100%;
     height: 50%;
 
-    flex-direction: row;
+    margin-top: 10vw;
+    flex-direction: column;
   }
 
   .hl-top-row {
@@ -452,6 +827,74 @@ body {
 
   .hero-right {
     width: 100%;
-    height: 50%;
+    height: min-content;
+  }
+
+  .hero-heading {
+    font-size: 20vw;
+  }
+
+  .av-t {
+    flex-direction: row;
+  }
+
+  .resume-career,
+  .stack-cont {
+    padding: 0 20px 100px 20px;
+  }
+
+  .test-sb {
+  }
+
+  .footer {
+    padding: 0 40px 0 40px;
+
+    min-width: 0;
+    min-width: 0;
+    overflow: hidden;
+  }
+  /*
+  .footer-note {
+    grid-column-start: 1;
+    grid-column-end: 3;
+    grid-row-start: 1;
+    grid-row-end: 2;
+  }
+
+  .footer-contact {
+    grid-column-start: 1;
+    grid-column-end: 3;
+    grid-row-start: 2;
+    grid-row-end: 3;
+  }
+
+  .footer-note {
+    color: white;
+    font-size: 48px;
+    line-height: 1.2;
+    font-weight: 400;
+    align-self: center;
+  }
+  */
+}
+
+@media (max-width: 525px) {
+  .hero-wrapper {
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+  }
+
+  .hero-flex {
+    padding-bottom: 10px;
+  }
+
+  .resume-career {
+    margin-top: -100px;
+  }
+
+  .exp-title {
+    display: flex;
+    flex-direction: column;
+    padding: 40px 0;
   }
 }

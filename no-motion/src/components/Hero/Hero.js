@@ -1,9 +1,42 @@
 import React from "react";
 import Image from "next/image";
+import { HeroLeft } from "./HeroLeft";
 
 const Hero = () => {
   return (
     <div className="hero-wrapper">
+      <div id="hero" className="entire-viewport hero-flex">
+        <HeroLeft />
+        <div className="hero-right">
+          <div className="hero-heading">
+            <h1>Software</h1>
+          </div>
+          <div className="hero-heading">
+            <h1>Engineer</h1>
+          </div>
+          <div className="hero-heading loc">
+            <h1>in</h1>
+            <h1>NYC</h1>
+            <div className="flex flex-col justify-center align-middle">
+              <Image
+                id="initial-spinner"
+                height={80}
+                width={80}
+                src="/mg-spiral.svg"
+                alt="test"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Hero;
+
+/*
+<div className="hero-wrapper">
       <div id="hero" className="entire-viewport hero-flex">
         <div className="hero-left">
           <div className="hl-top-row">
@@ -75,6 +108,4 @@ const Hero = () => {
       </div>
     </div>
   );
-};
-
-export default Hero;
+*/
