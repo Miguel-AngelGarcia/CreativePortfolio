@@ -54,7 +54,7 @@ export const Projects = () => {
             <Image src={project.img} alt="test" priority={true} fill />
             <div className="proj-tag-cont">
               {project.tags.map((tag) => (
-                <div key={tag.id} className="tag-cont outline-cs">
+                <div key={tag.id} className="tag-cont outline-cs-1">
                   <p className="pro-tag">{tag.tagName}</p>
                 </div>
               ))}

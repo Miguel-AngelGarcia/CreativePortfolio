@@ -1,6 +1,6 @@
 import { Inter, Noto_Serif } from "next/font/google";
 import "./globals.css";
-
+import Navbar from "@/components/Navbar/Navbar";
 const inter = Inter({ subsets: ["latin"] });
 const notoSerif = Noto_Serif({
   weight: ["100", "400", "700"],
@@ -16,7 +16,10 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={notoSerif.className}>{children}</body>
+      <body className={notoSerif.className}>
+        <Navbar />
+        {children}
+      </body>
     </html>
   );
 }

@@ -1,12 +1,13 @@
 import React from "react";
 import Image from "next/image";
 import { HeroLeft } from "./HeroLeft";
+import { HeroLeftTest } from "./HeroLeftTest";
 
 const Hero = () => {
   return (
     <div className="hero-wrapper">
       <div id="hero" className="entire-viewport hero-flex">
-        <HeroLeft />
+        <HeroLeftTest />
         <div className="hero-right">
           <div className="hero-heading">
             <h1>Software</h1>
